@@ -6,7 +6,7 @@ import ErrorMessage from "@/modules/checkout/components/error-message"
 import Button from "@/modules/common/components/button"
 import Divider from "@/modules/common/components/divider"
 import Radio from "@/modules/common/components/radio"
-import { ApprovalStatusType, B2BCart } from "@/types"
+import { B2BCart } from "@/types"
 import { RadioGroup, Radio as RadioGroupOption } from "@headlessui/react"
 import { CheckCircleSolid } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
@@ -32,7 +32,7 @@ const Shipping: React.FC<ShippingProps> = ({
 
   const isOpen = searchParams.get("step") === "delivery"
 
-  const cartApprovalStatus = cart?.approval_status?.status
+
 
   const selectedShippingMethod = availableShippingMethods?.find(
     (method) => method.id === cart.shipping_methods?.at(-1)?.shipping_option_id
@@ -82,8 +82,7 @@ const Shipping: React.FC<ShippingProps> = ({
           {!isOpen &&
             cart?.shipping_address &&
             cart?.billing_address &&
-            cart?.email &&
-            cartApprovalStatus !== ApprovalStatusType.PENDING && (
+            cart?.email && (
               <Text>
                 <button
                   onClick={handleEdit}

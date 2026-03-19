@@ -10,6 +10,7 @@ export const AdminCreateCompany = z
   .object({
     name: z.string(),
     email: z.string(),
+    vat: z.string(),
     currency_code: z.string(),
     phone: z.string().optional(),
     address: z.string().optional(),
@@ -18,6 +19,7 @@ export const AdminCreateCompany = z
     zip: z.string().optional(),
     country: z.string().optional(),
     logo_url: z.string().optional(),
+    verified: z.boolean().optional().default(false),
   })
   .strict();
 
@@ -26,6 +28,7 @@ export const AdminUpdateCompany = z
   .object({
     name: z.string().optional(),
     email: z.string().optional(),
+    vat: z.string().optional(),
     currency_code: z.string().optional(),
     phone: z.string().optional(),
     address: z.string().optional(),
@@ -34,6 +37,7 @@ export const AdminUpdateCompany = z
     zip: z.string().optional(),
     country: z.string().optional(),
     logo_url: z.string().optional().nullable(),
+    verified: z.boolean().optional(),
   })
   .strict();
 
@@ -90,38 +94,3 @@ export const AdminUpdateEmployee = z
     is_admin: z.boolean().optional(),
   })
   .strict();
-
-/* Approval Settings Validators */
-export type AdminGetApprovalSettingsParamsType = z.infer<
-  typeof AdminGetApprovalSettingsParams
->;
-export const AdminGetApprovalSettingsParams = createSelectParams();
-
-export type AdminCreateApprovalSettingsType = z.infer<
-  typeof AdminCreateApprovalSettings
->;
-export const AdminCreateApprovalSettings = z
-  .object({
-    company_id: z.string(),
-    requires_admin_approval: z.boolean(),
-    requires_sales_manager_approval: z.boolean(),
-  })
-  .strict();
-
-export type AdminUpdateApprovalSettingsType = z.infer<
-  typeof AdminUpdateApprovalSettings
->;
-export const AdminUpdateApprovalSettings = z
-  .object({
-    id: z.string(),
-    requires_admin_approval: z.boolean(),
-    requires_sales_manager_approval: z.boolean(),
-  })
-  .strict();
-
-export type AdminDeleteApprovalSettingsType = z.infer<
-  typeof AdminDeleteApprovalSettings
->;
-export const AdminDeleteApprovalSettings = z.object({
-  ids: z.array(z.string()),
-});

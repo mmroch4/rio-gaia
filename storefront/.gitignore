@@ -43,7 +43,12 @@ yarn-error.log*
 *.tsbuildinfo
 node_modules
 
-.yarn
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
 .swc
 dump.rdb
 /test-results/
@@ -55,3 +60,7 @@ dump.rdb
 /blob-report/
 /playwright/.cache/
 /playwright/.auth
+
+
+.agent
+.agents

@@ -1,15 +1,15 @@
 import { FindParams, PaginatedResponse } from "@medusajs/types";
+import { ModuleCompanySpendingLimitResetFrequency } from "./module";
 import { QueryCompany, QueryEmployee } from "./query";
 import { ModuleCompanyFilters, ModuleEmployeeFilters } from "./service";
-import { ModuleCompanySpendingLimitResetFrequency } from "./module";
 
 /* Filters */
 
-export interface CompanyFilterParams extends FindParams, ModuleCompanyFilters {}
+export interface CompanyFilterParams extends FindParams, ModuleCompanyFilters { }
 
 export interface EmployeeFilterParams
   extends FindParams,
-    ModuleEmployeeFilters {}
+  ModuleEmployeeFilters { }
 
 /* Admin */
 
@@ -27,6 +27,8 @@ export type AdminCreateCompany = {
   phone: string;
   email: string;
   address: string | null;
+  vat: string;
+  verified: boolean;
   city: string | null;
   state: string | null;
   zip: string | null;
@@ -71,9 +73,11 @@ export type StoreCreateCompany = {
   name: string;
   phone?: string | null;
   email: string;
+  vat: string;
+  verified: boolean;
   address?: string | null;
   city?: string | null;
-  state?: string | null;
+  state?: string | null; 
   zip?: string | null;
   country?: string | null;
   logo_url?: string | null;
@@ -85,6 +89,8 @@ export type StoreUpdateCompany = {
   name: string;
   phone: string;
   email: string;
+  vat: string;
+  verified: boolean;
   address: string | null;
   city: string | null;
   state: string | null;

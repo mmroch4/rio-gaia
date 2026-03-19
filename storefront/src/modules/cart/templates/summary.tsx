@@ -1,19 +1,14 @@
 "use client"
 
 import { useCart } from "@/lib/context/cart-context"
-import { getCheckoutStep } from "@/lib/util/get-checkout-step"
 import CartToCsvButton from "@/modules/cart/components/cart-to-csv-button"
 import CartTotals from "@/modules/cart/components/cart-totals"
 import PromotionCode from "@/modules/checkout/components/promotion-code"
 import Button from "@/modules/common/components/button"
 import Divider from "@/modules/common/components/divider"
-import LocalizedClientLink from "@/modules/common/components/localized-client-link"
 import { RequestQuoteConfirmation } from "@/modules/quotes/components/request-quote-confirmation"
-import { RequestQuotePrompt } from "@/modules/quotes/components/request-quote-prompt"
 import { B2BCustomer } from "@/types"
-import { ApprovalStatusType } from "@/types/approval"
 import { ExclamationCircle } from "@medusajs/icons"
-import { Container } from "@medusajs/ui"
 
 type SummaryProps = {
   customer: B2BCustomer | null
@@ -25,80 +20,46 @@ const Summary = ({ customer, spendLimitExceeded }: SummaryProps) => {
 
   if (!cart) return null
 
-  const checkoutStep = getCheckoutStep(cart)
-  const checkoutPath = checkoutStep
-    ? `/checkout?step=${checkoutStep}`
-    : "/checkout"
-
-  const checkoutButtonLink = customer ? checkoutPath : "/account"
-
-  const isPendingApproval = cart?.approvals?.some(
-    (approval) => approval?.status === ApprovalStatusType.PENDING
-  )
-
   return (
-    <Container className="flex flex-col gap-y-3">
+    <div className="bg-white rounded-lg shadow-md p-6 flex flex-col gap-y-4">
       <CartTotals />
+
       <Divider />
+
       <PromotionCode cart={cart} />
+
       <Divider className="my-6" />
+
       {spendLimitExceeded && (
-        <div className="flex items-center gap-x-2 bg-neutral-100 p-3 rounded-md shadow-borders-base">
-          <ExclamationCircle className="text-orange-500 w-fit overflow-visible" />
-          <p className="text-neutral-950 text-xs">
-            This order exceeds your spending limit.
+        <div className="flex items-start gap-x-3 bg-[#0047AB]/5 p-4 rounded-lg border border-[#0047AB]/20">
+          <ExclamationCircle className="text-[#0047AB] w-5 h-5 flex-shrink-0 mt-0.5" />
+
+          <p className="text-gray-900 text-sm">
+            Esta encomenda excede o seu limite de gastos.
             <br />
-            Please contact your manager for approval.
+            Por favor, contacte o seu gestor para aprovação.
           </p>
         </div>
       )}
-      <LocalizedClientLink
-        href={checkoutButtonLink}
-        data-testid="checkout-button"
-      >
+
+      <RequestQuoteConfirmation>
         <Button
-          className="w-full h-10 rounded-full shadow-none"
-          disabled={spendLimitExceeded}
+          className="w-full h-10 rounded-full shadow-borders-base"
         >
-          {customer
-            ? spendLimitExceeded
-              ? "Spending Limit Exceeded"
-              : "Checkout"
-            : "Log in to Checkout"}
+          Pedir Orçamento
         </Button>
-      </LocalizedClientLink>
-      {!!customer && (
-        <RequestQuoteConfirmation>
-          <Button
-            className="w-full h-10 rounded-full shadow-borders-base"
-            variant="secondary"
-            disabled={isPendingApproval}
-          >
-            Request Quote
-          </Button>
-        </RequestQuoteConfirmation>
-      )}
-      {!customer && (
-        <RequestQuotePrompt>
-          <Button
-            className="w-full h-10 rounded-full shadow-borders-base"
-            variant="secondary"
-            disabled={isPendingApproval}
-          >
-            Request Quote
-          </Button>
-        </RequestQuotePrompt>
-      )}
+      </RequestQuoteConfirmation>
+
       <CartToCsvButton cart={cart} />
+
       <Button
         onClick={handleEmptyCart}
         className="w-full h-10 rounded-full shadow-borders-base"
         variant="secondary"
-        disabled={isPendingApproval}
       >
-        Empty Cart
+        Esvaziar Carrinho
       </Button>
-    </Container>
+    </div>
   )
 }
 

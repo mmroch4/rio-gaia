@@ -4,6 +4,7 @@
 /uploads
 /node_modules
 yarn-error.log
+.vscode
 
 .idea
 
@@ -25,3 +26,5 @@ build
 !.yarn/versions
 
 .medusa
+.agent
+.agents

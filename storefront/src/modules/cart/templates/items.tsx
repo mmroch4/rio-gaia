@@ -1,9 +1,7 @@
-import { getCartApprovalStatus } from "@/lib/util/get-cart-approval-status"
 import { convertToLocale } from "@/lib/util/money"
 import ItemFull from "@/modules/cart/components/item-full"
 import { B2BCart } from "@/types/global"
 import { StoreCartLineItem } from "@medusajs/types"
-import { Container, Text } from "@medusajs/ui"
 import { useMemo } from "react"
 
 type ItemsTemplateProps = {
@@ -23,11 +21,7 @@ const ItemsTemplate = ({
     [cart?.items]
   )
 
-  const { isPendingAdminApproval, isPendingSalesManagerApproval } =
-    getCartApprovalStatus(cart)
 
-  const isPendingApproval =
-    isPendingAdminApproval || isPendingSalesManagerApproval
 
   return (
     <div className="w-full flex flex-col gap-y-2">
@@ -36,7 +30,6 @@ const ItemsTemplate = ({
           items.map((item: StoreCartLineItem) => {
             return (
               <ItemFull
-                disabled={isPendingApproval}
                 currencyCode={cart?.currency_code}
                 showBorders={showBorders}
                 key={item.id}
@@ -50,17 +43,17 @@ const ItemsTemplate = ({
           })}
       </div>
       {showTotal && (
-        <Container>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
           <div className="flex items-start justify-between h-full self-stretch">
-            <Text>Total: {totalQuantity} items</Text>
-            <Text>
+            <p className="text-gray-900 font-medium">Total: {totalQuantity} {totalQuantity === 1 ? 'item' : 'items'}</p>
+            <p className="text-gray-900 font-semibold">
               {convertToLocale({
                 amount: cart?.item_total,
                 currency_code: cart?.currency_code,
               })}
-            </Text>
+            </p>
           </div>
-        </Container>
+        </div>
       )}
     </div>
   )

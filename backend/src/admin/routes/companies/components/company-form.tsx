@@ -1,6 +1,7 @@
 import { Button, Drawer, Input, Label, Select, Text } from "@medusajs/ui";
-import { AdminUpdateCompany } from "../../../../types";
 import { useState } from "react";
+import { AdminUpdateCompany } from "../../../../types";
+import { CoolSwitch } from "../../../components/common";
 import { useRegions } from "../../../hooks/api";
 
 export function CompanyForm({
@@ -62,6 +63,15 @@ export function CompanyForm({
             value={formData.email}
             onChange={handleChange}
             placeholder="medusa@medusa.com"
+          />
+          <Label size="xsmall">VAT</Label>
+          <Input
+            type="text"
+            name="vat"
+            value={formData.vat}
+            onChange={handleChange}
+            placeholder="EU123456789"
+            required
           />
           <Label size="xsmall">Company Address</Label>
           <Input
@@ -151,6 +161,15 @@ export function CompanyForm({
             value={formData.logo_url || ""}
             onChange={handleChange}
             placeholder="https://example.com/logo.png"
+          />
+          <CoolSwitch
+            fieldName="verified"
+            label="Verified Company"
+            description="Mark this company as verified"
+            checked={formData.verified || false}
+            onChange={(checked) =>
+              setFormData({ ...formData, verified: checked })
+            }
           />
         </div>
       </Drawer.Body>

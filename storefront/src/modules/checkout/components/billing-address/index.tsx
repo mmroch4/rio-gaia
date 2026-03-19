@@ -8,7 +8,6 @@ import { SubmitButton } from "@/modules/checkout/components/submit-button"
 import CheckboxWithLabel from "@/modules/common/components/checkbox"
 import Divider from "@/modules/common/components/divider"
 import { B2BCart } from "@/types"
-import { ApprovalStatusType } from "@/types/approval"
 import { CheckCircleSolid } from "@medusajs/icons"
 import { clx, Container, Heading, Text, useToggleState } from "@medusajs/ui"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
@@ -23,7 +22,7 @@ const BillingAddress = ({ cart }: { cart: B2BCart | null }) => {
 
   const isOpen = searchParams.get("step") === "billing-address"
 
-  const cartApprovalStatus = cart?.approval_status?.status
+
 
   const { state: sameAsBilling, toggle: toggleSameAsBilling } = useToggleState(
     cart?.shipping_address && cart?.billing_address
@@ -89,7 +88,6 @@ const BillingAddress = ({ cart }: { cart: B2BCart | null }) => {
           </div>
           {cart?.shipping_address?.address_1 && (
             <CheckboxWithLabel
-              disabled={cartApprovalStatus === ApprovalStatusType.PENDING}
               label="Same as shipping address"
               name="same_as_billing"
               checked={sameAsBilling}

@@ -13,6 +13,8 @@ export type ModuleCompany = {
   name: string;
   phone: string;
   email: string;
+  vat: string;
+  verified: boolean;
   address: string | null;
   city: string | null;
   state: string | null;
@@ -29,6 +31,8 @@ export type ModuleCreateCompany = {
   name: string;
   phone: string;
   email: string;
+  vat: string;
+  verified: boolean;
   address: string | null;
   city: string | null;
   state: string | null;

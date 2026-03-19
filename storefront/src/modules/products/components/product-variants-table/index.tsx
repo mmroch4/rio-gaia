@@ -94,6 +94,7 @@ const ProductVariantsTable = ({
               <Table.HeaderCell className="px-4">Quantity</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
+          
           <Table.Body className="border-none">
             {product.variants?.map((variant, index) => {
               const { variantPrice } = getProductPrice({

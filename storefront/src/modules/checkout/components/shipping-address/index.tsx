@@ -7,7 +7,6 @@ import { SubmitButton } from "@/modules/checkout/components/submit-button"
 import Divider from "@/modules/common/components/divider"
 import Spinner from "@/modules/common/icons/spinner"
 import { B2BCart, B2BCustomer } from "@/types"
-import { ApprovalStatusType } from "@/types/approval"
 import { CheckCircleSolid } from "@medusajs/icons"
 import { Container, Heading, Text } from "@medusajs/ui"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
@@ -27,7 +26,7 @@ const ShippingAddress = ({
 
   const isOpen = searchParams.get("step") === "shipping-address"
 
-  const cartApprovalStatus = cart?.approval_status?.status
+
 
   const createQueryString = useCallback(
     (name: string, value: string) => {
@@ -69,8 +68,7 @@ const ShippingAddress = ({
           </Heading>
 
           {!isOpen &&
-            cart?.shipping_address &&
-            cartApprovalStatus !== ApprovalStatusType.PENDING && (
+            cart?.shipping_address && (
               <Text>
                 <button
                   onClick={handleEdit}

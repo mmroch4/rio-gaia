@@ -2,12 +2,11 @@
 
 import { sdk } from "@/lib/config"
 import medusaError from "@/lib/util/medusa-error"
-import { StoreApprovalResponse } from "@/types/approval"
+import { B2BCart } from "@/types/global"
 import { HttpTypes } from "@medusajs/types"
 import { track } from "@vercel/analytics/server"
 import { revalidateTag } from "next/cache"
 import { redirect } from "next/navigation"
-import { B2BCart } from "@/types/global"
 import {
   getAuthHeaders,
   getCacheOptions,
@@ -40,7 +39,7 @@ export async function retrieveCart(id?: string) {
       method: "GET",
       query: {
         fields:
-          "*items, *region, *items.product, *items.variant, +items.thumbnail, +items.metadata, *promotions, *company, *company.approval_settings, *customer, *approvals, +completed_at, *approval_status",
+          "*items, *region, *items.product, *items.variant, +items.thumbnail, +items.metadata, *promotions, *company, *customer, +completed_at",
       },
       headers,
       next,
@@ -485,7 +484,6 @@ export async function placeOrder(
 
   const cartsTag = await getCacheTag("carts")
   const ordersTag = await getCacheTag("orders")
-  const approvalsTag = await getCacheTag("approvals")
 
   const response = await sdk.store.cart
     .complete(id, {}, headers)
@@ -501,13 +499,11 @@ export async function placeOrder(
 
   revalidateTag(cartsTag)
   revalidateTag(ordersTag)
-  revalidateTag(approvalsTag)
 
   await removeCartId()
 
   redirect(
-    `/${response.order.shipping_address?.country_code?.toLowerCase()}/order/confirmed/${
-      response.order.id
+    `/${response.order.shipping_address?.country_code?.toLowerCase()}/order/confirmed/${response.order.id
     }`
   )
 }
@@ -540,32 +536,4 @@ export async function updateRegion(countryCode: string, currentPath: string) {
   redirect(`/${countryCode}${currentPath}`)
 }
 
-export async function createCartApproval(cartId: string, createdBy: string) {
-  const headers = {
-    "Content-Type": "application/json",
-    ...(await getAuthHeaders()),
-  }
 
-  const { approval } = await sdk.client
-    .fetch<StoreApprovalResponse>(`/store/carts/${cartId}/approvals`, {
-      method: "POST",
-      headers,
-      credentials: "include",
-    })
-    .catch((err) => {
-      if (err.response?.json) {
-        return err.response.json().then((body: any) => {
-          throw new Error(body.message || err.message)
-        })
-      }
-      throw err
-    })
-
-  const cartCacheTag = await getCacheTag("carts")
-  revalidateTag(cartCacheTag)
-
-  const approvalsCacheTag = await getCacheTag("approvals")
-  revalidateTag(approvalsCacheTag)
-
-  return approval
-}

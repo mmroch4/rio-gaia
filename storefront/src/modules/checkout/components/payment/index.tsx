@@ -7,7 +7,6 @@ import PaymentContainer from "@/modules/checkout/components/payment-container"
 import { StripeContext } from "@/modules/checkout/components/payment-wrapper"
 import Button from "@/modules/common/components/button"
 import Divider from "@/modules/common/components/divider"
-import { ApprovalStatusType } from "@/types"
 import { RadioGroup } from "@headlessui/react"
 import { CheckCircleSolid, CreditCard } from "@medusajs/icons"
 import { Container, Heading, Text, clx } from "@medusajs/ui"
@@ -41,7 +40,7 @@ const Payment = ({
 
   const isOpen = searchParams.get("step") === "payment"
 
-  const cartApprovalStatus = cart.approval_status?.status
+
 
   const stripeReady = useContext(StripeContext)
 
@@ -133,8 +132,7 @@ const Payment = ({
             {!isOpen && paymentReady && <CheckCircleSolid />}
           </Heading>
           {!isOpen &&
-            paymentReady &&
-            cartApprovalStatus !== ApprovalStatusType.PENDING && (
+            paymentReady && (
               <Text>
                 <button
                   onClick={handleEdit}
@@ -182,7 +180,7 @@ const Payment = ({
                     onChange={(e) => {
                       setCardBrand(
                         e.brand &&
-                          e.brand.charAt(0).toUpperCase() + e.brand.slice(1)
+                        e.brand.charAt(0).toUpperCase() + e.brand.slice(1)
                       )
                       setError(e.error?.message || null)
                       setCardComplete(e.complete)

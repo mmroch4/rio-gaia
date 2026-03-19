@@ -5,6 +5,8 @@ export const storeCompanyFields = [
   "logo_url",
   "email",
   "phone",
+  "verified",
+  "vat",
   "address",
   "city",
   "state",
@@ -12,7 +14,6 @@ export const storeCompanyFields = [
   "country",
   "currency_code",
   "*employees",
-  "*approval_settings",
 ];
 
 export const storeCompanyQueryConfig = {
@@ -44,33 +45,6 @@ export const storeEmployeeQueryConfig = {
   },
   retrieve: {
     defaults: storeEmployeeFields,
-    isList: false,
-  },
-};
-
-/* Store Approval Settings Query Config */
-type ApprovalSettingsField =
-  | "id"
-  | "company_id"
-  | "requires_admin_approval"
-  | "requires_sales_manager_approval"
-  | "created_at"
-  | "updated_at"
-  | "deleted_at";
-
-export const storeApprovalSettingsFields: ApprovalSettingsField[] = [
-  "id",
-  "company_id",
-  "requires_admin_approval",
-  "requires_sales_manager_approval",
-  "created_at",
-  "updated_at",
-  "deleted_at",
-];
-
-export const storeApprovalSettingsQueryConfig = {
-  retrieve: {
-    defaults: storeApprovalSettingsFields,
     isList: false,
   },
 };

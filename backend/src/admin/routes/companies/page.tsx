@@ -16,7 +16,7 @@ import { CompanyActionsMenu, CompanyCreateDrawer } from "./components";
 const Companies = () => {
   const { data, isPending } = useCompanies({
     fields:
-      "*employees,*employees.customer,*employees.company,*customer_group,*approval_settings",
+      "*employees,*employees.customer,*employees.company,*customer_group",
   });
 
   const { data: customerGroups } = useAdminCustomerGroups();
@@ -38,6 +38,7 @@ const Companies = () => {
               <Table.HeaderCell>Email</Table.HeaderCell>
               <Table.HeaderCell>Address</Table.HeaderCell>
               <Table.HeaderCell>Employees</Table.HeaderCell>
+              <Table.HeaderCell>Verified</Table.HeaderCell>
               <Table.HeaderCell>Customer Group</Table.HeaderCell>
               <Table.HeaderCell>Actions</Table.HeaderCell>
             </Table.Row>
@@ -63,6 +64,11 @@ const Companies = () => {
                   <Table.Cell>{company.email}</Table.Cell>
                   <Table.Cell>{`${company.address}, ${company.city}, ${company.state} ${company.zip}`}</Table.Cell>
                   <Table.Cell>{company.employees?.length || 0}</Table.Cell>
+                  <Table.Cell>
+                    <Badge size="small" color={company.verified ? "green" : "grey"}>
+                      {company.verified ? "Verified" : "Not Verified"}
+                    </Badge>
+                  </Table.Cell>
                   <Table.Cell>
                     {company.customer_group?.name ? (
                       <Badge size="small" color="blue">

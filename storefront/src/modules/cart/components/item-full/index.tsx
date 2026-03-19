@@ -93,7 +93,7 @@ const ItemFull = ({
       })}
     >
       <div className="flex gap-x-4 items-start">
-        <LocalizedClientLink href={`/products/${item.product_handle}`}>
+        <LocalizedClientLink href={`/portal/produtos/${item.product_handle}`}>
           <Thumbnail
             thumbnail={item.thumbnail}
             size="square"

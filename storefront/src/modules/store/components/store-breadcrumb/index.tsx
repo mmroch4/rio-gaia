@@ -11,7 +11,7 @@ const StoreBreadcrumbItem = ({
     <li className="text-neutral-500">
       <LocalizedClientLink
         className="hover:text-neutral-900"
-        href={handle ? `${handle}` : "/store"}
+        href={handle ? `${handle}` : "/portal/catalogo"}
       >
         {title}
       </LocalizedClientLink>
@@ -24,7 +24,7 @@ const StoreBreadcrumb = () => {
     <ul className="flex items-center gap-x-3 text-sm">
       <StoreBreadcrumbItem title="Products" key="base" />
       <span className="text-neutral-500">{">"}</span>
-      <StoreBreadcrumbItem title="All products" handle="/store" />
+      <StoreBreadcrumbItem title="All products" handle="/portal/loja" />
     </ul>
   )
 }

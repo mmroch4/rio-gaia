@@ -2,7 +2,7 @@
 
 import { setContactDetails } from "@/lib/data/cart"
 import Divider from "@/modules/common/components/divider"
-import { ApprovalStatusType, B2BCart, B2BCustomer } from "@/types"
+import { B2BCart, B2BCustomer } from "@/types"
 import { CheckCircleSolid } from "@medusajs/icons"
 import { clx, Container, Heading, Text } from "@medusajs/ui"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
@@ -32,11 +32,6 @@ const ContactDetails = ({
     cart.billing_address?.address_1 &&
     cart.email
 
-  const requiresApproval =
-    cart.company?.approval_settings?.requires_admin_approval ||
-    cart.company?.approval_settings?.requires_sales_manager_approval
-
-  const cartApprovalStatus = cart?.approval_status?.status
 
   const customerIsAdmin = customer?.employee?.is_admin || false
 
@@ -61,13 +56,7 @@ const ContactDetails = ({
   const handleSubmit = (formData: FormData) => {
     formAction(formData)
 
-    const step =
-      requiresApproval &&
-      (!customerIsAdmin || cartApprovalStatus !== ApprovalStatusType.APPROVED)
-        ? "review"
-        : "payment"
-
-    router.push(pathname + "?" + createQueryString("step", step), {
+    router.push(pathname + "?" + createQueryString("step", "payment"), {
       scroll: false,
     })
   }
@@ -91,8 +80,7 @@ const ContactDetails = ({
           </Heading>
 
           {!isOpen &&
-            isCompleted &&
-            cartApprovalStatus !== ApprovalStatusType.PENDING && (
+            isCompleted && (
               <Text>
                 <button
                   onClick={handleEdit}
@@ -114,11 +102,7 @@ const ContactDetails = ({
                   className="mt-6"
                   data-testid="submit-address-button"
                 >
-                  {requiresApproval &&
-                  cartApprovalStatus !== ApprovalStatusType.APPROVED &&
-                  !customerIsAdmin
-                    ? "Review order"
-                    : "Next step"}
+                  Next step
                 </SubmitButton>
                 <ErrorMessage
                   error={message}

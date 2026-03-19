@@ -27,7 +27,7 @@ const ItemPreview = ({ item, showBorders = true, currencyCode }: ItemProps) => {
       )}
     >
       <div className="flex gap-x-4 items-start">
-        <LocalizedClientLink href={`/products/${handle}`}>
+        <LocalizedClientLink href={`/portal/produtos/${handle}`}>
           <Thumbnail
             thumbnail={item.thumbnail}
             size="square"

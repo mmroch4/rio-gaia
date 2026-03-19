@@ -26,7 +26,7 @@ const Review = ({
         <Text className="txt-xsmall text-neutral-500 mb-1">
           By Completing this order, I agree to Medusa&apos;s{" "}
           <LocalizedClientLink
-            href="/terms-of-sale"
+            href="/termos-e-condicoes"
             className="hover:text-neutral-800"
             target="_blank"
           >
@@ -34,7 +34,7 @@ const Review = ({
           </LocalizedClientLink>{" "}
           and{" "}
           <LocalizedClientLink
-            href="/privacy-policy"
+            href="/politica-privacidade"
             className="hover:text-neutral-800"
             target="_blank"
           >

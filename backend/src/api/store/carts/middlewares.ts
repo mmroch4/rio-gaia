@@ -1,7 +1,6 @@
 import {
-  authenticate,
   validateAndTransformBody,
-  validateAndTransformQuery,
+  validateAndTransformQuery
 } from "@medusajs/framework";
 import { MiddlewareRoute } from "@medusajs/medusa";
 import { retrieveCartTransformQueryConfig } from "./query-config";
@@ -21,10 +20,5 @@ export const storeCartsMiddlewares: MiddlewareRoute[] = [
         retrieveCartTransformQueryConfig
       ),
     ],
-  },
-  {
-    method: ["POST"],
-    matcher: "/store/carts/:id/approvals",
-    middlewares: [authenticate("customer", ["bearer", "session"])],
   },
 ];

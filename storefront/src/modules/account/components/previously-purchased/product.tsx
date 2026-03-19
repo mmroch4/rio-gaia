@@ -23,9 +23,9 @@ const PreviouslyPurchasedProduct = ({
           <Text className="text-sm text-neutral-500">{title}</Text>
         </div>
       </div>
-      <LocalizedClientLink href={`/products/${product_handle}`}>
+      <LocalizedClientLink href={`/portal/produtos/${product_handle}`}>
         <Button variant="secondary" className="h-8 px-4 text-neutral-600">
-          Buy again
+          Comprar novamente
           <ArrowUturnLeft className="inline-block ml-1 " />
         </Button>
       </LocalizedClientLink>

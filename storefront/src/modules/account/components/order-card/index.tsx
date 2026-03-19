@@ -1,9 +1,10 @@
 import { convertToLocale } from "@/lib/util/money"
+import Button from "@/modules/common/components/button"
 import LocalizedClientLink from "@/modules/common/components/localized-client-link"
 import CalendarIcon from "@/modules/common/icons/calendar"
 import DocumentIcon from "@/modules/common/icons/document"
 import { HttpTypes } from "@medusajs/types"
-import { Button, clx, Container } from "@medusajs/ui"
+import { clx } from "@medusajs/ui"
 import Image from "next/image"
 import { useMemo } from "react"
 
@@ -23,7 +24,7 @@ const OrderCard = ({ order }: OrderCardProps) => {
 
   return (
     <>
-      <Container className="bg-white flex small:flex-row flex-col p-4 rounded-md small:justify-between small:items-center gap-y-2 items-start">
+      <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow flex small:flex-row flex-col p-4 small:justify-between small:items-center gap-y-2 items-start">
         <div className="flex gap-x-4 items-center pl-3">
           <div className="flex min-w-10">
             {order.items?.slice(0, 3).map((i, index) => {
@@ -33,7 +34,7 @@ const OrderCard = ({ order }: OrderCardProps) => {
                 <div
                   key={i.id}
                   className={clx(
-                    "block w-7 h-7 border border-white bg-neutral-100 p-2 bg-cover bg-center rounded-md ml-[-5px]",
+                    "block w-7 h-7 border border-white bg-gray-100 p-2 bg-cover bg-center rounded-md ml-[-5px]",
                     {
                       "-rotate-3": index === 0 && numItems > 1,
                       "rotate-0": index === 0 && numItems === 1,
@@ -64,25 +65,25 @@ const OrderCard = ({ order }: OrderCardProps) => {
           </div>
 
           <div
-            className="flex pr-2 text-small-regular items-center"
+            className="flex pr-2 text-sm items-center text-gray-600"
             data-testid="order-created-at"
           >
             <CalendarIcon className="inline-block mr-1" />
-            {createdAt.toLocaleDateString("en-GB", {
+            {createdAt.toLocaleDateString("pt-PT", {
               year: "numeric",
               month: "numeric",
               day: "numeric",
             })}
           </div>
 
-          <div className="flex items-center text-small-regular">
+          <div className="flex items-center text-sm text-gray-600">
             <DocumentIcon className="inline-block mr-1" />
             <span data-testid="order-display-id">#{order.display_id}</span>
           </div>
         </div>
 
         <div className="flex gap-x-4 small:divide-x divide-gray-200 small:justify-normal justify-between w-full small:w-auto">
-          <div className="flex items-center text-small-regular text-ui-fg-base">
+          <div className="flex items-center text-sm text-gray-700">
             <span className="px-2" data-testid="order-amount">
               {convertToLocale({
                 amount: order.total,
@@ -90,31 +91,23 @@ const OrderCard = ({ order }: OrderCardProps) => {
               })}
             </span>
             {"·"}
-            <span className="px-2">{`${numberOfLines} ${
-              numberOfLines > 1 ? "items" : "item"
-            }`}</span>
+            <span className="px-2">{`${numberOfLines} ${numberOfLines > 1 ? "itens" : "item"
+              }`}</span>
           </div>
 
           <div className="flex items-center gap-x-2 pl-4">
-            {/* <Button
-              data-testid="card-details-link"
-              variant="secondary"
-              className="rounded-full text-xs"
-            >
-              Export to PDF
-            </Button> */}
-            <LocalizedClientLink href={`/account/orders/details/${order.id}`}>
+            <LocalizedClientLink href={`/portal/conta/encomendas/detalhes/${order.id}`}>
               <Button
                 data-testid="card-details-link"
                 variant="secondary"
                 className="rounded-full text-xs"
               >
-                Details
+                Detalhes
               </Button>
             </LocalizedClientLink>
           </div>
         </div>
-      </Container>
+      </div>
     </>
   )
 }

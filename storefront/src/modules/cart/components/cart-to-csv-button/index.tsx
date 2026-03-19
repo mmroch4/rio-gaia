@@ -24,7 +24,7 @@ const CartToCsvButton = ({ cart }: CartToCsvButtonProps) => {
     try {
       if (window.showSaveFilePicker) {
         const fileHandle = await window.showSaveFilePicker({
-          suggestedName: "cart.csv",
+          suggestedName: "carrinho.csv",
           startIn: "downloads",
           types: [
             { description: "CSV File", accept: { "text/csv": [".csv"] } },
@@ -38,7 +38,7 @@ const CartToCsvButton = ({ cart }: CartToCsvButtonProps) => {
         const url = URL.createObjectURL(blob)
         const link = document.createElement("a")
         link.href = url
-        link.download = "cart.csv"
+        link.download = "carrinho.csv"
         link.click()
         URL.revokeObjectURL(url)
       }
@@ -57,8 +57,9 @@ const CartToCsvButton = ({ cart }: CartToCsvButtonProps) => {
         onClick={handleExportCart}
         isLoading={isExportingCart}
       >
-        Export Cart (.csv)
+        Exportar Carrinho (.csv)
       </Button>
+
       {error && <Text className="text-red-500">{error}</Text>}
     </div>
   )

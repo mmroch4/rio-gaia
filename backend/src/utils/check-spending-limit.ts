@@ -9,11 +9,12 @@ export function getSpendWindow(company: QueryCompany): {
   start: Date;
   end: Date;
 } {
+  const now = new Date();
+
   if (!company) {
-    return { start: new Date(0), end: new Date() };
+    return { start: new Date(0), end: now };
   }
 
-  const now = new Date();
   const resetFrequency = company.spending_limit_reset_frequency;
 
   switch (resetFrequency) {
@@ -45,7 +46,7 @@ export function getOrderTotalInSpendWindow(
   return (
     orders.reduce((acc, order) => {
       const orderDate = new Date(order.created_at);
-      if (orderDate >= spendWindow.start && orderDate <= spendWindow.end) {
+      if (spendWindow.start <= orderDate && orderDate <= spendWindow.end) {
         return acc + order.total;
       }
       return acc;

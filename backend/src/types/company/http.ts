@@ -1,15 +1,15 @@
 import { FindParams, PaginatedResponse } from "@medusajs/types";
+import { ModuleCompanySpendingLimitResetFrequency } from "./module";
 import { QueryCompany, QueryEmployee } from "./query";
 import { ModuleCompanyFilters, ModuleEmployeeFilters } from "./service";
-import { ModuleCompanySpendingLimitResetFrequency } from "./module";
 
 /* Filters */
 
-export interface CompanyFilterParams extends FindParams, ModuleCompanyFilters {}
+export interface CompanyFilterParams extends FindParams, ModuleCompanyFilters { }
 
 export interface EmployeeFilterParams
   extends FindParams,
-    ModuleEmployeeFilters {}
+  ModuleEmployeeFilters { }
 
 /* Admin */
 
@@ -26,6 +26,7 @@ export type AdminCreateCompany = {
   name: string;
   phone: string;
   email: string;
+  vat: string;
   address: string | null;
   city: string | null;
   state: string | null;
@@ -33,6 +34,7 @@ export type AdminCreateCompany = {
   country: string | null;
   logo_url: string | null;
   currency_code: string | null;
+  verified?: boolean;
 };
 
 export type AdminUpdateCompany = Partial<AdminCreateCompany>;
@@ -76,6 +78,7 @@ export type StoreCreateCompany = {
   name: string;
   phone?: string | null;
   email: string;
+  vat: string;
   address?: string | null;
   city?: string | null;
   state?: string | null;
@@ -83,6 +86,7 @@ export type StoreCreateCompany = {
   country?: string | null;
   logo_url?: string | null;
   currency_code: string;
+  verified?: boolean;
 };
 
 export type StoreUpdateCompany = {
@@ -90,6 +94,7 @@ export type StoreUpdateCompany = {
   name: string;
   phone: string;
   email: string;
+  vat: string;
   address: string | null;
   city: string | null;
   state: string | null;
@@ -97,6 +102,7 @@ export type StoreUpdateCompany = {
   country: string | null;
   logo_url: string | null;
   currency_code: string;
+  verified?: boolean;
   spending_limit_reset_frequency?: ModuleCompanySpendingLimitResetFrequency;
 };
 

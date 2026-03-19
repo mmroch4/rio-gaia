@@ -1,4 +1,4 @@
-import QuoteStatusBadge from "@/app/[countryCode]/(main)/account/@dashboard/quotes/components/quote-status-badge"
+import QuoteStatusBadge from "@/app/[countryCode]/portal/conta/orcamentos/components/quote-status-badge"
 import { convertToLocale } from "@/lib/util/money"
 import LocalizedClientLink from "@/modules/common/components/localized-client-link"
 import { StoreQuoteResponse } from "@/types"
@@ -88,13 +88,12 @@ const QuoteCard = ({ quote }: QuoteCardProps) => {
             })}
           </span>
           {"·"}
-          <span className="pl-2">{`${numberOfLines} ${
-            numberOfLines > 1 ? "items" : "item"
-          }`}</span>
+          <span className="pl-2">{`${numberOfLines} ${numberOfLines > 1 ? "items" : "item"
+            }`}</span>
         </div>
 
         <div className="pl-4">
-          <LocalizedClientLink href={`/account/quotes/details/${quote.id}`}>
+          <LocalizedClientLink href={`/portal/conta/orcamentos/detalhes/${quote.id}`}>
             <Button variant="secondary" className="rounded-full text-xs">
               See details
             </Button>

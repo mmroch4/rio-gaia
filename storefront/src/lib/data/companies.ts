@@ -32,7 +32,7 @@ export const retrieveCompany = async (companyId: string) => {
     {
       query: {
         fields:
-          "+spending_limit_reset_frequency,*employees.customer,*approval_settings",
+          "+spending_limit_reset_frequency,*employees.customer",
       },
       method: "GET",
       headers,
@@ -43,9 +43,10 @@ export const retrieveCompany = async (companyId: string) => {
   return company
 }
 
-export const createCompany = async (data: StoreCreateCompany) => {
+export const createCompany = async (data: StoreCreateCompany, customHeaders?: any) => {
   const headers = {
     ...(await getAuthHeaders()),
+    ...customHeaders
   }
 
   const {
@@ -59,6 +60,7 @@ export const createCompany = async (data: StoreCreateCompany) => {
   track("company_created", {
     company_id: company.id,
     company_name: company.name,
+    company_vat: company.vat
   })
 
   const cacheTag = await getCacheTag("companies")
@@ -89,11 +91,12 @@ export const updateCompany = async (data: StoreUpdateCompany) => {
   return company
 }
 
-export const createEmployee = async (data: StoreCreateEmployee) => {
+export const createEmployee = async (data: StoreCreateEmployee, customHeaders?: any) => {
   const { company_id, ...employeeData } = data
 
   const headers = {
     ...(await getAuthHeaders()),
+    ...customHeaders
   }
 
   const employee = await sdk.client.fetch<StoreEmployeeResponse>(
@@ -154,24 +157,4 @@ export const deleteEmployee = async (companyId: string, employeeId: string) => {
   revalidateTag(cacheTag)
 }
 
-export const updateApprovalSettings = async (
-  companyId: string,
-  requiresAdminApproval: boolean
-) => {
-  const headers = {
-    ...(await getAuthHeaders()),
-    "Content-Type": "application/json",
-    Accept: "plain/text",
-  }
 
-  await sdk.client.fetch(`/store/companies/${companyId}/approval-settings`, {
-    method: "POST",
-    body: {
-      requires_admin_approval: requiresAdminApproval,
-    },
-    headers,
-  })
-
-  const cacheTag = await getCacheTag("companies")
-  revalidateTag(cacheTag)
-}

@@ -1,78 +1,90 @@
 "use client"
 
 import Login from "@/modules/account/components/login"
-import Register from "@/modules/account/components/register"
-import { HttpTypes } from "@medusajs/types"
-import { clx } from "@medusajs/ui"
-import Image from "next/image"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import { Footer } from "@/modules/home/components/Footer"
+import { Header } from "@/modules/home/components/Header"
 
-export enum LOGIN_VIEW {
-  LOG_IN = "log-in",
-  REGISTER = "register",
+interface LoginTemplateProps {
+  countryCode: string
 }
 
-const LoginTemplate = ({ regions }: { regions: HttpTypes.StoreRegion[] }) => {
-  const route = usePathname()
-  const searchParams = useSearchParams()
-  const router = useRouter()
-
-  const [imageLoaded, setImageLoaded] = useState(false)
-  const [currentView, setCurrentView] = useState<LOGIN_VIEW>(() => {
-    const viewFromUrl = searchParams.get("view") as LOGIN_VIEW
-    return viewFromUrl && Object.values(LOGIN_VIEW).includes(viewFromUrl)
-      ? viewFromUrl
-      : LOGIN_VIEW.LOG_IN
-  })
-
-  useEffect(() => {
-    if (searchParams.has("view")) {
-      const newParams = new URLSearchParams(searchParams)
-      newParams.delete("view")
-      router.replace(
-        `${route}${newParams.toString() ? `?${newParams.toString()}` : ""}`,
-        { scroll: false }
-      )
-    }
-  }, [searchParams, route, router])
-
-  useEffect(() => {
-    const image = new window.Image()
-    image.src = "/account-block.jpg"
-    image.onload = () => {
-      setImageLoaded(true)
-    }
-  }, [])
-
-  const updateView = (view: LOGIN_VIEW) => {
-    setCurrentView(view)
-    router.push(`/account?view=${view}`)
-  }
-
+const LoginTemplate = ({ countryCode }: LoginTemplateProps) => {
   return (
-    <div className="grid grid-cols-1 small:grid-cols-2 gap-2 m-2 min-h-[80vh]">
-      <div className="flex justify-center items-center bg-neutral-100 p-6 small:p-0 h-full">
-        {currentView === LOGIN_VIEW.LOG_IN ? (
-          <Login setCurrentView={updateView} />
-        ) : (
-          <Register setCurrentView={updateView} regions={regions} />
-        )}
-      </div>
+    <div>
+      <Header />
 
-      <div className="relative">
-        <Image
-          src="/account-block.jpg"
-          alt="Login banner background"
-          className={clx(
-            "object-cover transition-opacity duration-300 w-full h-full",
-            imageLoaded ? "opacity-100" : "opacity-0"
-          )}
-          fill
-          quality={100}
-          priority
-        />
-      </div>
+      {/* Two-Column Layout Section */}
+      <section className="min-h-screen bg-gray-50">
+        <div className="grid lg:grid-cols-2 min-h-screen">
+          {/* Left Column - Form */}
+          <div className="flex items-center justify-center bg-neutral-100 px-4 sm:px-6 lg:px-8 py-12">
+            <div className="w-full max-w-md">
+              <div className="flex flex-col gap-6 my-auto">
+                <Login countryCode={countryCode} />
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column - Decorative Visual */}
+          <div className="hidden lg:flex relative text-white overflow-hidden bg-gradient-to-br from-[#0047AB] via-[#0047AB] to-[#003685]">
+            <div className="flex items-center justify-center w-full px-8 lg:px-12">
+              <div className="max-w-lg">
+                <div className="inline-block px-4 py-2 mb-6 bg-white/10 rounded-full text-sm backdrop-blur-sm">
+                  Área de Cliente
+                </div>
+
+                <h1 className="text-white mb-6" style={{ fontSize: '2.5rem', lineHeight: '1.1', fontWeight: '700' }}>
+                  Bem-vindo de volta
+                </h1>
+
+                <p className="text-xl text-blue-100 mb-8">
+                  Aceda à sua conta para gerir encomendas, orçamentos e informações da empresa
+                </p>
+
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="font-semibold mb-1">Gestão de Encomendas</div>
+                      <div className="text-blue-100 text-sm">Acompanhe o estado das suas encomendas em tempo real</div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="font-semibold mb-1">Orçamentos Personalizados</div>
+                      <div className="text-blue-100 text-sm">Solicite e consulte orçamentos para o seu negócio</div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="font-semibold mb-1">Informações da Empresa</div>
+                      <div className="text-blue-100 text-sm">Gerencie os dados e preferências da sua empresa</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
     </div>
   )
 }

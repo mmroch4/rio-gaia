@@ -20,7 +20,6 @@ export function CompanyUpdateDrawer({
     id,
     employees,
     customer_group,
-    approval_settings,
     ...currentData
   } = company;
 

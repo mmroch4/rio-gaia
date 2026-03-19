@@ -35,6 +35,7 @@ const PreviewAddToCart = ({
 
     setIsAdding(false)
   }
+  
   return (
     <Button
       className="rounded-full p-3 border-none shadow-none"

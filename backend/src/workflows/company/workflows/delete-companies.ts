@@ -1,7 +1,6 @@
 import { WorkflowResponse } from "@medusajs/framework/workflows-sdk";
 import { createWorkflow } from "@medusajs/workflows-sdk";
 import { ModuleDeleteCompany } from "../../../types";
-import { deleteApprovalSettingsStep } from "../../approval/steps/delete-approval-settings";
 import { deleteCompaniesStep } from "../steps";
 
 export const deleteCompaniesWorkflow = createWorkflow(
@@ -9,9 +8,7 @@ export const deleteCompaniesWorkflow = createWorkflow(
   function (input: ModuleDeleteCompany) {
     deleteCompaniesStep([input.id]);
 
-    deleteApprovalSettingsStep({
-      companyIds: [input.id],
-    });
+    // TODO: DELETE USERS FROM COMPANY
 
     return new WorkflowResponse(undefined);
   }

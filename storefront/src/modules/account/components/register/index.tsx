@@ -2,24 +2,28 @@
 
 import { currencySymbolMap } from "@/lib/constants"
 import { signup } from "@/lib/data/customer"
-import { LOGIN_VIEW } from "@/modules/account/templates/login-template"
-import ErrorMessage from "@/modules/checkout/components/error-message"
 import { SubmitButton } from "@/modules/checkout/components/submit-button"
 import Input from "@/modules/common/components/input"
+import LocalizedClientLink from "@/modules/common/components/localized-client-link"
+import PasswordStrengthIndicator from "@/modules/common/components/password-strength-indicator"
 import { HttpTypes } from "@medusajs/types"
 import { Checkbox, Label, Select, Text } from "@medusajs/ui"
-import { ChangeEvent, useActionState, useState } from "react"
+import { ChangeEvent, useActionState, useEffect, useState } from "react"
 
 type Props = {
-  setCurrentView: (view: LOGIN_VIEW) => void
   regions: HttpTypes.StoreRegion[]
+  countryCode: string
 }
 
 interface FormData {
   email: string
   first_name: string
   last_name: string
+  phone: string
   company_name: string
+  company_email: string
+  company_vat: string
+  company_phone: string
   password: string
   company_address: string
   company_city: string
@@ -33,7 +37,11 @@ const initialFormData: FormData = {
   email: "",
   first_name: "",
   last_name: "",
+  phone: "",
   company_name: "",
+  company_email: "",
+  company_vat: "",
+  company_phone: "",
   password: "",
   company_address: "",
   company_city: "",
@@ -58,10 +66,27 @@ const placeholder = ({
   )
 }
 
-const Register = ({ setCurrentView, regions }: Props) => {
+const Register = ({ regions, countryCode }: Props) => {
   const [message, formAction] = useActionState(signup, null)
   const [termsAccepted, setTermsAccepted] = useState(false)
   const [formData, setFormData] = useState<FormData>(initialFormData)
+
+  // Set default company_country based on countryCode prop
+  useEffect(() => {
+    const countries = regions
+      .flatMap((region) =>
+        region.countries?.map((country) => country?.iso_2 || country?.iso_3)
+      )
+      .filter((code) => code !== undefined)
+
+    // Only set if countryCode matches an available country and company_country is not already set
+    if (countries.includes(countryCode) && !formData.company_country) {
+      setFormData((prev) => ({
+        ...prev,
+        company_country: countryCode,
+      }))
+    }
+  }, [countryCode, regions, formData.company_country])
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -85,7 +110,11 @@ const Register = ({ setCurrentView, regions }: Props) => {
     !!formData.email &&
     !!formData.first_name &&
     !!formData.last_name &&
+    !!formData.phone &&
     !!formData.company_name &&
+    !!formData.company_email &&
+    !!formData.company_vat &&
+    !!formData.company_phone &&
     !!formData.password &&
     !!formData.company_address &&
     !!formData.company_city &&
@@ -93,26 +122,46 @@ const Register = ({ setCurrentView, regions }: Props) => {
     !!formData.company_country &&
     !!formData.currency_code
 
-  const countryNames = regions
+  const countries = regions
     .flatMap((region) =>
-      region.countries?.map((country) => country?.display_name || country?.name)
+      region.countries?.map((country) => ({ name: country?.display_name || country?.name, code: country?.iso_2 || country?.iso_3 }))
     )
-    .filter((country) => country !== undefined)
+    .filter((country) => country?.code !== undefined && country?.name !== undefined)
 
   const currencies = regions.map((region) => region.currency_code)
 
   return (
     <div
-      className="max-w-sm flex flex-col items-start gap-2 my-8"
+      className="w-full flex flex-col gap-6"
       data-testid="register-page"
     >
-      <Text className="text-4xl text-neutral-950 text-left mb-4">
-        Create your
-        <br />
-        company account.
+      <Text className="text-4xl text-neutral-950 text-left">
+        Criar Conta Empresarial
       </Text>
+      <Text className="text-neutral-600 text-base-regular">
+        Preencha os dados abaixo para criar a sua conta
+      </Text>
+
+      {message && (
+        <div className="bg-red-50 border border-red-200 rounded-md p-4" data-testid="register-error">
+          <div className="flex items-start gap-3">
+            <svg className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div className="flex-1">
+              <h4 className="text-sm font-semibold text-red-800 mb-1">Erro ao criar conta</h4>
+              <p className="text-sm text-red-700">{message}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <form className="w-full flex flex-col" action={formAction}>
+        {/* Personal Information Section */}
         <div className="flex flex-col w-full gap-y-4">
+          <h3 className="text-gray-900 font-semibold text-lg mt-2">
+            Informação Pessoal
+          </h3>
           <Input
             label="Email"
             name="email"
@@ -125,7 +174,7 @@ const Register = ({ setCurrentView, regions }: Props) => {
             onChange={handleChange}
           />
           <Input
-            label="First name"
+            label="Primeiro nome"
             name="first_name"
             required
             autoComplete="given-name"
@@ -135,7 +184,7 @@ const Register = ({ setCurrentView, regions }: Props) => {
             onChange={handleChange}
           />
           <Input
-            label="Last name"
+            label="Último nome"
             name="last_name"
             required
             autoComplete="family-name"
@@ -145,17 +194,18 @@ const Register = ({ setCurrentView, regions }: Props) => {
             onChange={handleChange}
           />
           <Input
-            label="Company name"
-            name="company_name"
+            label="Telefone"
+            name="phone"
             required
-            autoComplete="organization"
-            data-testid="company-name-input"
+            type="tel"
+            autoComplete="tel"
+            data-testid="phone-input"
             className="bg-white"
-            value={formData.company_name}
+            value={formData.phone}
             onChange={handleChange}
           />
           <Input
-            label="Password"
+            label="Palavra-passe"
             name="password"
             required
             type="password"
@@ -165,8 +215,64 @@ const Register = ({ setCurrentView, regions }: Props) => {
             value={formData.password}
             onChange={handleChange}
           />
+          <PasswordStrengthIndicator
+            password={formData.password}
+            showCriteria={true}
+          />
+        </div>
+
+        {/* Divider */}
+        <div className="border-b border-neutral-200 my-6" />
+
+        {/* Company Information Section */}
+        <div className="flex flex-col w-full gap-y-4">
+          <h3 className="text-gray-900 font-semibold text-lg">
+            Informação da Empresa
+          </h3>
           <Input
-            label="Company address"
+            label="Nome da empresa"
+            name="company_name"
+            required
+            autoComplete="organization"
+            data-testid="company-name-input"
+            className="bg-white"
+            value={formData.company_name}
+            onChange={handleChange}
+          />
+          <Input
+            label="Email da empresa"
+            name="company_email"
+            required
+            type="email"
+            autoComplete="email"
+            data-testid="company-email-input"
+            className="bg-white"
+            value={formData.company_email}
+            onChange={handleChange}
+          />
+          <Input
+            label="NIF"
+            name="company_vat"
+            required
+            autoComplete="off"
+            data-testid="company-vat-input"
+            className="bg-white"
+            value={formData.company_vat}
+            onChange={handleChange}
+          />
+          <Input
+            label="Telefone da empresa"
+            name="company_phone"
+            required
+            type="tel"
+            autoComplete="tel"
+            data-testid="company-phone-input"
+            className="bg-white"
+            value={formData.company_phone}
+            onChange={handleChange}
+          />
+          <Input
+            label="Morada da empresa"
             name="company_address"
             required
             autoComplete="address"
@@ -176,7 +282,7 @@ const Register = ({ setCurrentView, regions }: Props) => {
             onChange={handleChange}
           />
           <Input
-            label="Company city"
+            label="Cidade da empresa"
             name="company_city"
             required
             autoComplete="city"
@@ -186,7 +292,7 @@ const Register = ({ setCurrentView, regions }: Props) => {
             onChange={handleChange}
           />
           <Input
-            label="Company state"
+            label="Distrito da empresa"
             name="company_state"
             autoComplete="state"
             data-testid="company-state-input"
@@ -195,7 +301,7 @@ const Register = ({ setCurrentView, regions }: Props) => {
             onChange={handleChange}
           />
           <Input
-            label="Company zip"
+            label="Código postal da empresa"
             name="company_zip"
             required
             autoComplete="postal-code"
@@ -215,19 +321,26 @@ const Register = ({ setCurrentView, regions }: Props) => {
             <Select.Trigger className="rounded-full h-10 px-4">
               <Select.Value
                 placeholder={placeholder({
-                  placeholder: "Select a country",
+                  placeholder: "Selecione um país",
                   required: true,
                 })}
               />
             </Select.Trigger>
             <Select.Content>
-              {countryNames?.map((country) => (
-                <Select.Item key={country} value={country}>
-                  {country}
-                </Select.Item>
-              ))}
+              {countries?.map((country) => {
+                if (!country?.code || !country?.name) {
+                  return ""
+                }
+
+                return (
+                  <Select.Item key={country.code} value={country.code}>
+                    {country.name}
+                  </Select.Item>
+                )
+              })}
             </Select.Content>
           </Select>
+          <input type="hidden" name="country_code" value={countryCode} />
           <Select
             name="currency_code"
             required
@@ -239,7 +352,7 @@ const Register = ({ setCurrentView, regions }: Props) => {
             <Select.Trigger className="rounded-full h-10 px-4">
               <Select.Value
                 placeholder={placeholder({
-                  placeholder: "Select a currency",
+                  placeholder: "Selecione uma moeda",
                   required: true,
                 })}
               />
@@ -254,7 +367,6 @@ const Register = ({ setCurrentView, regions }: Props) => {
           </Select>
         </div>
         <div className="border-b border-neutral-200 my-6" />
-        <ErrorMessage error={message} data-testid="register-error" />
         <div className="flex items-center gap-2">
           <Checkbox
             name="terms"
@@ -269,27 +381,30 @@ const Register = ({ setCurrentView, regions }: Props) => {
             htmlFor="terms-checkbox"
             data-testid="terms-label"
           >
-            I agree to the terms and conditions.
+            Li e aceito os{" "}
+            <LocalizedClientLink
+              href="/termos-e-condicoes"
+              className="text-[#0047AB] hover:text-[#003685] hover:underline mx-1"
+              target="_blank"
+            >
+              termos e condições
+            </LocalizedClientLink>.
           </Label>
         </div>
         <SubmitButton
-          className="w-full mt-6"
+          className="w-full mt-6 !bg-[#0047AB] hover:!bg-[#003685] text-white px-6 py-3 rounded-md transition-colors shadow-md font-semibold"
           data-testid="register-button"
           disabled={!isValid}
         >
-          Register
+          Criar Conta
         </SubmitButton>
       </form>
-      <span className="text-center text-ui-fg-base text-small-regular mt-6">
-        Already a member?{" "}
-        <button
-          onClick={() => setCurrentView(LOGIN_VIEW.LOG_IN)}
-          className="underline"
-        >
-          Log in
-        </button>
-        .
-      </span>
+      <div className="text-center text-gray-600 text-sm mt-4">
+        Já tem conta?{" "}
+        <LocalizedClientLink href="/conta/entrar" className="text-[#0047AB] hover:text-[#003685] hover:underline font-semibold">
+          Iniciar Sessão
+        </LocalizedClientLink>
+      </div>
     </div>
   )
 }

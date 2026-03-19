@@ -1,24 +1,28 @@
-import InteractiveLink from "@/modules/common/components/interactive-link"
-import { Heading, Text } from "@medusajs/ui"
+import LocalizedClientLink from "@/modules/common/components/localized-client-link"
+import { ShoppingCart } from "lucide-react"
 
 const EmptyCartMessage = () => {
   return (
-    <div
-      className="py-48 px-2 flex flex-col justify-center items-start"
-      data-testid="empty-cart-message"
-    >
-      <Heading
-        level="h1"
-        className="flex flex-row text-3xl-regular gap-x-2 items-baseline"
-      >
-        Cart
-      </Heading>
-      <Text className="text-base-regular mt-4 mb-6 max-w-[32rem]">
-        You don&apos;t have anything in your cart. Let&apos;s change that, use
-        the link below to start browsing our products.
-      </Text>
-      <div>
-        <InteractiveLink href="/store">Explore products</InteractiveLink>
+    <div className="flex items-center justify-center px-4 py-12">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8 text-center">
+        <div className="w-20 h-20 bg-[#0047AB]/10 rounded-full flex items-center justify-center mx-auto mb-6">
+          <ShoppingCart className="w-10 h-10 text-[#0047AB]" />
+        </div>
+
+        <h1 className="text-gray-900 text-2xl font-bold mb-3">
+          O Seu Carrinho Está Vazio
+        </h1>
+
+        <p className="text-gray-600 mb-8">
+          Não tem nada no seu carrinho. Explore os nossos produtos e adicione os artigos que pretende encomendar.
+        </p>
+
+        <LocalizedClientLink
+          href="/portal/catalogo"
+          className="inline-block bg-gradient-to-r from-[#0047AB] to-[#003685] text-white px-8 py-3 rounded-full font-semibold hover:opacity-90 transition-opacity shadow-lg"
+        >
+          Explorar Produtos
+        </LocalizedClientLink>
       </div>
     </div>
   )

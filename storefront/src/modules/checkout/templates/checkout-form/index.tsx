@@ -1,6 +1,5 @@
 import { listCartShippingMethods } from "@/lib/data/fulfillment"
 import { listCartPaymentMethods } from "@/lib/data/payment"
-import ApprovalStatusBanner from "@/modules/cart/components/approval-status-banner"
 import SignInPrompt from "@/modules/cart/components/sign-in-prompt"
 import BillingAddress from "@/modules/checkout/components/billing-address"
 import Company from "@/modules/checkout/components/company"
@@ -11,7 +10,7 @@ import ShippingAddress from "@/modules/checkout/components/shipping-address"
 import Button from "@/modules/common/components/button"
 import LocalizedClientLink from "@/modules/common/components/localized-client-link"
 import UTurnArrowRight from "@/modules/common/icons/u-turn-arrow-right"
-import { ApprovalStatusType, B2BCart, B2BCustomer } from "@/types"
+import { B2BCart, B2BCustomer } from "@/types"
 
 export default async function CheckoutForm({
   cart,
@@ -26,9 +25,6 @@ export default async function CheckoutForm({
 
   const shippingMethods = await listCartShippingMethods(cart.id)
   const paymentMethods = await listCartPaymentMethods(cart.region?.id ?? "")
-  const requiresApproval =
-    cart.company?.approval_settings?.requires_admin_approval ||
-    cart.company?.approval_settings?.requires_sales_manager_approval
 
   if (!shippingMethods || !paymentMethods) {
     return null
@@ -39,20 +35,16 @@ export default async function CheckoutForm({
       <div className="w-full grid grid-cols-1 gap-y-2">
         <LocalizedClientLink
           className="flex items-baseline gap-2 text-sm text-neutral-400 hover:text-neutral-500"
-          href="/cart"
+          href="/portal/carrinho"
         >
           <Button variant="secondary">
             <UTurnArrowRight />
-            Back to shopping cart
+            Voltar ao carrinho de compras
           </Button>
         </LocalizedClientLink>
 
-        {!customer ? <SignInPrompt /> : null}
 
-        {cart.approval_status &&
-          cart.approval_status.status !== ApprovalStatusType.APPROVED && (
-            <ApprovalStatusBanner cart={cart} />
-          )}
+        {!customer ? <SignInPrompt /> : null}
 
         {cart?.company && <Company cart={cart} />}
 
@@ -64,11 +56,7 @@ export default async function CheckoutForm({
 
         <ContactDetails cart={cart} customer={customer} />
 
-        {(customer?.employee?.is_admin &&
-          cart.approval_status?.status === ApprovalStatusType.APPROVED) ||
-        !requiresApproval ? (
-          <Payment cart={cart} availablePaymentMethods={paymentMethods} />
-        ) : null}
+        <Payment cart={cart} availablePaymentMethods={paymentMethods} />
       </div>
     </div>
   )

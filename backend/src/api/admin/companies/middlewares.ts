@@ -4,17 +4,14 @@ import {
 } from "@medusajs/framework";
 import { MiddlewareRoute } from "@medusajs/medusa";
 import {
-  adminApprovalSettingsQueryConfig,
   adminCompanyQueryConfig,
   adminEmployeeQueryConfig,
 } from "./query-config";
 import {
   AdminCreateCompany,
   AdminCreateEmployee,
-  AdminGetApprovalSettingsParams,
   AdminGetCompanyParams,
   AdminGetEmployeeParams,
-  AdminUpdateApprovalSettings,
   AdminUpdateCompany,
   AdminUpdateEmployee,
 } from "./validators";
@@ -104,18 +101,6 @@ export const adminCompaniesMiddlewares: MiddlewareRoute[] = [
       validateAndTransformQuery(
         AdminGetEmployeeParams,
         adminEmployeeQueryConfig.retrieve
-      ),
-    ],
-  },
-  /* Approval Settings Middlewares */
-  {
-    method: ["POST"],
-    matcher: "/admin/companies/:id/approval-settings",
-    middlewares: [
-      validateAndTransformBody(AdminUpdateApprovalSettings),
-      validateAndTransformQuery(
-        AdminGetApprovalSettingsParams,
-        adminApprovalSettingsQueryConfig.retrieve
       ),
     ],
   },

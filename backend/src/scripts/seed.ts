@@ -38,7 +38,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
     ModuleRegistrationName.STORE
   );
 
-  const countries = ["gb", "de", "dk", "se", "fr", "es", "it"];
+  const countries = ["pt"];
 
   logger.info("Seeding store data...");
   const [store] = await storeModuleService.listStores();
@@ -71,9 +71,6 @@ export default async function seedDemoData({ container }: ExecArgs) {
             currency_code: "eur",
             is_default: true,
           },
-          {
-            currency_code: "usd",
-          },
         ],
         default_sales_channel_id: defaultSalesChannel[0].id,
       },
@@ -84,7 +81,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
     input: {
       regions: [
         {
-          name: "Europe",
+          name: "Portugal",
           currency_code: "eur",
           countries,
           payment_providers: ["pp_system_default"],
@@ -110,10 +107,10 @@ export default async function seedDemoData({ container }: ExecArgs) {
     input: {
       locations: [
         {
-          name: "European Warehouse",
+          name: "Portugal Warehouse",
           address: {
-            city: "Copenhagen",
-            country_code: "DK",
+            city: "Lisbon",
+            country_code: "pt",
             address_1: "",
           },
         },
@@ -146,38 +143,14 @@ export default async function seedDemoData({ container }: ExecArgs) {
   const shippingProfile = shippingProfileResult[0];
 
   const fulfillmentSet = await fulfillmentModuleService.createFulfillmentSets({
-    name: "European Warehouse delivery",
+    name: "Portugal Warehouse delivery",
     type: "shipping",
     service_zones: [
       {
-        name: "Europe",
+        name: "Portugal",
         geo_zones: [
           {
-            country_code: "gb",
-            type: "country",
-          },
-          {
-            country_code: "de",
-            type: "country",
-          },
-          {
-            country_code: "dk",
-            type: "country",
-          },
-          {
-            country_code: "se",
-            type: "country",
-          },
-          {
-            country_code: "fr",
-            type: "country",
-          },
-          {
-            country_code: "es",
-            type: "country",
-          },
-          {
-            country_code: "it",
+            country_code: "pt",
             type: "country",
           },
         ],

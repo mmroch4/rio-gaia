@@ -43,7 +43,7 @@ const SignInPrompt = () => {
           faster checkout.
         </Text>
         <div className="flex small:flex-row flex-col small:gap-4 gap-2">
-          <LocalizedClientLink href="/account?view=register">
+          <LocalizedClientLink href="/conta/registar">
             <Button
               variant="secondary"
               className="small:h-10 h-8 small:min-w-36 min-w-24 rounded-full"
@@ -52,7 +52,7 @@ const SignInPrompt = () => {
               Register
             </Button>
           </LocalizedClientLink>
-          <LocalizedClientLink href="/account?view=log-in">
+          <LocalizedClientLink href="/conta/entrar">
             <Button
               variant="primary"
               className="small:h-10 h-8 small:min-w-36 min-w-24 rounded-full"

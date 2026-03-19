@@ -7,7 +7,7 @@ import { HttpTypes } from "@medusajs/types"
 import { track } from "@vercel/analytics/server"
 import { revalidateTag } from "next/cache"
 import { redirect } from "next/navigation"
-import { retrieveCart, updateCart } from "./cart"
+import { getOrSetCart, retrieveCart, updateCart } from "./cart"
 import { createCompany, createEmployee } from "./companies"
 import {
   getAuthHeaders,
@@ -71,6 +71,7 @@ export async function signup(_currentState: unknown, formData: FormData) {
     phone: formData.get("phone") as string,
     company_name: formData.get("company_name") as string,
   }
+  const countryCode = formData.get("country_code") as string
 
   try {
     const token = await sdk.auth.register("customer", "emailpass", {
@@ -91,11 +92,11 @@ export async function signup(_currentState: unknown, formData: FormData) {
       password,
     })
 
-    setAuthToken(loginToken as string)
+    const customAuthHeaders = { authorization: `Bearer ${loginToken}` }
 
     const companyForm = {
       name: formData.get("company_name") as string,
-      email: formData.get("email") as string,
+      email: formData.get("company_email") as string,
       phone: formData.get("company_phone") as string,
       address: formData.get("company_address") as string,
       city: formData.get("company_city") as string,
@@ -103,38 +104,32 @@ export async function signup(_currentState: unknown, formData: FormData) {
       zip: formData.get("company_zip") as string,
       country: formData.get("company_country") as string,
       currency_code: formData.get("currency_code") as string,
+      vat: formData.get("company_vat") as string,
+      verified: false,
     }
 
-    const createdCompany = await createCompany(companyForm)
+    const createdCompany = await createCompany(companyForm, customAuthHeaders)
 
     const createdEmployee = await createEmployee({
       company_id: createdCompany?.id as string,
       customer_id: createdCustomer.id,
       is_admin: true,
       spending_limit: 0,
-    }).catch((err) => {
+    }, customAuthHeaders).catch((err) => {
       console.log("error creating employee", err)
     })
-
-    const cacheTag = await getCacheTag("customers")
-    revalidateTag(cacheTag)
-
-    await transferCart()
-
-    return {
-      customer: createdCustomer,
-      company: createdCompany,
-      employee: createdEmployee,
-    }
   } catch (error: any) {
     console.log("error", error)
     return error.toString()
   }
+
+  redirect(`/${countryCode}/conta/verificacao-pendente`)
 }
 
 export async function login(_currentState: unknown, formData: FormData) {
   const email = formData.get("email") as string
   const password = formData.get("password") as string
+  const countryCode = formData.get("country_code") as string
 
   try {
     await sdk.auth
@@ -155,7 +150,13 @@ export async function login(_currentState: unknown, formData: FormData) {
         const customer = await retrieveCustomer()
         const cart = await retrieveCart()
 
-        if (customer?.employee?.company_id) {
+        console.log("customer", customer)
+        console.log("cart", cart)
+
+        if (!cart) {
+          await getOrSetCart(countryCode)
+        }
+        else if (cart && customer?.employee?.company_id) {
           await updateCart({
             metadata: {
               ...cart?.metadata,
@@ -166,6 +167,7 @@ export async function login(_currentState: unknown, formData: FormData) {
 
         revalidateTag(productsCacheTag)
         revalidateTag(cartsCacheTag)
+
       })
   } catch (error: any) {
     return error.toString()
@@ -176,9 +178,11 @@ export async function login(_currentState: unknown, formData: FormData) {
   } catch (error: any) {
     return error.toString()
   }
+
+  redirect(`/${countryCode}/portal/conta`)
 }
 
-export async function signout(countryCode: string, customerId: string) {
+export async function signout(countryCode: string) {
   await sdk.auth.logout()
   removeAuthToken()
   track("customer_logged_out")
@@ -198,8 +202,6 @@ export async function signout(countryCode: string, customerId: string) {
   revalidateTag(customerCacheTag)
   revalidateTag(productsCacheTag)
   revalidateTag(cartsCacheTag)
-
-  redirect(`/${countryCode}/account`)
 }
 
 export async function transferCart() {
@@ -305,4 +307,151 @@ export const updateCustomerAddress = async (
     .catch((err) => {
       return { success: false, error: err.toString() }
     })
+}
+
+export async function requestPasswordReset(
+  _currentState: unknown,
+  formData: FormData
+) {
+  const email = formData.get("email") as string
+
+  if (!email) {
+    return "Email é obrigatório."
+  }
+
+  try {
+    await sdk.client.fetch("/vendor/auth/customer/emailpass/reset-password", {
+      method: "POST",
+      body: {
+        identifier: email,
+      },
+    })
+
+    return { success: true }
+  } catch (error: any) {
+    console.error("Password reset request error:", error)
+    return "Não foi possível enviar o email de redefinição. Por favor, tente novamente."
+  }
+}
+
+export async function resetPassword(
+  _currentState: unknown,
+  formData: FormData
+) {
+  const token = formData.get("token") as string
+  const email = formData.get("email") as string
+  const password = formData.get("password") as string
+  const confirmPassword = formData.get("confirm_password") as string
+  const countryCode = formData.get("country_code") as string
+
+  // Validation
+  if (!token || !email || !password) {
+    return "Todos os campos são obrigatórios."
+  }
+
+  if (password !== confirmPassword) {
+    return "As palavras-passe não coincidem."
+  }
+
+  // Password strength validation
+  if (password.length < 8) {
+    return "A palavra-passe deve ter pelo menos 8 caracteres."
+  }
+
+  if (!/[a-z]/.test(password)) {
+    return "A palavra-passe deve conter pelo menos uma letra minúscula."
+  }
+
+  if (!/[A-Z]/.test(password)) {
+    return "A palavra-passe deve conter pelo menos uma letra maiúscula."
+  }
+
+  if (!/[0-9]/.test(password)) {
+    return "A palavra-passe deve conter pelo menos um número."
+  }
+
+  try {
+    await sdk.client.fetch("/vendor/auth/customer/emailpass/update", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: {
+        email,
+        password,
+      },
+    })
+
+    await signout(countryCode)
+
+    return { success: true }
+  } catch (error: any) {
+    console.error("Password reset error:", error)
+
+    // Check for specific error messages
+    if (error.message?.includes("token") || error.message?.includes("expired")) {
+      return "Este link de redefinição expirou. Por favor, solicite um novo."
+    }
+
+    return "Não foi possível redefinir a palavra-passe. Por favor, tente novamente."
+  }
+}
+
+export async function updateCustomerPassword(
+  currentState: Record<string, unknown>,
+  formData: FormData
+) {
+  const password = formData.get("password") as string
+  const confirmPassword = formData.get("confirm_password") as string
+  const email = formData.get("email") as string
+
+  // Validation
+  if (!password || !confirmPassword) {
+    return { success: false, error: "Todos os campos são obrigatórios." }
+  }
+
+  if (password !== confirmPassword) {
+    return { success: false, error: "As palavras-passe não coincidem." }
+  }
+
+  // Password strength validation
+  if (password.length < 8) {
+    return { success: false, error: "A palavra-passe deve ter pelo menos 8 caracteres." }
+  }
+
+  if (!/[a-z]/.test(password)) {
+    return { success: false, error: "A palavra-passe deve conter pelo menos uma letra minúscula." }
+  }
+
+  if (!/[A-Z]/.test(password)) {
+    return { success: false, error: "A palavra-passe deve conter pelo menos uma letra maiúscula." }
+  }
+
+  if (!/[0-9]/.test(password)) {
+    return { success: false, error: "A palavra-passe deve conter pelo menos um número." }
+  }
+
+  try {
+    const headers = await getAuthHeaders()
+
+    if (!headers) {
+      return { success: false, error: "Não autenticado." }
+    }
+
+    await sdk.client.fetch("/vendor/auth/customer/emailpass/update", {
+      method: "POST",
+      headers: {
+        ...headers,
+      },
+      body: {
+        email,
+        password,
+      },
+    })
+
+    return { success: true, error: null }
+  } catch (error: any) {
+    console.error("Password update error:", error)
+    return { success: false, error: "Não foi possível atualizar a palavra-passe. Por favor, tente novamente." }
+  }
 }

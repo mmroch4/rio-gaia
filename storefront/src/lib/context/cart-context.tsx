@@ -7,7 +7,6 @@ import {
   updateLineItem,
 } from "@/lib/data/cart"
 import { addToCartEventBus } from "@/lib/data/cart-event-bus"
-import { ApprovalStatusType } from "@/types/approval/module"
 import { B2BCart } from "@/types/global"
 import type {
   StoreCart,
@@ -41,15 +40,15 @@ export type AddToCartEventPayload = {
 
 const CartContext = createContext<
   | {
-      cart: B2BCart | null
-      handleDeleteItem: (lineItem: string) => Promise<void>
-      handleUpdateCartQuantity: (
-        lineItem: string,
-        newQuantity: number
-      ) => Promise<void>
-      handleEmptyCart: () => Promise<void>
-      isUpdatingCart: boolean
-    }
+    cart: B2BCart | null
+    handleDeleteItem: (lineItem: string) => Promise<void>
+    handleUpdateCartQuantity: (
+      lineItem: string,
+      newQuantity: number
+    ) => Promise<void>
+    handleEmptyCart: () => Promise<void>
+    isUpdatingCart: boolean
+  }
   | undefined
 >(undefined)
 
@@ -76,15 +75,6 @@ export function CartProvider({
   const handleOptimisticAddToCart = useCallback(
     async (payload: AddToCartEventPayload) => {
       let prevCart = {} as B2BCart
-
-      if (
-        cart?.approvals?.some(
-          (approval) => approval.status === ApprovalStatusType.PENDING
-        )
-      ) {
-        toast.error("Cart is locked for approval.")
-        return
-      }
 
       startTransition(async () => {
         setOptimisticCart((prev) => {
@@ -168,11 +158,7 @@ export function CartProvider({
           })),
           countryCode: countryCode as string,
         }).catch((e) => {
-          if (e.message === "Cart is pending approval") {
-            toast.error("Cart is locked for approval.")
-          } else {
-            toast.error("Failed to add to cart")
-          }
+          toast.error("Failed to add to cart")
           setOptimisticCart(prevCart)
         })
       })

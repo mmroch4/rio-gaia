@@ -17,6 +17,7 @@ export default function ProductActions({
     <>
       <div className="flex flex-col gap-y-2 w-full">
         <ProductPrice product={product} />
+        
         <ProductVariantsTable product={product} region={region} />
       </div>
     </>

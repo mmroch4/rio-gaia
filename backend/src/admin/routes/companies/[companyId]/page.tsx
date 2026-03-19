@@ -8,8 +8,8 @@ import {
   Text,
   Toaster,
 } from "@medusajs/ui";
-import { QueryEmployee } from "../../../../types";
 import { useParams } from "react-router-dom";
+import { QueryEmployee } from "../../../../types";
 import { useAdminCustomerGroups, useCompany } from "../../../hooks/api";
 import { formatAmount } from "../../../utils";
 import { CompanyActionsMenu } from "../components";
@@ -22,7 +22,7 @@ const CompanyDetails = () => {
   const { companyId } = useParams();
   const { data, isPending } = useCompany(companyId!, {
     fields:
-      "*employees,*employees.customer,*employees.company,*customer_group,*approval_settings",
+      "*employees,*employees.customer,*employees.company,*customer_group",
   });
 
   const { data: customerGroups } = useAdminCustomerGroups();
@@ -69,6 +69,12 @@ const CompanyDetails = () => {
                 </Table.Row>
                 <Table.Row>
                   <Table.Cell className="font-medium font-sans txt-compact-small">
+                    VAT
+                  </Table.Cell>
+                  <Table.Cell>{company?.vat || "-"}</Table.Cell>
+                </Table.Row>
+                <Table.Row>
+                  <Table.Cell className="font-medium font-sans txt-compact-small">
                     Address
                   </Table.Cell>
                   <Table.Cell>{company?.address}</Table.Cell>
@@ -95,6 +101,16 @@ const CompanyDetails = () => {
                 </Table.Row>
                 <Table.Row>
                   <Table.Cell className="font-medium font-sans txt-compact-small">
+                    Verified
+                  </Table.Cell>
+                  <Table.Cell>
+                    <Badge size="small" color={company?.verified ? "green" : "grey"}>
+                      {company?.verified ? "Verified" : "Not Verified"}
+                    </Badge>
+                  </Table.Cell>
+                </Table.Row>
+                <Table.Row>
+                  <Table.Cell className="font-medium font-sans txt-compact-small">
                     Customer Group
                   </Table.Cell>
                   <Table.Cell>
@@ -105,33 +121,6 @@ const CompanyDetails = () => {
                     ) : (
                       "-"
                     )}
-                  </Table.Cell>
-                </Table.Row>
-                <Table.Row>
-                  <Table.Cell className="font-medium font-sans txt-compact-small">
-                    Approval Settings
-                  </Table.Cell>
-                  <Table.Cell>
-                    <div className="flex gap-2">
-                      {company?.approval_settings?.requires_admin_approval && (
-                        <Badge size="small" color="purple">
-                          Requires admin approval
-                        </Badge>
-                      )}
-                      {company?.approval_settings
-                        ?.requires_sales_manager_approval && (
-                        <Badge size="small" color="purple">
-                          Requires sales manager approval
-                        </Badge>
-                      )}
-                      {!company?.approval_settings?.requires_admin_approval &&
-                        !company?.approval_settings
-                          ?.requires_sales_manager_approval && (
-                          <Badge size="small" color="grey">
-                            No approval required
-                          </Badge>
-                        )}
-                    </div>
                   </Table.Cell>
                 </Table.Row>
               </Table.Body>
@@ -166,9 +155,8 @@ const CompanyDetails = () => {
                     <Table.Row
                       key={employee.id}
                       onClick={() => {
-                        window.location.href = `/app/customers/${
-                          employee!.customer!.id
-                        }`;
+                        window.location.href = `/app/customers/${employee!.customer!.id
+                          }`;
                       }}
                       className="cursor-pointer"
                     >

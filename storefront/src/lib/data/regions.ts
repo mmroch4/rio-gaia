@@ -16,7 +16,9 @@ export const listRegions = async (): Promise<HttpTypes.StoreRegion[]> => {
       next,
       cache: "force-cache",
     })
-    .then(({ regions }: { regions: HttpTypes.StoreRegion[] }) => regions)
+    .then(({ regions }: { regions: HttpTypes.StoreRegion[] }) => {
+      return regions
+    })
     .catch(medusaError)
 }
 

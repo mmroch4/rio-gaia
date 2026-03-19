@@ -12,7 +12,7 @@ const CollectionBreadcrumbItem = ({
     <li className="text-neutral-500">
       <LocalizedClientLink
         className="hover:text-neutral-900"
-        href={handle ? `/collections/${handle}` : "/store"}
+        href={handle ? `/portal/colecoes/${handle}` : "/portal/catalogo"}
       >
         {title}
       </LocalizedClientLink>

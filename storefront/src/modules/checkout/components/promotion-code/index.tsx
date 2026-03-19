@@ -1,7 +1,6 @@
 "use client"
 
 import { applyPromotions, submitPromotionForm } from "@/lib/data/cart"
-import { getCartApprovalStatus } from "@/lib/util/get-cart-approval-status"
 import { convertToLocale } from "@/lib/util/money"
 import Trash from "@/modules/common/icons/trash"
 import { B2BCart } from "@/types"
@@ -24,11 +23,7 @@ const PromotionCode: React.FC<PromotionCodeProps> = ({ cart }) => {
 
   const { promotions = [] } = cart
 
-  const { isPendingAdminApproval, isPendingSalesManagerApproval } =
-    getCartApprovalStatus(cart)
 
-  const isPendingApproval =
-    isPendingAdminApproval || isPendingSalesManagerApproval
 
   const removePromotionCode = async (code: string) => {
     const validPromotions = promotions.filter(
@@ -63,7 +58,7 @@ const PromotionCode: React.FC<PromotionCodeProps> = ({ cart }) => {
   return (
     <div className="w-full bg-white flex flex-col">
       <div className="txt-medium">
-        {!isCheckout && !isPendingApproval && (
+        {!isCheckout && (
           <form action={(a) => addPromotionCode(a)} className="w-full mb-5">
             <button
               onClick={() => setIsOpen(!isOpen)}
@@ -71,7 +66,7 @@ const PromotionCode: React.FC<PromotionCodeProps> = ({ cart }) => {
               className="flex gap-x-1 my-2 items-center txt-medium text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
               data-testid="add-discount-button"
             >
-              Enter Promotion Code{" "}
+              Inserir Código Promocional{" "}
               {isOpen ? <ChevronUpMini /> : <ChevronDownMini />}
             </button>
 
@@ -91,7 +86,7 @@ const PromotionCode: React.FC<PromotionCodeProps> = ({ cart }) => {
                     variant="secondary"
                     data-testid="discount-apply-button"
                   >
-                    Apply
+                    Aplicar
                   </SubmitButton>
                 </div>
 
@@ -108,7 +103,7 @@ const PromotionCode: React.FC<PromotionCodeProps> = ({ cart }) => {
           <div className="w-full flex items-center">
             <div className="flex flex-col w-full">
               <Heading className="txt-medium mb-2">
-                Promotion{promotions.length > 1 ? "s" : ""} applied:
+                Promoç{promotions.length > 1 ? "ões aplicadas" : "ão aplicada"}:
               </Heading>
 
               {promotions.map((promotion) => {
@@ -129,17 +124,17 @@ const PromotionCode: React.FC<PromotionCodeProps> = ({ cart }) => {
                         (
                         {promotion.application_method?.value !== undefined &&
                           promotion.application_method.currency_code !==
-                            undefined && (
+                          undefined && (
                             <>
                               {promotion.application_method.type ===
-                              "percentage"
+                                "percentage"
                                 ? `${promotion.application_method.value}%`
                                 : convertToLocale({
-                                    amount: promotion.application_method.value,
-                                    currency_code:
-                                      promotion.application_method
-                                        .currency_code,
-                                  })}
+                                  amount: promotion.application_method.value,
+                                  currency_code:
+                                    promotion.application_method
+                                      .currency_code,
+                                })}
                             </>
                           )}
                         )
@@ -159,7 +154,7 @@ const PromotionCode: React.FC<PromotionCodeProps> = ({ cart }) => {
                       >
                         <Trash size={14} />
                         <span className="sr-only">
-                          Remove discount code from order
+                          Remover código de desconto da encomenda
                         </span>
                       </button>
                     )}

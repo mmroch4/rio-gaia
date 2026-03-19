@@ -5,6 +5,7 @@ export interface CompanyDTO {
   name: string;
   phone: string;
   email: string;
+  vat: string;
   address: string | null;
   city: string | null;
   state: string | null;

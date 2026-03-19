@@ -54,7 +54,7 @@ export default function CategoryTemplate({
                   No products found for this category.
                 </Text>
                 <LocalizedClientLink
-                  href="/store"
+                  href="/portal/catalogo"
                   className="flex gap-2 items-center"
                 >
                   <Button variant="secondary">

@@ -6,8 +6,7 @@ import LocalizedClientLink from "@/modules/common/components/localized-client-li
 import FilePlus from "@/modules/common/icons/file-plus"
 import LogoIcon from "@/modules/common/icons/logo"
 import { MegaMenuWrapper } from "@/modules/layout/components/mega-menu"
-import { RequestQuoteConfirmation } from "@/modules/quotes/components/request-quote-confirmation"
-import { RequestQuotePrompt } from "@/modules/quotes/components/request-quote-prompt"
+import SearchModal from "@/modules/search/components/modal"
 import SkeletonAccountButton from "@/modules/skeletons/components/skeleton-account-button"
 import SkeletonCartButton from "@/modules/skeletons/components/skeleton-cart-button"
 import SkeletonMegaMenu from "@/modules/skeletons/components/skeleton-mega-menu"
@@ -44,35 +43,19 @@ export async function NavigationHeader() {
           </div>
           <div className="flex justify-end items-center gap-2">
             <div className="relative mr-2 hidden small:inline-flex">
-              <input
-                disabled
-                type="text"
-                placeholder="Search for products"
-                className="bg-gray-100 text-zinc-900 px-4 py-2 rounded-full pr-10 shadow-borders-base hidden small:inline-block hover:cursor-not-allowed"
-                title="Install a search provider to enable product search"
-              />
+              <SearchModal />
             </div>
 
             <div className="h-4 w-px bg-neutral-300" />
 
             {customer && cart?.items && cart.items.length > 0 ? (
-              <RequestQuoteConfirmation>
-                <button
-                  className="flex gap-1.5 items-center rounded-2xl bg-none shadow-none border-none hover:bg-neutral-100 px-2 py-1"
-                  // disabled={isPendingApproval}
-                >
-                  <FilePlus />
-                  <span className="hidden small:inline-block">Quote</span>
-                </button>
-              </RequestQuoteConfirmation>
-            ) : (
-              <RequestQuotePrompt>
+              <LocalizedClientLink href="/cart">
                 <button className="flex gap-1.5 items-center rounded-2xl bg-none shadow-none border-none hover:bg-neutral-100 px-2 py-1">
                   <FilePlus />
-                  <span className="hidden small:inline-block">Quote</span>
+                  <span className="hidden small:inline-block">Pedir Orçamento</span>
                 </button>
-              </RequestQuotePrompt>
-            )}
+              </LocalizedClientLink>
+            ) : ""}
 
             <Suspense fallback={<SkeletonAccountButton />}>
               <AccountButton customer={customer} />
@@ -87,3 +70,4 @@ export async function NavigationHeader() {
     </div>
   )
 }
+
