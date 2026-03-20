@@ -16,6 +16,10 @@ import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
+  robots: {
+    index: false,
+    follow: false,
+  },
 }
 
 export default async function PageLayout(props: {
@@ -27,7 +31,7 @@ export default async function PageLayout(props: {
   const { countryCode } = params
 
   if (!customer) {
-    redirect(`/${countryCode}/conta/entrar`)
+    redirect(`/${countryCode}/conta/entrar?session_expired=true`)
   }
 
   if (!customer?.employee?.company) {

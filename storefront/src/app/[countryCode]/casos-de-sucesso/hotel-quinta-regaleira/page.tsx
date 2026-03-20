@@ -7,7 +7,7 @@ import { Metadata } from "next"
 export const dynamicParams = true
 
 export const metadata: Metadata = {
-  title: "Hotel Quinta da Regaleira - Caso de Sucesso - Rio Gaia",
+  title: "Hotel Quinta da Regaleira — Caso de Sucesso",
   description: "Descubra como a Rio Gaia ajudou o Hotel Quinta da Regaleira a criar uma coleção exclusiva de azulejos personalizados que encantam os hóspedes.",
 }
 

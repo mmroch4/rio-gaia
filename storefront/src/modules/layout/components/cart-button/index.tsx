@@ -14,7 +14,7 @@ export function CartButton() {
   )
 
   return (
-    <LocalizedClientLink href="/cart">
+    <LocalizedClientLink href="/portal/carrinho">
       <button className="relative flex items-center gap-2 px-3 py-2 text-gray-700 hover:text-[#0047AB] transition-colors">
         <ShoppingBag className="w-5 h-5" />
         {totalItems > 0 && (
@@ -36,7 +36,7 @@ export function CartButtonMobile() {
   )
 
   return (
-    <LocalizedClientLink href="/cart">
+    <LocalizedClientLink href="/portal/carrinho">
       <button className="relative flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-[#0047AB] transition-colors w-full justify-start">
         <div className="relative">
           <ShoppingBag className="w-5 h-5" />

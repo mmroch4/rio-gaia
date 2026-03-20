@@ -8,6 +8,17 @@ import { Metadata } from "next"
 
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
+  title: {
+    template: "%s | Rio Gaia",
+    default: "Rio Gaia — Cerâmica Personalizada para Turismo",
+  },
+  description:
+    "Produção industrial de lembranças cerâmicas personalizadas para o setor do turismo em Portugal. Ímanes, porta-copos e azulejos decorativos.",
+  openGraph: {
+    type: "website",
+    locale: "pt_PT",
+    siteName: "Rio Gaia",
+  },
 }
 
 export default function RootLayout(props: { children: React.ReactNode }) {

@@ -12,8 +12,14 @@ import { Metadata } from "next"
 export const dynamicParams = true
 
 export const metadata: Metadata = {
-  title: "Rio Gaia",
-  description: "Rio Gaia",
+  title: "Cerâmica Personalizada para Turismo",
+  description:
+    "Produção industrial de lembranças cerâmicas personalizadas para hotéis, museus e lojas de turismo em Portugal. Ímanes, porta-copos e azulejos com padrões tradicionais.",
+  openGraph: {
+    title: "Rio Gaia — Cerâmica Personalizada para Turismo",
+    description:
+      "Produção industrial de lembranças cerâmicas personalizadas para o setor do turismo em Portugal.",
+  },
 }
 
 export async function generateStaticParams() {

@@ -12,8 +12,7 @@ const MeilisearchPage = () => {
     onSuccess: () => {
       toast.success("Successfully triggered data sync to Meilisearch");
     },
-    onError: (err) => {
-      console.error(err);
+    onError: () => {
       toast.error("Failed to sync data to Meilisearch");
     },
   });

@@ -1,6 +1,8 @@
+# WARNING: Default credentials are for local development only.
+# For production, set POSTGRES_PASSWORD and REDIS_PASSWORD via environment variables.
 services:
   postgres:
-    image: postgres
+    image: postgres:16-alpine
     restart: always
     ports:
       - '5432:5432'
@@ -12,12 +14,10 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   redis:
-    image: redis
+    image: redis:7-alpine
     restart: always
     ports:
       - '6379:6379'
-    environment:
-      ALLOW_EMPTY_PASSWORD: "true"
 
   meilisearch:
     image: getmeili/meilisearch:v1.11

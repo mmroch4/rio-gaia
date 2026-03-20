@@ -7,7 +7,7 @@ import { Metadata } from "next"
 export const dynamicParams = true
 
 export const metadata: Metadata = {
-  title: "Azulejos Decorativos - Rio Gaia",
+  title: "Azulejos Decorativos",
   description: "Azulejos decorativos cerâmicos personalizados com padrões tradicionais portugueses. Perfeitos para decoração, colecionadores e presentes premium.",
 }
 

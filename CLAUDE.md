@@ -29,8 +29,11 @@ backend/
 
 storefront/
   src/
-    app/[countryCode]/
-      page.tsx                    # Landing page
+    app/
+      robots.ts              # robots.txt generation (blocks /portal/, /conta/, /api/)
+      sitemap.ts             # Static sitemap of all public /pt/ pages
+      [countryCode]/
+        page.tsx                    # Landing page
       conta/                      # Auth pages (entrar, registar, recuperar-password)
       portal/                     # Authenticated B2B area
         catalogo/                 # Product catalog
@@ -106,6 +109,7 @@ docker compose up -d  # PostgreSQL (5432), Redis (6379), Meilisearch (7700)
 - **Analytics**: Vercel Analytics tracking key B2B events (add_to_cart, order_completed, company_created, etc.)
 - **Config**: Company details in `storefront/src/config/index.ts`
 - **Default region**: Portugal (`pt`)
+- **SEO**: Title template `"%s | Rio Gaia"` in root layout — pages export only page-specific titles. `robots.ts` blocks `/portal/`, `/conta/`, `/api/`. `sitemap.ts` lists static public `/pt/` pages. Portal layout sets `noindex, nofollow`.
 
 ## Custom Modules
 

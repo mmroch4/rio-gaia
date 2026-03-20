@@ -101,7 +101,12 @@ async function setCacheId(request: NextRequest, response: NextResponse) {
   }
 
   const newCacheId = crypto.randomUUID()
-  response.cookies.set("_medusa_cache_id", newCacheId, { maxAge: 60 * 60 * 24 })
+  response.cookies.set("_medusa_cache_id", newCacheId, {
+    maxAge: 60 * 60 * 24,
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+  })
   return newCacheId
 }
 

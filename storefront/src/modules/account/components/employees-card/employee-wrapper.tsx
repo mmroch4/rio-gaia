@@ -6,9 +6,11 @@ import { QueryCompany, QueryEmployee } from "@/types"
 const EmployeeWrapper = async ({
   employee,
   company,
+  isAdmin,
 }: {
   employee: QueryEmployee
   company: QueryCompany
+  isAdmin: boolean
 }) => {
   const customer = await retrieveCustomer()
   const customerOrders = await listOrders()
@@ -27,6 +29,7 @@ const EmployeeWrapper = async ({
       company={company}
       orders={orders}
       customer={customer}
+      isAdmin={isAdmin}
     />
   )
 }

@@ -11,11 +11,5 @@ export const CONFIG = {
     phone: "+351 966 764 605",
     email: "geral@riogaia.com",
     website: "https://riogaia.com/pt",
-    socialLinks: {
-      facebook: "REPLACE_ME",
-      instagram: "REPLACE_ME",
-      twitter: "REPLACE_ME",
-      linkedin: "REPLACE_ME",
-    },
   },
 }

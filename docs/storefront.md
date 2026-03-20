@@ -77,7 +77,7 @@ src/app/
 
 **Portal product detail** (`portal/produtos/[handle]/page.tsx`):
 - Static generation: `generateStaticParams()` for all handles × country codes
-- Generates OpenGraph metadata (title, description, thumbnail) — currently uses `"Medusa Store"` branding (see Known Issues)
+- Generates OpenGraph metadata (title, description, thumbnail) — uses `"Rio Gaia"` branding
 - Renders `ProductTemplate` with priced product, region, countryCode
 
 **Category/collection pages**: Same static generation pattern — `generateStaticParams()` for all handles × country codes
@@ -142,7 +142,7 @@ Two named exports:
 
 ### Company Config (`src/config/index.ts`)
 
-`CONFIG` object with static company info: `name`, `shortName`, `longName`, `description`, `vat` ("519165276"), `logo`, `favicon`, `address`, `phone`, `email`, `website`, `socialLinks` (facebook, instagram, twitter, linkedin).
+`CONFIG` object with static company info: `name`, `shortName`, `longName`, `description`, `vat` ("519165276"), `logo`, `favicon`, `address`, `phone`, `email`, `website`.
 
 ### Next.js Config
 
@@ -170,7 +170,7 @@ All functions are server-only async. Three cookies are managed:
 
 | Function | Returns | Description |
 |----------|---------|-------------|
-| `getAuthHeaders()` | `{ authorization: "Bearer <token>" }` or `{}` | Reads JWT from cookie |
+| `getAuthHeaders()` | `{ authorization: "Bearer <token>" }` or `{}` | Reads JWT from cookie; proactively clears expired tokens (30s buffer) to avoid silent 401 redirects |
 | `getCacheTag(tag)` | `"${tag}-${cacheId}"` | Builds session-scoped cache tag |
 | `getCacheOptions(tag)` | `{ tags: [...] }` or `{}` | Next.js fetch cache options |
 | `setAuthToken(token)` | `void` | Sets JWT cookie |
@@ -379,6 +379,24 @@ The storefront uses per-session cache isolation via the `_medusa_cache_id` cooki
 | `repeat(times)` | `repeat.ts` | Returns `[0, 1, ..., n-1]` for skeleton loaders |
 | `getBaseURL()` | `env.ts` | Returns `NEXT_PUBLIC_BASE_URL` or `https://localhost:8000` |
 
+## SEO & Metadata
+
+### Title Template
+
+The root layout (`src/app/layout.tsx`) defines a title template `"%s | Rio Gaia"` that automatically appends the brand suffix to all page titles. Individual pages should export only the page-specific title (e.g., `title: "Sobre Nós"` renders as "Sobre Nós | Rio Gaia"). Do **not** manually append `" - Rio Gaia"` or `" | Rio Gaia"` to page titles.
+
+### robots.ts
+
+`src/app/robots.ts` generates `/robots.txt` blocking crawlers from `/portal/`, `/conta/`, and `/api/` paths. The portal layout also sets `robots: { index: false, follow: false }` as a page-level directive for defense in depth.
+
+### sitemap.ts
+
+`src/app/sitemap.ts` generates a static `/sitemap.xml` with all 13 public `/pt/` pages (homepage, marketing pages, product category pages, legal pages). It does not call Medusa APIs — all public pages are statically defined.
+
+### Portal noindex
+
+The portal layout (`src/app/[countryCode]/portal/layout.tsx`) sets `robots: { index: false, follow: false }` in its metadata export. This propagates to all nested portal pages via Next.js metadata merging. Portal pages do not need canonical URLs since they are noindex.
+
 ## Authentication Flow
 
 ### Signup
@@ -399,6 +417,10 @@ The storefront uses per-session cache isolation via the `_medusa_cache_id` cooki
 3. Revalidates caches, creates/updates cart with `company_id`
 4. Transfers anonymous cart to authenticated customer
 5. Redirects to `/portal/conta`
+
+### Session Expiry
+
+`getAuthHeaders()` proactively checks the JWT `exp` claim with a 30-second buffer. If expired, the token is deleted before any API call is made. When the portal layout detects `customer = null`, it redirects to `/conta/entrar?session_expired=true`. The login page reads the `session_expired` query param and displays an info banner: "A sua sessão expirou. Por favor, inicie sessão novamente."
 
 ### Signout
 
@@ -697,19 +719,6 @@ interface B2BCustomer extends StoreCustomer {
 ## Known Issues & TODOs
 
 1. **ContactForm not wired up** — `src/modules/contact/components/contact-form.tsx` has `// TODO: Implement actual form submission`. Uses a 1000ms `setTimeout` stub that always shows success. Needs a backend API endpoint or email integration.
-
-2. **ClientAreaFooter hardcoded contact info** — Footer hardcodes `"+351 210 000 000"` and `"b2b@riogaia.pt"` which differ from `CONFIG.company` values (`"+351 966 764 605"` and `"geral@riogaia.com"`). Also hardcodes `"Zona Industrial de Lisboa"` as the address vs CONFIG's Vila Nova de Gaia address. Should use `CONFIG` for consistency.
-
-3. **Social links placeholders** — `CONFIG.company.socialLinks` has all values set to `"REPLACE_ME"`. The ClientAreaFooter social icons all link to `"#"`.
-
-4. **"Medusa Store" in metadata** — 5 pages still use `"Medusa Store"` in `generateMetadata()` titles/descriptions instead of `"Rio Gaia"`:
-   - `portal/produtos/[handle]/page.tsx` (title: `"${product.title} | Medusa Store"`)
-   - `portal/categorias/[...category]/page.tsx` (title)
-   - `portal/colecoes/[handle]/page.tsx` (title)
-   - `portal/conta/perfil/page.tsx` (description: `"View and edit your Medusa Store profile."`)
-   - `conta/entrar/page.tsx` (description: `"Log in to your Medusa Store account."`)
-
-5. **Dead code — `password-strength.tsx`** — `src/modules/common/components/password-strength.tsx` (simpler 3-level indicator) is never imported anywhere. Only `password-strength-indicator/index.tsx` (4-level with criteria checklist) is used. The unused file can be removed.
 
 ## Key Files Reference
 

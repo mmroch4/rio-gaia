@@ -1,120 +1,36 @@
-import {
-  Body,
-  Button,
-  Container,
-  Head,
-  Heading,
-  Html,
-  Preview,
-  Section,
-  Text,
-} from "@react-email/components";
+import { Button, Heading, Section, Text } from "@react-email/components"
+import { EmailLayout } from "./shared/email-layout"
+import { styles } from "./shared/email-styles"
 
 interface PasswordResetEmailProps {
-  resetUrl: string;
-  email?: string;
+  resetUrl: string
+  email?: string
 }
 
 export const PasswordResetEmail = ({
   resetUrl,
   email,
-}: PasswordResetEmailProps) => {
-  return (
-    <Html>
-      <Head />
-      <Preview>Reset your password</Preview>
-      <Body style={main}>
-        <Container style={container}>
-          <Heading style={h1}>Reset your password</Heading>
-          <Text style={text}>
-            Hi{email ? ` ${email}` : ""},
-          </Text>
-          <Text style={text}>
-            Someone recently requested a password reset for your account. If
-            this was you, you can set a new password by clicking the button
-            below:
-          </Text>
-          <Section style={buttonContainer}>
-            <Button style={button} href={resetUrl}>
-              Reset Password
-            </Button>
-          </Section>
-          <Text style={text}>
-            If you don't want to change your password or didn't request this,
-            just ignore and delete this message.
-          </Text>
-          <Text style={footer}>
-            This link will expire in 15 minutes for security reasons.
-          </Text>
-          <Text style={footer}>
-            If the button doesn't work, copy and paste this URL into your
-            browser:
-          </Text>
-          <Text style={link}>{resetUrl}</Text>
-        </Container>
-      </Body>
-    </Html>
-  );
-};
+}: PasswordResetEmailProps) => (
+  <EmailLayout preview="Redefinir a sua palavra-passe">
+    <Heading style={styles.heading}>Redefinir palavra-passe</Heading>
+    <Text style={styles.text}>Olá{email ? ` ${email}` : ""},</Text>
+    <Text style={styles.text}>
+      Recebemos um pedido para redefinir a palavra-passe da sua conta. Se foi
+      você, clique no botão abaixo para definir uma nova palavra-passe:
+    </Text>
+    <Section style={styles.buttonContainer}>
+      <Button style={styles.button} href={resetUrl}>
+        Redefinir Palavra-passe
+      </Button>
+    </Section>
+    <Text style={styles.text}>
+      Se não solicitou esta alteração, pode ignorar este email.
+    </Text>
+    <Text style={{ ...styles.footerText, marginTop: "16px" }}>
+      Este link expira em 15 minutos por razões de segurança.
+    </Text>
+    <Text style={styles.link}>{resetUrl}</Text>
+  </EmailLayout>
+)
 
-export default PasswordResetEmail;
-
-const main = {
-  backgroundColor: "#f6f9fc",
-  fontFamily:
-    '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif',
-};
-
-const container = {
-  backgroundColor: "#ffffff",
-  margin: "0 auto",
-  padding: "20px 0 48px",
-  marginBottom: "64px",
-};
-
-const h1 = {
-  color: "#333",
-  fontSize: "24px",
-  fontWeight: "bold",
-  margin: "40px 0",
-  padding: "0 48px",
-};
-
-const text = {
-  color: "#333",
-  fontSize: "16px",
-  lineHeight: "26px",
-  padding: "0 48px",
-};
-
-const buttonContainer = {
-  padding: "27px 48px",
-};
-
-const button = {
-  backgroundColor: "#5469d4",
-  borderRadius: "4px",
-  color: "#fff",
-  fontSize: "16px",
-  textDecoration: "none",
-  textAlign: "center" as const,
-  display: "block",
-  width: "100%",
-  padding: "12px",
-};
-
-const footer = {
-  color: "#8898aa",
-  fontSize: "12px",
-  lineHeight: "16px",
-  padding: "0 48px",
-  marginTop: "16px",
-};
-
-const link = {
-  color: "#5469d4",
-  fontSize: "12px",
-  lineHeight: "16px",
-  padding: "0 48px",
-  wordBreak: "break-all" as const,
-};
+export default PasswordResetEmail

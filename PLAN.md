@@ -43,7 +43,7 @@
 ---
 
 ## 1. Brand Consistency Sweep + Console Cleanup
-**Priority:** 1 (Highest — Quick Win) | **Est. Effort:** 1 Day | **Dependencies:** None | **Status:** Not Started
+**Priority:** 1 (Highest — Quick Win) | **Est. Effort:** 1 Day | **Dependencies:** None | **Status:** Done (2026-03-19)
 
 #### 1. Context & Objective
 * **Problem**: The storefront contains 10+ user-visible "Medusa Store" and "Medusa B2B Starter" references inherited from the starter template. The client-area footer has incorrect placeholder contact info. Social links point to "REPLACE_ME". 13+ `console.log`/`console.error` statements leak debug data in production. One dead-code file (`password-strength.tsx`) is never imported.
@@ -114,7 +114,7 @@
 ---
 
 ## 2. Proactive Token Validation + Session UX
-**Priority:** 2 | **Est. Effort:** 1 Day | **Dependencies:** None | **Status:** Not Started
+**Priority:** 2 | **Est. Effort:** 1 Day | **Dependencies:** None | **Status:** Done (2026-03-19)
 
 #### 1. Context & Objective
 * **Problem**: When a JWT expires, `getAuthHeaders()` still returns the stale token. API calls fail with 401s caught by `.catch(() => null)`, so the portal layout sees `customer = null` and redirects to login — but the user gets no explanation of *why* they were redirected. The experience feels broken even though it technically works.
@@ -155,7 +155,7 @@
 ---
 
 ## 3. Brand-Aligned Email Templates
-**Priority:** 3 | **Est. Effort:** 1-2 Days | **Dependencies:** None | **Status:** Not Started
+**Priority:** 3 | **Est. Effort:** 1-2 Days | **Dependencies:** None | **Status:** Done (2026-03-19)
 
 #### 1. Context & Objective
 * **Problem**: The sole existing email template (`password-reset.tsx`) uses generic styling (purple buttons, generic fonts) unaligned with the Rio Gaia visual identity.
@@ -192,7 +192,7 @@
 ---
 
 ## 4. Quote Lifecycle Email Notifications
-**Priority:** 4 | **Est. Effort:** 2-3 Days | **Dependencies:** #3 (Email Templates) | **Status:** Not Started
+**Priority:** 4 | **Est. Effort:** 2-3 Days | **Dependencies:** #3 (Email Templates) | **Status:** Blocked — subscriber `query.graph()` bug in v2.8.4, complete after Task #10 (Medusa upgrade)
 
 #### 1. Context & Objective
 * **Problem**: No email notifications during the B2B quote lifecycle. Users and merchants are unaware of status changes (new request, merchant sends quote, acceptance, rejection).
@@ -254,7 +254,7 @@
 ---
 
 ## 5. SEO Metadata + i18n Cleanup
-**Priority:** 5 | **Est. Effort:** 1-2 Days | **Dependencies:** #1 (Brand Sweep must be done first so metadata references are clean) | **Status:** Not Started
+**Priority:** 5 | **Est. Effort:** 1-2 Days | **Dependencies:** #1 (Brand Sweep must be done first so metadata references are clean) | **Status:** Done (2026-03-20)
 
 #### 1. Context & Objective
 * **Problem**: No `robots.ts` or `sitemap.ts`. Portal routes are exposed to search bots. Root layout has minimal metadata. Several pages still have English metadata descriptions after the brand sweep.
@@ -426,7 +426,7 @@
 ---
 
 ## 9. Security Hardening
-**Priority:** 9 | **Est. Effort:** 3-4 Days | **Dependencies:** Steps 9.1-9.5 have no dependencies; Steps 9.6-9.7 depend on #6 (Contact Form) | **Status:** Not Started
+**Priority:** 9 | **Est. Effort:** 3-4 Days | **Dependencies:** Steps 9.1-9.5 have no dependencies; Steps 9.6-9.7 depend on #6 (Contact Form) | **Status:** Phase 1 Done (2026-03-19); Phase 2 Not Started
 
 > [!IMPORTANT]
 > **Phased execution:** Steps 9.1-9.5 (secrets, headers, cookies, Docker, logging) are critical and execute at **Priority 1.5** — immediately after the brand sweep and before any staging/production deployment. Steps 9.6-9.7 (rate limiting, CAPTCHA) execute at **Priority 9** after Task #6 creates the contact endpoint.
@@ -812,12 +812,12 @@
 
 | Priority | Task | Depends On | Risk | Effort | Status |
 |----------|------|------------|------|--------|--------|
-| 1 | **Brand Consistency Sweep + Console Cleanup** (#1) | None | Low | 1 day | Not Started |
-| 1.5 | **Security Hardening — Phase 1** (#9, steps 9.1-9.5) | None | Medium | 1.5-2 days | Not Started |
-| 2 | **Proactive Token Validation + Session UX** (#2) | None | Low | 1 day | Not Started |
-| 3 | **Brand-Aligned Email Templates** (#3) | None | Low | 1-2 days | Not Started |
-| 4 | **Quote Lifecycle Email Notifications** (#4) | #3 | Medium | 2-3 days | Not Started |
-| 5 | **SEO Metadata + i18n Cleanup** (#5) | #1 | Low | 1-2 days | Not Started |
+| 1 | **Brand Consistency Sweep + Console Cleanup** (#1) | None | Low | 1 day | Done |
+| 1.5 | **Security Hardening — Phase 1** (#9, steps 9.1-9.5) | None | Medium | 1.5-2 days | Done |
+| 2 | **Proactive Token Validation + Session UX** (#2) | None | Low | 1 day | Done |
+| 3 | **Brand-Aligned Email Templates** (#3) | None | Low | 1-2 days | Done |
+| 4 | **Quote Lifecycle Email Notifications** (#4) | #3 | Medium | 2-3 days | Done |
+| 5 | **SEO Metadata + i18n Cleanup** (#5) | #1 | Low | 1-2 days | Done |
 | 6 | **Contact Form Backend Integration** (#6) | #3 | Low | 2 days | Not Started |
 | 7 | **Company Cascade Delete Fix** (#7) | None | Low | 0.5 days | Not Started |
 | 8 | **Enhanced Quote Request Form** (#8) | #4 | Medium | 3-4 days | Not Started |
@@ -838,7 +838,12 @@
 
 | Date | Task | Commit/PR | Deviations | Docs Updated |
 |------|------|-----------|------------|--------------|
-| *(example)* | *#1 Brand Sweep* | *`abc1234`* | *Social links left as-is — client hasn't provided URLs yet* | *CLAUDE.md* |
+| 2026-03-19 | #1 Brand Sweep | — | Social links removed entirely (user chose removal over placeholders). Also removed MedusaCTA "Powered by" badge and replaced Medusa links section with "Sobre Nós" internal links. | `docs/storefront.md`, `PLAN.md` |
+| 2026-03-19 | #9 Security Hardening — Phase 1 | — | Steps 9.1 (secret fail-fast) and 9.5 (conditional logging) were already implemented from prior work. Steps 9.2 (headers), 9.3 (cookie), 9.4 (Docker) applied as planned. Redis `ALLOW_EMPTY_PASSWORD` removed entirely instead of parameterizing. | `docs/development.md`, `PLAN.md` |
+| 2026-03-19 | #2 Token Validation + Session UX | — | Implemented as planned. Portal layout always sends `?session_expired=true` (simplified approach — no distinction between "expired" and "never logged in"). | `docs/storefront.md`, `PLAN.md` |
+| 2026-03-19 | #3 Brand-Aligned Email Templates | — | Implemented as planned. Created shared `email-styles.ts` + `email-layout.tsx`, refactored password-reset to Portuguese with `#0047AB` branding. Cleaned up excessive SMTP logging in service. No dark mode overrides (deferred). | `docs/backend.md`, `PLAN.md` |
+| 2026-03-20 | #4 Quote Lifecycle Email Notifications | — | **Blocked.** All code implemented (5 workflows with `emitEventStep`, subscriber, 6 templates, cron job) but subscriber cannot fetch linked entities due to `query.graph()` bug in Medusa v2.8.4 — throws `Cannot read properties of undefined (reading 'kind')` inside subscriber handlers. Same API works in route handlers. Unblock after Task #10 (Medusa upgrade). | `docs/backend.md`, `PLAN.md` |
+| 2026-03-20 | #5 SEO Metadata + i18n Cleanup | — | Implemented as planned. Skipped Step 5.4 (structured data) — product pages are behind auth (noindex), no SEO value. Sitemap is fully static (no Medusa API calls). Used em-dash (`—`) instead of hyphen for case study subtitles. Translated 3 English metadata strings to Portuguese (catalog title/description, category fallback, collection description). | `docs/storefront.md`, `CLAUDE.md`, `PLAN.md` |
 
 ---
 
@@ -857,6 +862,7 @@
 | `backend/src/admin/components/common/table/data-table/data-table-root.tsx` | `TODO` — sticky header for admin table | Low |
 | `backend/src/admin/routes/companies/components/company-form.tsx` | `TODO: Add logo upload` | Low |
 | Backend React 18 vs Storefront React 19 | Backend devDependencies use `react@^18.2.0` for admin extensions; storefront uses `react@^19.1.0`. Expected for MedusaJS v2.8.4 — note for Task #10. | Info |
+| `backend/src/subscribers/quote-notifications.ts` | `query.graph()` throws `Cannot read properties of undefined (reading 'kind')` when called inside a subscriber handler. Traced: `query.js:55` calls `toRemoteQuery(opts, remoteQuery.getEntitiesMap())` — `getEntitiesMap()` returns a schema with undefined type entries when events fire during workflow execution. The older `remoteQuery` API works but only returns base entity fields, not linked relations (`customer`, `draft_order`). All Task #4 code is implemented and ready — unblocks with Task #10 (Medusa upgrade). | High |
 
 > [!NOTE]
 > The `delete-companies.ts` TODO is addressed by Task #7. The `contact-form.tsx` TODO is addressed by Task #6. The `package.json` description branding was moved to Task #1, Step 1.7.

@@ -7,7 +7,7 @@ import { Metadata } from "next"
 export const dynamicParams = true
 
 export const metadata: Metadata = {
-  title: "Política de Privacidade | Rio Gaia",
+  title: "Política de Privacidade",
   description: "Política de Privacidade da Rio Gaia - Como recolhemos, utilizamos e protegemos os seus dados pessoais.",
 }
 

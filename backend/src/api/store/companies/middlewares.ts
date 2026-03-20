@@ -59,11 +59,17 @@ export const storeCompaniesMiddlewares: MiddlewareRoute[] = [
     method: ["POST"],
     matcher: "/store/companies/:id",
     middlewares: [
+      ensureRole("company_admin"),
       validateAndTransformQuery(
         StoreGetCompanyParams,
         storeCompanyQueryConfig.retrieve
       ),
     ],
+  },
+  {
+    method: ["DELETE"],
+    matcher: "/store/companies/:id",
+    middlewares: [ensureRole("company_admin")],
   },
 
   /* Employee middlewares */

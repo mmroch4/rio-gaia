@@ -17,7 +17,8 @@ import { useState } from "react"
 const CompanyCard = ({
   company,
   regions,
-}: StoreCompanyResponse & { regions: HttpTypes.StoreRegion[] }) => {
+  isAdmin,
+}: StoreCompanyResponse & { regions: HttpTypes.StoreRegion[]; isAdmin: boolean }) => {
   const [isEditing, setIsEditing] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
 
@@ -51,13 +52,13 @@ const CompanyCard = ({
   return (
     <div className="h-fit">
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <form
+        {isAdmin && <form
           className={clx(
             "grid grid-cols-2 gap-4 border-b border-gray-200 overflow-hidden transition-all duration-300 ease-in-out ",
             {
               "max-h-[480px] opacity-100 p-4": isEditing,
               "max-h-0 opacity-0": !isEditing,
-            } 
+            }
           )}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
@@ -213,13 +214,13 @@ const CompanyCard = ({
               )}
             </Select>
           </div>
-        </form>
+        </form>}
         <div
           className={clx(
             "grid grid-cols-2 gap-4 border-b border-gray-200 transition-all duration-300 ease-in-out",
             {
-              "opacity-0 max-h-0": isEditing,
-              "opacity-100 max-h-[320px] p-4": !isEditing,
+              "opacity-0 max-h-0": isAdmin && isEditing,
+              "opacity-100 max-h-[320px] p-4": !isAdmin || !isEditing,
             }
           )}
         >
@@ -264,30 +265,32 @@ const CompanyCard = ({
           </div>
         </div>
 
-        <div className="flex items-center justify-end gap-2 bg-gray-50 p-4">
-          {isEditing ? (
-            <>
-              <Button
-                variant="secondary"
-                onClick={() => setIsEditing(false)}
-                disabled={isSaving}
-              >
-                Cancelar
+        {isAdmin && (
+          <div className="flex items-center justify-end gap-2 bg-gray-50 p-4">
+            {isEditing ? (
+              <>
+                <Button
+                  variant="secondary"
+                  onClick={() => setIsEditing(false)}
+                  disabled={isSaving}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={handleGuardar}
+                  isLoading={isSaving}
+                >
+                  Guardar
+                </Button>
+              </>
+            ) : (
+              <Button variant="secondary" onClick={() => setIsEditing(true)}>
+                Editar
               </Button>
-              <Button
-                variant="primary"
-                onClick={handleGuardar}
-                isLoading={isSaving}
-              >
-                Guardar
-              </Button>
-            </>
-          ) : (
-            <Button variant="secondary" onClick={() => setIsEditing(true)}>
-              Editar
-            </Button>
-          )}
-        </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   )

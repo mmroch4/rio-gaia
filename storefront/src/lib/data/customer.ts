@@ -115,11 +115,8 @@ export async function signup(_currentState: unknown, formData: FormData) {
       customer_id: createdCustomer.id,
       is_admin: true,
       spending_limit: 0,
-    }, customAuthHeaders).catch((err) => {
-      console.log("error creating employee", err)
-    })
+    }, customAuthHeaders).catch(() => {})
   } catch (error: any) {
-    console.log("error", error)
     return error.toString()
   }
 
@@ -149,9 +146,6 @@ export async function login(_currentState: unknown, formData: FormData) {
 
         const customer = await retrieveCustomer()
         const cart = await retrieveCart()
-
-        console.log("customer", customer)
-        console.log("cart", cart)
 
         if (!cart) {
           await getOrSetCart(countryCode)
@@ -329,7 +323,6 @@ export async function requestPasswordReset(
 
     return { success: true }
   } catch (error: any) {
-    console.error("Password reset request error:", error)
     return "Não foi possível enviar o email de redefinição. Por favor, tente novamente."
   }
 }
@@ -386,8 +379,6 @@ export async function resetPassword(
 
     return { success: true }
   } catch (error: any) {
-    console.error("Password reset error:", error)
-
     // Check for specific error messages
     if (error.message?.includes("token") || error.message?.includes("expired")) {
       return "Este link de redefinição expirou. Por favor, solicite um novo."
@@ -451,7 +442,6 @@ export async function updateCustomerPassword(
 
     return { success: true, error: null }
   } catch (error: any) {
-    console.error("Password update error:", error)
     return { success: false, error: "Não foi possível atualizar a palavra-passe. Por favor, tente novamente." }
   }
 }

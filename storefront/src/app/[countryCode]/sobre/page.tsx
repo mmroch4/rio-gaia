@@ -7,7 +7,7 @@ import { Metadata } from "next"
 export const dynamicParams = true
 
 export const metadata: Metadata = {
-  title: "Sobre Nós - Rio Gaia",
+  title: "Sobre Nós",
   description: "Conheça a Rio Gaia - Produção industrial de lembranças cerâmicas personalizadas para o setor do turismo em Portugal",
 }
 

@@ -67,11 +67,13 @@ const Employee = ({
   company,
   orders,
   customer,
+  isAdmin,
 }: {
   employee: QueryEmployee
   company: QueryCompany
   orders: HttpTypes.StoreOrder[]
   customer: B2BCustomer | null
+  isAdmin: boolean
 }) => {
   const [isEditing, setIsEditing] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
@@ -124,99 +126,107 @@ const Employee = ({
               {" • "}
             </Text>
             <Text className=" text-neutral-500">{employee.customer.phone}</Text>
-            <Text className=" text-neutral-500 hidden small:block">
-              {" • "}
-            </Text>
-            <Text className=" text-neutral-500">
-              {amountSpent} /{" "}
-              {employee.spending_limit > 0
-                ? formatAmount(employee.spending_limit, company.currency_code!)
-                : "No limit"}{" "}
-              spent
-            </Text>
+            {(isAdmin || isCurrentUser) && (
+              <>
+                <Text className=" text-neutral-500 hidden small:block">
+                  {" • "}
+                </Text>
+                <Text className=" text-neutral-500">
+                  {amountSpent} /{" "}
+                  {employee.spending_limit > 0
+                    ? formatAmount(employee.spending_limit, company.currency_code!)
+                    : "No limit"}{" "}
+                  spent
+                </Text>
+              </>
+            )}
           </div>
         </div>
-        <div className="flex items-center justify-end gap-2">
-          {isEditing ? (
-            <>
-              <Button
-                variant="secondary"
-                onClick={() => setIsEditing(false)}
-                disabled={isSaving}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="primary"
-                onClick={handleSubmit}
-                isLoading={isSaving}
-              >
-                Save
-              </Button>
-            </>
-          ) : (
-            <>
-              {!isCurrentUser && <RemoveEmployeePrompt employee={employee} />}
-              <Button
-                variant="secondary"
-                onClick={() => setIsEditing((prev) => !prev)}
-              >
-                Edit
-              </Button>
-            </>
-          )}
-        </div>
-      </div>
-      <form
-        className={clx(
-          "bg-neutral-50 grid grid-cols-2 gap-4 border-b border-neutral-200 transition-all duration-300 ease-in-out",
-          {
-            "max-h-[98px] opacity-100 p-4": isEditing,
-            "max-h-0 h-0 opacity-0 border-b-0": !isEditing,
-          }
+        {isAdmin && (
+          <div className="flex items-center justify-end gap-2">
+            {isEditing ? (
+              <>
+                <Button
+                  variant="secondary"
+                  onClick={() => setIsEditing(false)}
+                  disabled={isSaving}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={handleSubmit}
+                  isLoading={isSaving}
+                >
+                  Save
+                </Button>
+              </>
+            ) : (
+              <>
+                {!isCurrentUser && <RemoveEmployeePrompt employee={employee} />}
+                <Button
+                  variant="secondary"
+                  onClick={() => setIsEditing((prev) => !prev)}
+                >
+                  Edit
+                </Button>
+              </>
+            )}
+          </div>
         )}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            e.preventDefault()
-            handleSubmit()
-          }
-        }}
-      >
-        <div className="flex flex-col gap-y-2">
-          <Text className=" text-neutral-950 font-medium">Spending Limit</Text>
-          <CurrencyInput
-            symbol={currencySymbolMap[company.currency_code!]}
-            code={company.currency_code!}
-            className="bg-white rounded-full"
-            name="spending_limit"
-            value={employeeData.spending_limit}
-            onChange={(e) => {
-              setEmployeeData({
-                ...employeeData,
-                spending_limit: e.target.value.replace(/[^0-9.]/g, ""),
-              })
-            }}
-          />
-        </div>
-        <div className="flex flex-col gap-y-2">
-          <Text className=" text-neutral-950 font-medium">Permissions</Text>
-          <NativeSelect
-            className="bg-white"
-            name="permissions"
-            value={employeeData.is_admin ? "true" : "false"}
-            disabled={!customer?.employee?.is_admin}
-            onChange={(e) => {
-              setEmployeeData({
-                ...employeeData,
-                is_admin: e.target.value === "true",
-              })
-            }}
-          >
-            <option value="true">Admin</option>
-            <option value="false">Employee</option>
-          </NativeSelect>
-        </div>
-      </form>
+      </div>
+      {isAdmin && (
+        <form
+          className={clx(
+            "bg-neutral-50 grid grid-cols-2 gap-4 border-b border-neutral-200 transition-all duration-300 ease-in-out",
+            {
+              "max-h-[98px] opacity-100 p-4": isEditing,
+              "max-h-0 h-0 opacity-0 border-b-0": !isEditing,
+            }
+          )}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault()
+              handleSubmit()
+            }
+          }}
+        >
+          <div className="flex flex-col gap-y-2">
+            <Text className=" text-neutral-950 font-medium">Spending Limit</Text>
+            <CurrencyInput
+              symbol={currencySymbolMap[company.currency_code!]}
+              code={company.currency_code!}
+              className="bg-white rounded-full"
+              name="spending_limit"
+              value={employeeData.spending_limit}
+              onChange={(e) => {
+                setEmployeeData({
+                  ...employeeData,
+                  spending_limit: e.target.value.replace(/[^0-9.]/g, ""),
+                })
+              }}
+            />
+          </div>
+          <div className="flex flex-col gap-y-2">
+            <Text className=" text-neutral-950 font-medium">Permissions</Text>
+            <NativeSelect
+              className="bg-white"
+              name="permissions"
+              value={employeeData.is_admin ? "true" : "false"}
+              disabled={!customer?.employee?.is_admin}
+              onChange={(e) => {
+                setEmployeeData({
+                  ...employeeData,
+                  is_admin: e.target.value === "true",
+                })
+              }}
+            >
+              <option value="true">Admin</option>
+              <option value="false">Employee</option>
+            </NativeSelect>
+          </div>
+        </form>
+      )}
     </div>
   )
 }

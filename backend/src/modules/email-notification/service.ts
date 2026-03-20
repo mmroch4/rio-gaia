@@ -5,6 +5,11 @@ import {
 import { render } from "@react-email/components";
 import nodemailer from "nodemailer";
 import PasswordResetEmail from "./templates/password-reset";
+import QuoteAcceptedEmail from "./templates/quote-accepted";
+import QuoteAdminNotificationEmail from "./templates/quote-admin-notification";
+import QuoteRejectedEmail from "./templates/quote-rejected";
+import QuoteRequestedEmail from "./templates/quote-requested";
+import QuoteSentEmail from "./templates/quote-sent";
 
 type InjectedDependencies = {
   logger: Logger;
@@ -48,6 +53,19 @@ export class EmailNotificationProviderService extends AbstractNotificationProvid
     });
   }
 
+  private getAdminQuoteSubject(eventType: string): string {
+    switch (eventType) {
+      case "requested":
+        return "Novo pedido de orçamento";
+      case "accepted":
+        return "Orçamento aceite pelo cliente";
+      case "customer_rejected":
+        return "Orçamento recusado pelo cliente";
+      default:
+        return "Atualização de orçamento";
+    }
+  }
+
   async send(notification: {
     to: string;
     channel: string;
@@ -66,7 +84,6 @@ export class EmailNotificationProviderService extends AbstractNotificationProvid
       let subject: string;
 
       this.logger_.info(`Preparing to send email to: ${notification.to}`);
-      this.logger_.info(`SMTP Config: ${this.options_.smtp_host}:${this.options_.smtp_port}`);
 
       // Render template based on template name
       switch (notification.template) {
@@ -77,7 +94,34 @@ export class EmailNotificationProviderService extends AbstractNotificationProvid
               email: notification.to,
             })
           );
-          subject = "Reset your password";
+          subject = "Redefinir a sua palavra-passe";
+          break;
+
+        case "quote-requested":
+          html = await render(QuoteRequestedEmail(notification.data));
+          subject = "Pedido de orçamento recebido";
+          break;
+
+        case "quote-sent":
+          html = await render(QuoteSentEmail(notification.data));
+          subject = "O seu orçamento está pronto para revisão";
+          break;
+
+        case "quote-accepted":
+          html = await render(QuoteAcceptedEmail(notification.data));
+          subject = "Orçamento aceite — encomenda criada";
+          break;
+
+        case "quote-rejected":
+          html = await render(QuoteRejectedEmail(notification.data));
+          subject = "Atualização do seu pedido de orçamento";
+          break;
+
+        case "quote-admin-notification":
+          html = await render(
+            QuoteAdminNotificationEmail(notification.data)
+          );
+          subject = this.getAdminQuoteSubject(notification.data.event_type);
           break;
 
         default:
@@ -95,23 +139,21 @@ export class EmailNotificationProviderService extends AbstractNotificationProvid
         html,
       });
 
-      this.logger_.info(`✓ Email sent successfully!`);
-      this.logger_.info(`  Message ID: ${info.messageId}`);
-      this.logger_.info(`  From: ${this.options_.smtp_from}`);
-      this.logger_.info(`  To: ${notification.to}`);
+      this.logger_.info(
+        `Email sent to ${notification.to} [${info.messageId}]`
+      );
 
       // If using Ethereal, show preview URL
       const previewUrl = nodemailer.getTestMessageUrl(info);
       if (previewUrl) {
-        this.logger_.info(`  📧 Preview URL: ${previewUrl}`);
-        this.logger_.info(`  ⚠️  Using Ethereal (test SMTP) - emails won't reach real inboxes!`);
+        this.logger_.info(`Ethereal preview: ${previewUrl}`);
       }
 
       return { id: info.messageId };
     } catch (error) {
-      this.logger_.error(`✗ Failed to send email to ${notification.to}`);
-      this.logger_.error(`  Error: ${error.message}`);
-      this.logger_.error(`  SMTP: ${this.options_.smtp_host}:${this.options_.smtp_port}`);
+      this.logger_.error(
+        `Failed to send email to ${notification.to}: ${error.message}`
+      );
       throw error;
     }
   }

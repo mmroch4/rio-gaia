@@ -22,6 +22,7 @@ Key variables to configure:
 ```env
 DATABASE_URL=postgres://postgres:docker@localhost:5432/medusajs-test
 REDIS_URL=redis://localhost:6379
+# REQUIRED — server will not start without these. Generate with: openssl rand -hex 32
 JWT_SECRET=your-jwt-secret
 COOKIE_SECRET=your-cookie-secret
 MEILISEARCH_HOST=http://127.0.0.1:7700
@@ -65,13 +66,13 @@ docker compose up -d
 
 This starts:
 
-| Service | Port | Credentials |
-|---------|------|------------|
-| PostgreSQL | 5432 | postgres:docker, db: medusajs-test |
-| Redis | 6379 | (no auth) |
-| Meilisearch | 7700 | master key: minhasupersenhasegura |
+| Service | Image | Port | Credentials |
+|---------|-------|------|------------|
+| PostgreSQL | `postgres:16-alpine` | 5432 | postgres:docker, db: medusajs-test |
+| Redis | `redis:7-alpine` | 6379 | (no auth) |
+| Meilisearch | `getmeili/meilisearch:v1.11` | 7700 | master key: minhasupersenhasegura |
 
-Data persists in Docker volumes (`pgdata`, `meilisearch_data`).
+Data persists in Docker volumes (`pgdata`, `meilisearch_data`). Default credentials are for local development only — override via environment variables in production.
 
 ## Running the Project
 

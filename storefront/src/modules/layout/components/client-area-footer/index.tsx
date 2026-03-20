@@ -1,5 +1,6 @@
+import { CONFIG } from "@/config"
 import LocalizedClientLink from "@/modules/common/components/localized-client-link"
-import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone } from "lucide-react"
+import { Mail, MapPin, Phone } from "lucide-react"
 
 export function ClientAreaFooter() {
   return (
@@ -58,15 +59,15 @@ export function ClientAreaFooter() {
             <ul className="space-y-3 text-sm">
               <li className="flex items-start gap-2">
                 <Phone className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                <span>+351 210 000 000</span>
+                <span>{CONFIG.company.phone}</span>
               </li>
               <li className="flex items-start gap-2">
                 <Mail className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                <span>b2b@riogaia.pt</span>
+                <span>{CONFIG.company.email}</span>
               </li>
               <li className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                <span>Zona Industrial de Lisboa<br />Portugal</span>
+                <span>{CONFIG.company.address}</span>
               </li>
             </ul>
           </div>
@@ -88,17 +89,6 @@ export function ClientAreaFooter() {
                   Termos e Condições
                 </a>
               </div>
-            </div>
-            <div className="flex gap-4">
-              <a href="#" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#0047AB] transition-colors">
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a href="#" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#0047AB] transition-colors">
-                <Instagram className="w-5 h-5" />
-              </a>
-              <a href="#" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-[#0047AB] transition-colors">
-                <Linkedin className="w-5 h-5" />
-              </a>
             </div>
           </div>
         </div>

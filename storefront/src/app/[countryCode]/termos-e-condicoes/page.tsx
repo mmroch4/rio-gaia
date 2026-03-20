@@ -7,7 +7,7 @@ import { Metadata } from "next"
 export const dynamicParams = true
 
 export const metadata: Metadata = {
-  title: "Termos e Condições | Rio Gaia",
+  title: "Termos e Condições",
   description: "Termos e Condições de Utilização da Rio Gaia - Regras e condições para utilização do nosso website e serviços.",
 }
 

@@ -7,7 +7,7 @@ import { Metadata } from "next"
 export const dynamicParams = true
 
 export const metadata: Metadata = {
-  title: "Algarve Gift Shops Network - Caso de Sucesso - Rio Gaia",
+  title: "Algarve Gift Shops Network — Caso de Sucesso",
   description: "Descubra como a Rio Gaia fornece lembranças personalizadas para uma rede de 12 lojas no Algarve com entregas pontuais e qualidade consistente.",
 }
 

@@ -8,7 +8,7 @@ import { Metadata } from "next"
 export const dynamicParams = true
 
 export const metadata: Metadata = {
-  title: "Produtos Personalizáveis - Rio Gaia",
+  title: "Produtos Personalizáveis",
   description: "Descubra a nossa gama completa de produtos cerâmicos personalizáveis: ímanes, porta-copos e azulejos decorativos com padrões tradicionais portugueses.",
 }
 

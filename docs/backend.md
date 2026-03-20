@@ -206,13 +206,48 @@ Handles notifications dispatched through Medusa's notification system:
 3. Sends via Nodemailer transporter
 4. Logs message ID, supports Ethereal preview URLs in dev
 
+#### Shared Email Infrastructure (`templates/shared/`)
+
+All email templates use a shared layout and style system:
+
+- **`email-styles.ts`** — Brand constants (`BRAND` object with colors, company info, font stack) and reusable inline `styles` object. Primary color: `#0047AB`.
+- **`email-layout.tsx`** — `<EmailLayout preview="...">` wrapper with branded header (text-based, not image), content area, and company footer (legal name, address, contact). All templates should be wrapped in this layout.
+
+To create a new template:
+1. Create a `.tsx` file in `templates/`
+2. Import `EmailLayout` and `styles` from `./shared/`
+3. Wrap content in `<EmailLayout preview="inbox preview text">`
+4. Add a case in `service.ts` `send()` switch block
+
 #### Password Reset Template
 
-React-email template (`templates/password-reset.tsx`) with clean design:
+React-email template (`templates/password-reset.tsx`) in Portuguese:
 - Heading, personalized greeting, explanation text
-- "Reset Password" CTA button links to `resetUrl`
+- "Redefinir Palavra-passe" CTA button links to `resetUrl`
 - 15min expiration notice
 - Fallback URL text for non-clickable clients
+
+#### Quote Email Templates
+
+5 templates for the quote lifecycle + 1 admin notification template. All use `EmailLayout`.
+
+| Template | Recipient | Trigger Event | Description |
+|----------|-----------|---------------|-------------|
+| `quote-requested` | Customer | `quote.requested` | Confirmation that RFQ was received |
+| `quote-sent` | Customer | `quote.sent` | Quote ready with items table, pricing, totals |
+| `quote-accepted` | Customer | `quote.accepted` | Order created confirmation with display ID |
+| `quote-rejected` | Customer | `quote.merchant_rejected` | Quote declined notification |
+| `quote-admin-notification` | Admin | `quote.requested`, `quote.accepted`, `quote.customer_rejected` | Generic admin notification with dynamic content based on event type |
+
+#### Quote Notification Subscriber (`src/subscribers/quote-notifications.ts`)
+
+Single subscriber handling all 5 quote events. Fetches quote with linked customer and draft order data, then dispatches to the appropriate email template(s). Email failures are caught per-notification and logged — they never roll back the quote workflow.
+
+Events: `quote.requested`, `quote.sent`, `quote.accepted`, `quote.customer_rejected`, `quote.merchant_rejected`
+
+#### Quote Reminder Job (`src/jobs/quote-reminders.ts`)
+
+Scheduled job running daily at 9:00 AM. Finds quotes in `pending_customer` status updated more than 5 days ago and sends reminder emails.
 
 ---
 
@@ -879,7 +914,9 @@ Custom UI extensions for the Medusa admin panel at `/app`. Built with React, Med
 | [src/modules/quote/models/message.ts](file:///home/miguel/Desktop/jobs/riogaia/backend/src/modules/quote/models/message.ts) | Message entity definition |
 | [src/modules/meilisearch/service.ts](file:///home/miguel/Desktop/jobs/riogaia/backend/src/modules/meilisearch/service.ts) | Search service implementation |
 | [src/modules/email-notification/service.ts](file:///home/miguel/Desktop/jobs/riogaia/backend/src/modules/email-notification/service.ts) | Email provider implementation |
-| [src/modules/email-notification/templates/password-reset.tsx](file:///home/miguel/Desktop/jobs/riogaia/backend/src/modules/email-notification/templates/password-reset.tsx) | Password reset email template |
+| [src/modules/email-notification/templates/shared/email-layout.tsx](file:///home/miguel/Desktop/jobs/riogaia/backend/src/modules/email-notification/templates/shared/email-layout.tsx) | Shared email layout with branded header/footer |
+| [src/modules/email-notification/templates/shared/email-styles.ts](file:///home/miguel/Desktop/jobs/riogaia/backend/src/modules/email-notification/templates/shared/email-styles.ts) | Brand constants and reusable inline styles |
+| [src/modules/email-notification/templates/password-reset.tsx](file:///home/miguel/Desktop/jobs/riogaia/backend/src/modules/email-notification/templates/password-reset.tsx) | Password reset email template (Portuguese) |
 | [src/utils/check-spending-limit.ts](file:///home/miguel/Desktop/jobs/riogaia/backend/src/utils/check-spending-limit.ts) | Spending limit enforcement logic |
 | [src/workflows/hooks/cart-created.ts](file:///home/miguel/Desktop/jobs/riogaia/backend/src/workflows/hooks/cart-created.ts) | Company-cart linking hook |
 | [src/workflows/hooks/order-created.ts](file:///home/miguel/Desktop/jobs/riogaia/backend/src/workflows/hooks/order-created.ts) | Order-company linking hook |

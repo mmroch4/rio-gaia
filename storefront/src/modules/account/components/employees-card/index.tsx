@@ -3,7 +3,7 @@ import EmployeeWrapper from "@/modules/account/components/employees-card/employe
 import { QueryCompany } from "@/types"
 import { Container } from "@medusajs/ui"
 
-const EmployeesCard = async ({ company }: { company: QueryCompany }) => {
+const EmployeesCard = async ({ company, isAdmin }: { company: QueryCompany; isAdmin: boolean }) => {
   const { employees } = company
   const customer = await retrieveCustomer()
 
@@ -18,6 +18,7 @@ const EmployeesCard = async ({ company }: { company: QueryCompany }) => {
                 key={employee.id}
                 employee={employee}
                 company={company}
+                isAdmin={isAdmin}
               />
             ))}
       </div>

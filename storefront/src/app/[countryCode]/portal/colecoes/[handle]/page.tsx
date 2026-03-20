@@ -60,12 +60,10 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     notFound()
   }
 
-  const metadata = {
-    title: `${collection.title} | Medusa Store`,
-    description: `${collection.title} collection`,
+  return {
+    title: collection.title,
+    description: `Explore a coleção ${collection.title}.`,
   } as Metadata
-
-  return metadata
 }
 
 export default async function CollectionPage(props: Props) {

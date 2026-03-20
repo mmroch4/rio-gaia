@@ -12,6 +12,7 @@ export default async function Company() {
   if (!customer || !customer?.employee?.company) return notFound()
 
   const company = await retrieveCompany(customer.employee.company.id)
+  const isAdmin = customer.employee.is_admin ?? false
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -19,14 +20,14 @@ export default async function Company() {
         <h2 className="text-gray-900" style={{ fontSize: '1.875rem', fontWeight: '700' }}>
           Detalhes da Empresa
         </h2>
-        <CompanyCard company={company} regions={regions} />
+        <CompanyCard company={company} regions={regions} isAdmin={isAdmin} />
       </div>
 
       <div className="mb-8 flex flex-col gap-y-4">
         <h2 className="text-gray-900" style={{ fontSize: '1.875rem', fontWeight: '700' }}>
           Funcionários
         </h2>
-        <EmployeesCard company={company} />
+        <EmployeesCard company={company} isAdmin={isAdmin} />
       </div>
     </div>
   )

@@ -7,7 +7,7 @@ import { Metadata } from "next"
 export const dynamicParams = true
 
 export const metadata: Metadata = {
-  title: "Museu Nacional do Azulejo - Caso de Sucesso - Rio Gaia",
+  title: "Museu Nacional do Azulejo — Caso de Sucesso",
   description: "Descubra como a Rio Gaia colaborou com o Museu Nacional do Azulejo para criar reproduções autênticas de padrões históricos.",
 }
 

@@ -7,7 +7,7 @@ import { Metadata } from "next"
 export const dynamicParams = true
 
 export const metadata: Metadata = {
-  title: "Porta-Copos Cerâmicos - Rio Gaia",
+  title: "Porta-Copos Cerâmicos",
   description: "Porta-copos cerâmicos personalizados com padrões tradicionais portugueses. Ideais para restaurantes, hotéis e presentes corporativos.",
 }
 

@@ -6,9 +6,10 @@ import { Header } from "@/modules/home/components/Header"
 
 interface LoginTemplateProps {
   countryCode: string
+  sessionExpired?: boolean
 }
 
-const LoginTemplate = ({ countryCode }: LoginTemplateProps) => {
+const LoginTemplate = ({ countryCode, sessionExpired }: LoginTemplateProps) => {
   return (
     <div>
       <Header />
@@ -19,6 +20,11 @@ const LoginTemplate = ({ countryCode }: LoginTemplateProps) => {
           {/* Left Column - Form */}
           <div className="flex items-center justify-center bg-neutral-100 px-4 sm:px-6 lg:px-8 py-12">
             <div className="w-full max-w-md">
+              {sessionExpired && (
+                <div className="mb-4 rounded-md border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800">
+                  A sua sessão expirou. Por favor, inicie sessão novamente.
+                </div>
+              )}
               <div className="flex flex-col gap-6 my-auto">
                 <Login countryCode={countryCode} />
               </div>

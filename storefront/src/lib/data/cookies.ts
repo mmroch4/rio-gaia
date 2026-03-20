@@ -12,6 +12,20 @@ export const getAuthHeaders = async (): Promise<
     const token = cookies.get("_medusa_jwt")?.value
 
     if (token) {
+      // Proactive expiry check — authorization is validated server-side,
+      // this only improves UX by avoiding silent 401 redirects
+      try {
+        const payload = JSON.parse(
+          Buffer.from(token.split(".")[1], "base64url").toString()
+        )
+        if (payload.exp && payload.exp < Date.now() / 1000 + 30) {
+          cookies.delete("_medusa_jwt")
+          return {}
+        }
+      } catch {
+        // Malformed token — let the server reject it
+      }
+
       return { authorization: `Bearer ${token}` }
     }
 
