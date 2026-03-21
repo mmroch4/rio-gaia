@@ -145,7 +145,7 @@ All request bodies are validated with Zod schemas. Invalid requests return 400 w
 
 ## Rate Limiting
 
-Public and sensitive endpoints are protected by IP-based rate limiting via `express-rate-limit`. Limits are applied per-IP using an in-memory store.
+Public and sensitive endpoints are protected by IP-based rate limiting via a custom Medusa-native middleware. Limits are applied per-IP using an in-memory store.
 
 | Endpoint | Limit | Window |
 |----------|-------|--------|

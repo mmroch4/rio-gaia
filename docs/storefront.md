@@ -378,6 +378,22 @@ The storefront uses per-session cache isolation via the `_medusa_cache_id` cooki
 | `isEmpty(input)` | `isEmpty.ts` | Checks null, undefined, empty object/array/string |
 | `repeat(times)` | `repeat.ts` | Returns `[0, 1, ..., n-1]` for skeleton loaders |
 | `getBaseURL()` | `env.ts` | Returns `NEXT_PUBLIC_BASE_URL` or `https://localhost:8000` |
+| `isRateLimitError(error)` | `rate-limit-error.ts` | Checks if error is a 429 `FetchError` (server-side only) |
+| `getRateLimitMessage(error)` | `rate-limit-error.ts` | Extracts Portuguese message from 429 response |
+
+### Rate Limit Error Handling
+
+Backend rate-limited endpoints return 429 with `{ type: "rate_limit", message: "..." }`. Since Next.js strips custom error properties (like `FetchError.status`) when serializing across the server→client boundary, **rate limit detection must happen inside server actions** — not in client component catch blocks.
+
+Server actions (`contact.ts`, `quotes.ts`) catch 429 errors and return structured results:
+```typescript
+{ success: false, rateLimited: true, message: "..." }
+```
+
+Client components then check the `rateLimited` flag:
+- **Contact form** → amber warning banner with the Portuguese message
+- **Quote creation** → toast via `@medusajs/ui`: "Limite atingido" + message
+- **Login/signup** → error message string returned from server action (already caught server-side in `customer.ts`)
 
 ## SEO & Metadata
 

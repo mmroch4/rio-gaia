@@ -110,7 +110,7 @@ docker compose up -d  # PostgreSQL (5432), Redis (6379), Meilisearch (7700)
 - **Config**: Company details in `storefront/src/config/index.ts`
 - **Default region**: Portugal (`pt`)
 - **SEO**: Title template `"%s | Rio Gaia"` in root layout — pages export only page-specific titles. `robots.ts` blocks `/portal/`, `/conta/`, `/api/`. `sitemap.ts` lists static public `/pt/` pages. Portal layout sets `noindex, nofollow`.
-- **Rate Limiting**: IP-based throttling via `express-rate-limit` in `src/api/middlewares/rate-limiter.ts`. Auth endpoints: 10 req/15min. Quote creation: 5 req/hour. Contact form: 3 req/hour. Returns 429 with `RateLimit-*` headers (draft-7).
+- **Rate Limiting**: Custom Medusa-native IP-based throttling in `src/api/middlewares/rate-limiter.ts`. Auth: 10 req/15min. Quotes: 5 req/hour. Contact: 3 req/hour. Returns 429 with `RateLimit-*` headers. Storefront server actions catch 429 and return structured results (`{ success, rateLimited, message }`).
 
 ## Custom Modules
 

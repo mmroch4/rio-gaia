@@ -480,7 +480,7 @@ Role-based access control middleware for store company routes. Used on employee 
 
 ### Rate Limiting (`src/api/middlewares/rate-limiter.ts`)
 
-IP-based rate limiting via `express-rate-limit` with in-memory store. The `createRateLimiter()` factory produces Express middleware that returns `429 Too Many Requests` with a JSON body when limits are exceeded.
+Custom Medusa-native IP-based rate limiter with in-memory store. The `createRateLimiter()` factory produces async middleware (same signature as `ensureRole`) that returns `429 Too Many Requests` with a JSON body when limits are exceeded.
 
 **Pre-configured limiters:**
 
