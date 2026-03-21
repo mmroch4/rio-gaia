@@ -69,6 +69,7 @@ export const DELETE = async (
     input: {
       id,
     },
+    container: req.scope,
   });
 
   res.status(200).json({

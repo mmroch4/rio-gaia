@@ -111,3 +111,17 @@ MedusaJS hooks allow intercepting core commerce events:
 
 - **`cart-created`**: Links company to cart via `company_id` metadata
 - **`validate-cart-completion`**: Enforces employee spending limits before checkout
+- **`order-created`**: Links company to order via `company_id` metadata
+- **`customer-deleted`**: Soft-deletes linked employee when a customer is deleted via `deleteCustomersWorkflow` (safety net for non-admin-route callers)
+
+### Cascade Deletion
+
+All three entity types cascade deletions bidirectionally:
+
+| Entry Point | Cascade |
+|-------------|---------|
+| Delete **Company** | → employees (soft) → customers (soft) → auth identities (hard) |
+| Delete **Employee** | → customer (soft) → auth identity (hard) |
+| Delete **Customer** | → employee (soft) → auth identity (hard) |
+
+Auth identities are hard-deleted (not soft) to enable email reuse for re-registration. Customer email uniqueness uses `WHERE deleted_at IS NULL`, so soft-deleted customers don't block new signups.

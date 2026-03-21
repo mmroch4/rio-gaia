@@ -349,6 +349,17 @@ Default fields: `id`, `name`, `logo_url`, `email`, `vat`, `phone`, `address`, `c
 
 Extensive field list including nested relations: `*customer`, `*messages`, `*messages.admin`, `*messages.customer`, `cart.id`, and full `draft_order` details (currency, display_id, status, totals including tax/discount/shipping breakdowns, `*items`, `*items.variant`, `*items.variant.product`, `*items.detail`, `*items.tax_lines`, `*items.adjustments`, `*order_change.actions`).
 
+#### Customers (`/admin/customers/:id`) — Custom Override
+
+The `DELETE` handler is overridden to provide full cascade deletion with email reuse:
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| DELETE | `/admin/customers/:id` | **Custom route** replacing Medusa's built-in `removeCustomerAccountWorkflow`. Finds linked employee + auth identity BEFORE deletion → soft-deletes employee → soft-deletes customer via `deleteCustomersWorkflow` → hard-deletes auth identity. Enables email reuse for re-registration. GET and POST use Medusa's built-in handlers |
+
+> [!NOTE]
+> Direct customer deletion from the admin panel cascades in this order: employee soft-deleted → customer soft-deleted → auth identity hard-deleted. This mirrors the cascade behavior of company and employee deletion.
+
 #### Meilisearch (`/admin/meilisearch/sync`)
 
 | Method | Endpoint | Description |
@@ -478,7 +489,7 @@ workflows/<domain>/
 |----------|-----|-------|-------------|
 | `createCompaniesWorkflow` | `create-companies` | `createCompaniesStep` | Creates company records |
 | `updateCompaniesWorkflow` | `update-companies` | `updateCompaniesStep` | Updates company fields |
-| `deleteCompaniesWorkflow` | `delete-companies` | `deleteCompaniesStep` | Deletes company by ID. **TODO**: cascade delete users |
+| `deleteCompaniesWorkflow` | `delete-companies` | `useRemoteQueryStep` → `removeCompanyEmployeesFromCustomerGroupStep` → `removeEmployeeCustomerAccountsStep` → `deleteEmployeesStep` → `deleteCompaniesStep` | **Cascade delete**: queries employees+customers → removes from customer group → soft-deletes customers + hard-deletes auth identities → soft-deletes employees → soft-deletes company. All steps have compensation for rollback |
 | `addCompanyToCustomerGroupWorkflow` | `add-company-to-customer-group` | `createRemoteLinkStep` + `addCompanyEmployeesToCustomerGroupStep` | Links company to customer group (for B2B pricing) and adds all existing employees to the group |
 | `removeCompanyFromCustomerGroupWorkflow` | `remove-company-from-customer-group` | `removeCompanyEmployeesFromCustomerGroupStep` + `removeRemoteLinkStep` | Removes employees from group first, then removes the link |
 
@@ -488,7 +499,7 @@ workflows/<domain>/
 |----------|-----|-------|-------------|
 | `createEmployeesWorkflow` | `create-employees` | `createEmployeesStep` → `createRemoteLinkStep` → *(conditional)* `setAdminRoleStep` → `addEmployeeToCustomerGroupStep` | Creates employee, links to customer, optionally sets `company_admin` role via `user_metadata`, adds employee to company's customer group |
 | `updateEmployeesWorkflow` | `update-employees` | `updateEmployeesStep` → *(conditional)* `removeAdminRoleStep` | Updates employee. If `is_admin` set to `false`, removes the admin role from auth |
-| `deleteEmployeesWorkflow` | `delete-employees` | `deleteEmployeesStep` | Deletes employee by ID(s) |
+| `deleteEmployeesWorkflow` | `delete-employees` | `useRemoteQueryStep` → `removeEmployeeCustomerAccountsStep` → `deleteEmployeesStep` | **Cascade delete**: queries linked customer → soft-deletes customer + hard-deletes auth identity (enables email reuse) → soft-deletes employee. Accepts `string`, `string[]`, or `{ id, company_id }` |
 
 #### Employee Steps Detail
 
@@ -496,6 +507,7 @@ workflows/<domain>/
 - **`removeAdminRoleStep`** — Removes the `company_admin` role from `user_metadata`
 - **`addEmployeeToCustomerGroupStep`** — Queries the employee's company, finds its linked customer group, and adds the employee's customer to the group
 - **`linkEmployeeToCustomerStep`** — Creates the remote link between employee and customer
+- **`removeEmployeeCustomerAccountsStep`** — Batch soft-deletes linked Medusa customers and hard-deletes their auth identities (enabling email reuse). Has compensation to restore customers on rollback. Used by both `deleteCompaniesWorkflow` and `deleteEmployeesWorkflow`
 
 ### Quote Workflows (`src/workflows/quote/`)
 

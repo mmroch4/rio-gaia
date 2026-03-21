@@ -15,6 +15,14 @@ export const removeCompanyEmployeesFromCustomerGroupStep = createStep(
       fields: ["id", "customer_group.*", "employees.*", "employees.customer.*"],
     });
 
+    // No customer group linked — nothing to remove from
+    if (!customer_group?.id) {
+      return new StepResponse(null, {
+        customer_ids: [],
+        group_id: "",
+      });
+    }
+
     const customerModuleService = container.resolve<ICustomerModuleService>(
       Modules.CUSTOMER
     );
