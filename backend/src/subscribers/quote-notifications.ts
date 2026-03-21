@@ -1,58 +1,64 @@
-import { RemoteQueryFunction } from "@medusajs/framework/types";
-import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils";
+import { Modules } from "@medusajs/framework/utils";
 import { SubscriberArgs, type SubscriberConfig } from "@medusajs/medusa";
+
+interface QuoteEventPayload {
+  quote_id: string;
+  quote: {
+    id: string;
+    customer?: {
+      first_name?: string;
+      last_name?: string;
+      email?: string;
+    };
+    draft_order?: {
+      id?: string;
+      display_id?: number;
+      currency_code?: string;
+      total?: number;
+      subtotal?: number;
+      tax_total?: number;
+      shipping_total?: number;
+      items?: Array<{
+        quantity: number;
+        unit_price: number;
+        variant?: { product?: { title?: string } };
+      }>;
+    };
+  };
+  customer_email?: string;
+  message?: {
+    text?: string;
+    admin_id?: string;
+    customer_id?: string;
+  };
+  sender_role?: "admin" | "customer";
+}
 
 export default async function quoteNotificationHandler({
   event,
   container,
-}: SubscriberArgs<{ quote_id: string }>) {
+}: SubscriberArgs<QuoteEventPayload>) {
   const logger = container.resolve("logger");
 
   try {
     const notificationService = container.resolve(Modules.NOTIFICATION);
-    const query = container.resolve<RemoteQueryFunction>(
-      ContainerRegistrationKeys.QUERY,
-    );
     const config = container.resolve("configModule");
 
-    const { quote_id } = event.data;
+    const { quote, customer_email } = event.data;
     const eventName = event.name;
 
-    // Fetch quote with customer + draft order details
-    const {
-      data: [quote],
-    } = await query.graph({
-      entity: "quote",
-      fields: [
-        "id",
-        "status",
-        "created_at",
-        "*customer",
-        "draft_order.id",
-        "draft_order.display_id",
-        "draft_order.currency_code",
-        "draft_order.total",
-        "draft_order.subtotal",
-        "draft_order.tax_total",
-        "draft_order.shipping_total",
-        "*draft_order.items",
-        "*draft_order.items.variant",
-        "*draft_order.items.variant.product",
-      ],
-      filters: { id: quote_id },
-    });
-
     if (!quote) {
-      logger.warn(`Quote ${quote_id} not found for event ${eventName}`);
+      logger.warn(`No quote data in event payload for ${eventName}`);
       return;
     }
 
     const storefrontUrl = config.admin.storefrontUrl || "http://localhost:8000";
-    const customerEmail = quote.customer?.email;
+    const customerEmail = customer_email || quote.customer?.email;
     const adminEmail = process.env.SMTP_FROM;
-    
-    console.log("-------------------", quote)
-    console.log("-------------------", adminEmail)
+
+    logger.info(
+      `TRYING TO SEND NOTIFICATIONS: ${eventName} - CUSTOMER: ${customerEmail} - ADMIN: ${adminEmail}`,
+    );
 
     const notifications: Array<{
       to: string;
@@ -144,6 +150,47 @@ export default async function quoteNotificationHandler({
           });
         }
         break;
+
+      case "quote.message_created": {
+        const { message, sender_role } = event.data;
+        const quoteDetailUrl = `${storefrontUrl}/pt/portal/conta/orcamentos/detalhes/${quote.id}`;
+
+        if (sender_role === "customer" && adminEmail) {
+          const senderName = [
+            quote.customer?.first_name,
+            quote.customer?.last_name,
+          ]
+            .filter(Boolean)
+            .join(" ") || "Cliente";
+
+          notifications.push({
+            to: adminEmail,
+            channel: "email",
+            template: "quote-message-notification",
+            data: {
+              quote,
+              message_text: message?.text || "",
+              sender_name: senderName,
+              portal_url: quoteDetailUrl,
+            },
+          });
+        }
+
+        if (sender_role === "admin" && customerEmail) {
+          notifications.push({
+            to: customerEmail,
+            channel: "email",
+            template: "quote-message-notification",
+            data: {
+              quote,
+              message_text: message?.text || "",
+              sender_name: "A equipa Rio Gaia",
+              portal_url: quoteDetailUrl,
+            },
+          });
+        }
+        break;
+      }
     }
 
     for (const notification of notifications) {
@@ -169,5 +216,6 @@ export const config: SubscriberConfig = {
     "quote.accepted",
     "quote.customer_rejected",
     "quote.merchant_rejected",
+    "quote.message_created",
   ],
 };

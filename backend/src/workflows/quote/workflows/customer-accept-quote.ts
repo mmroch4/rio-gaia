@@ -4,7 +4,7 @@ import {
   useRemoteQueryStep,
 } from "@medusajs/core-flows";
 import { OrderStatus } from "@medusajs/framework/utils";
-import { createWorkflow } from "@medusajs/workflows-sdk";
+import { createWorkflow, transform } from "@medusajs/workflows-sdk";
 import { updateOrderWorkflow } from "../../order/workflows/update-order";
 import { validateQuoteAcceptanceStep } from "../steps/validate-quote-acceptance";
 import { updateQuotesWorkflow } from "./update-quote";
@@ -20,7 +20,15 @@ export const customerAcceptQuoteWorkflow = createWorkflow(
   function (input: { quote_id: string; customer_id: string }) {
     const quote = useRemoteQueryStep({
       entry_point: "quote",
-      fields: ["id", "draft_order_id", "status"],
+      fields: [
+        "id",
+        "draft_order_id",
+        "status",
+        "customer.email",
+        "customer.first_name",
+        "customer.last_name",
+        "draft_order.display_id",
+      ],
       variables: { id: input.quote_id },
       list: false,
       throw_if_key_not_found: true,
@@ -47,9 +55,21 @@ export const customerAcceptQuoteWorkflow = createWorkflow(
       },
     });
 
+    const eventData = transform({ quote }, ({ quote }) => ({
+      quote_id: quote.id,
+      quote: {
+        id: quote.id,
+        customer: quote.customer,
+        draft_order: {
+          display_id: quote.draft_order?.display_id,
+        },
+      },
+      customer_email: quote.customer?.email,
+    }));
+
     emitEventStep({
       eventName: "quote.accepted",
-      data: { quote_id: input.quote_id },
+      data: eventData,
     });
   }
 );

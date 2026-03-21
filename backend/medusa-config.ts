@@ -48,8 +48,17 @@ const modules: Record<string, any> = {
 if (REDIS_URL) {
   // Production: Redis-backed infrastructure modules
   modules[Modules.CACHE] = {
-    resolve: "@medusajs/medusa/cache-redis",
-    options: { redisUrl: REDIS_URL },
+    resolve: "@medusajs/medusa/caching",
+    options: {
+      providers: [
+        {
+          resolve: "@medusajs/caching-redis",
+          id: "caching-redis",
+          is_default: true,
+          options: { redisUrl: REDIS_URL },
+        },
+      ],
+    },
   };
   modules[Modules.WORKFLOW_ENGINE] = {
     resolve: "@medusajs/medusa/workflow-engine-redis",
@@ -74,9 +83,7 @@ if (REDIS_URL) {
   };
 } else {
   // Development: in-memory modules (no Redis required)
-  modules[Modules.CACHE] = {
-    resolve: "@medusajs/medusa/cache-inmemory",
-  };
+  // Caching Module defaults to in-memory when no providers are configured
   modules[Modules.WORKFLOW_ENGINE] = {
     resolve: "@medusajs/medusa/workflow-engine-inmemory",
   };

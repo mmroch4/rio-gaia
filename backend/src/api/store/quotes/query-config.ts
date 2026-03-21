@@ -5,8 +5,6 @@ export const quoteFields = [
   "*customer.employee",
   "*customer.employee.company",
   "*messages",
-  "*messages.admin",
-  "*messages.customer",
   "cart.id",
   "draft_order.id",
   "draft_order.currency_code",

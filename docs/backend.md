@@ -200,9 +200,7 @@ Takes SMTP options: `smtp_host`, `smtp_port`, `smtp_user`, `smtp_pass`, `smtp_fr
 Handles notifications dispatched through Medusa's notification system:
 
 1. Validates `channel === "email"` (warns and returns `"unsupported-channel"` otherwise)
-2. Renders template by name:
-   - `"password-reset"` → renders `PasswordResetEmail` component with `resetUrl` and `email`
-   - Other templates → warns and returns `"unsupported-template"`
+2. Renders template by name (`"password-reset"`, `"quote-requested"`, `"quote-sent"`, `"quote-accepted"`, `"quote-rejected"`, `"quote-admin-notification"`, `"quote-message-notification"`) — unrecognized templates return `"unsupported-template"`
 3. Sends via Nodemailer transporter
 4. Logs message ID, supports Ethereal preview URLs in dev
 
@@ -238,12 +236,26 @@ React-email template (`templates/password-reset.tsx`) in Portuguese:
 | `quote-accepted` | Customer | `quote.accepted` | Order created confirmation with display ID |
 | `quote-rejected` | Customer | `quote.merchant_rejected` | Quote declined notification |
 | `quote-admin-notification` | Admin | `quote.requested`, `quote.accepted`, `quote.customer_rejected` | Generic admin notification with dynamic content based on event type |
+| `quote-message-notification` | Customer or Admin | `quote.message_created` | Bidirectional message notification showing sender name, message text in styled quote block, and CTA to quote detail |
 
 #### Quote Notification Subscriber (`src/subscribers/quote-notifications.ts`)
 
-Single subscriber handling all 5 quote events. Fetches quote with linked customer and draft order data, then dispatches to the appropriate email template(s). Email failures are caught per-notification and logged — they never roll back the quote workflow.
+Single subscriber handling all 6 quote events. Uses the **enriched event payload pattern**: workflows fetch quote data via `useRemoteQueryStep` and pass it through `emitEventStep`, so the subscriber receives pre-fetched data directly from `event.data` — no `query.graph()` calls in the subscriber.
 
-Events: `quote.requested`, `quote.sent`, `quote.accepted`, `quote.customer_rejected`, `quote.merchant_rejected`
+**Events handled:**
+
+| Event | Recipient(s) | Template(s) |
+|-------|-------------|-------------|
+| `quote.requested` | Customer + Admin | `quote-requested` + `quote-admin-notification` |
+| `quote.sent` | Customer | `quote-sent` (full order details with items/pricing) |
+| `quote.accepted` | Customer + Admin | `quote-accepted` + `quote-admin-notification` |
+| `quote.customer_rejected` | Admin | `quote-admin-notification` |
+| `quote.merchant_rejected` | Customer | `quote-rejected` |
+| `quote.message_created` | Opposite party | `quote-message-notification` (customer message → admin, admin message → customer) |
+
+**Bidirectional message notifications:** When a customer sends a message, the admin receives an email with the customer's name and message text. When an admin sends a message, the customer receives an email with "A equipa Rio Gaia" as the sender. Both link directly to the quote detail page.
+
+**Error handling:** Each notification dispatch is wrapped in a per-notification try/catch. SMTP failures are logged but never roll back the originating workflow.
 
 #### Quote Reminder Job (`src/jobs/quote-reminders.ts`)
 
@@ -496,7 +508,7 @@ workflows/<domain>/
 | `merchantRejectQuoteWorkflow` | `merchant-reject-quote-workflow` | Updates status to `"merchant_rejected"` |
 | `customerAcceptQuoteWorkflow` | `customer-accept-quote-workflow` | `validateQuoteAcceptanceStep` → Updates status to `"accepted"` → `confirmOrderEditRequestWorkflow` (commits staged changes) → `updateOrderWorkflow` (converts draft to real order with `PENDING` status) |
 | `customerRejectQuoteWorkflow` | `customer-reject-quote-workflow` | `validateQuoteRejectionStep` → Updates status to `"customer_rejected"` |
-| `createQuoteMessageWorkflow` | `create-quote-message` | `createQuoteMessageStep` — creates a message attached to the quote |
+| `createQuoteMessageWorkflow` | `create-quote-message` | `createQuoteMessageStep` → Fetches quote with customer details → Emits `quote.message_created` event with enriched payload (message text, sender role, customer email) |
 
 #### Quote Validation Steps
 
@@ -591,6 +603,7 @@ Event handlers in `src/subscribers/`. Each exports a default handler function an
 | [product-delete.ts](file:///home/miguel/Desktop/jobs/riogaia/backend/src/subscribers/product-delete.ts) | `product.deleted` | Runs `deleteProductsFromMeilisearchWorkflow` with the product's ID. Removes from search index |
 | [meilisearch-sync.ts](file:///home/miguel/Desktop/jobs/riogaia/backend/src/subscribers/meilisearch-sync.ts) | `meilisearch.sync` | Full batch re-index: loops through all products in batches of 50 using `syncProductsWorkflow`, tracking offset/limit. Logs total indexed count |
 | [password-reset.ts](file:///home/miguel/Desktop/jobs/riogaia/backend/src/subscribers/password-reset.ts) | `auth.password_reset` | Receives `entity_id` (email), `token`, `actor_type`. Builds reset URL based on actor type and sends email via notification module |
+| [quote-notifications.ts](file:///home/miguel/Desktop/jobs/riogaia/backend/src/subscribers/quote-notifications.ts) | `quote.requested`, `quote.sent`, `quote.accepted`, `quote.customer_rejected`, `quote.merchant_rejected`, `quote.message_created` | Dispatches email notifications for quote lifecycle events and bidirectional message notifications. Uses enriched event payloads (no subscriber-side queries) |
 
 #### Password Reset URL Routing
 

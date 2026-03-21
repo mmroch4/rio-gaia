@@ -76,7 +76,7 @@ export async function getOrSetCart(countryCode: string) {
 
     const cartResp = await sdk.store.cart.create(body, {}, headers)
 
-    setCartId(cartResp.cart.id)
+    await setCartId(cartResp.cart.id)
 
     const cartCacheTag = await getCacheTag("carts")
     revalidateTag(cartCacheTag)
@@ -418,7 +418,7 @@ export async function setShippingAddress(formData: FormData) {
 
 export async function setBillingAddress(formData: FormData) {
   try {
-    const cartId = getCartId()
+    const cartId = await getCartId()
     if (!cartId) {
       throw new Error("No existing cart found when setting billing address")
     }
@@ -449,7 +449,7 @@ export async function setContactDetails(
   formData: FormData
 ) {
   try {
-    const cartId = getCartId()
+    const cartId = await getCartId()
     if (!cartId) {
       throw new Error("No existing cart found when setting contact details")
     }

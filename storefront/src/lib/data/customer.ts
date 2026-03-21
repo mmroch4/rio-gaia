@@ -133,7 +133,7 @@ export async function login(_currentState: unknown, formData: FormData) {
       .login("customer", "emailpass", { email, password })
       .then(async (token) => {
         track("customer_logged_in")
-        setAuthToken(token as string)
+        await setAuthToken(token as string)
 
         const [customerCacheTag, productsCacheTag, cartsCacheTag] =
           await Promise.all([
@@ -178,7 +178,7 @@ export async function login(_currentState: unknown, formData: FormData) {
 
 export async function signout(countryCode: string) {
   await sdk.auth.logout()
-  removeAuthToken()
+  await removeAuthToken()
   track("customer_logged_out")
 
   // remove next line if want the cart to persist after logout

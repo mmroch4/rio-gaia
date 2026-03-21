@@ -1,7 +1,7 @@
 /* Entity: Company */
 
 import { CustomerGroupDTO } from "@medusajs/framework/types";
-import { CustomerDTO } from "@medusajs/types/dist/customer/common";
+import { CustomerDTO } from "@medusajs/types";
 
 export enum ModuleCompanySpendingLimitResetFrequency {
   NEVER = "never",

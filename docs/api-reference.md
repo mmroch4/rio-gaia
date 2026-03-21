@@ -134,3 +134,62 @@ All responses follow MedusaJS conventions:
 ## Validation
 
 All request bodies are validated with Zod schemas. Invalid requests return 400 with validation errors. Validators are defined in `validators.ts` files alongside each route group.
+
+## Quote Events
+
+Quote workflows emit events consumed by the `quote-notifications` subscriber. All events use the **enriched payload pattern** — data is fetched in the workflow and passed through the event, so the subscriber never calls `query.graph()`.
+
+### Lifecycle Events
+
+These 5 events share the same base payload shape:
+
+```typescript
+{
+  quote_id: string;
+  quote: {
+    id: string;
+    customer?: { email?: string; first_name?: string; last_name?: string };
+    draft_order?: {
+      id?: string;
+      display_id?: number;
+      currency_code?: string;
+      total?: number;
+      subtotal?: number;
+      tax_total?: number;
+      shipping_total?: number;
+      items?: Array<{
+        quantity: number;
+        unit_price: number;
+        variant?: { product?: { title?: string } };
+      }>;
+    };
+  };
+  customer_email?: string;
+}
+```
+
+| Event | Emitted By | Trigger |
+|-------|-----------|---------|
+| `quote.requested` | `createRequestForQuoteWorkflow` | Customer creates a quote request from cart |
+| `quote.sent` | `merchantSendQuoteWorkflow` | Merchant sends quote (includes full draft order with items) |
+| `quote.accepted` | `customerAcceptQuoteWorkflow` | Customer accepts quote, order created |
+| `quote.customer_rejected` | `customerRejectQuoteWorkflow` | Customer rejects quote |
+| `quote.merchant_rejected` | `merchantRejectQuoteWorkflow` | Merchant rejects quote |
+
+### Message Event
+
+`quote.message_created` is emitted by `createQuoteMessageWorkflow` when either party sends a message. It extends the base payload:
+
+```typescript
+{
+  // ...base QuoteEventPayload fields
+  message: {
+    text: string;
+    admin_id?: string;
+    customer_id?: string;
+  };
+  sender_role: "admin" | "customer";
+}
+```
+
+The subscriber routes the notification to the opposite party: customer messages notify the admin, admin messages notify the customer.

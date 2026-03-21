@@ -101,7 +101,7 @@ MedusaJS uses `defineLink` to create cross-module relationships:
 | `company-carts` | Company | Cart | 1:many |
 | `order-company` | Order | Company | 1:1 |
 | `employee-customer` | Employee | Customer | 1:1 |
-| `quote-links` | Quote | Cart, Order, OrderChange, User, Customer | read-only |
+| `quote-cart`, `quote-customer`, `quote-order`, `quote-order-change` | Quote | Cart, Customer, Order (alias: `draft_order`), OrderChange | read-only (field-based links) |
 
 These links are used in workflows to associate entities and in API queries to fetch related data across modules.
 

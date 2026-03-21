@@ -1,10 +1,10 @@
-import { RemoteQueryFunction } from "@medusajs/framework/types"
+import { MedusaContainer } from "@medusajs/framework/types"
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
 
 export default async function quoteRemindersJob(
-  container: Record<string, any>
+  container: MedusaContainer
 ) {
-  const query = container.resolve<RemoteQueryFunction>(
+  const query = container.resolve(
     ContainerRegistrationKeys.QUERY
   )
   const notificationService = container.resolve(Modules.NOTIFICATION)

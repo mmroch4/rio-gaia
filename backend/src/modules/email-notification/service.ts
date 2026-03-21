@@ -9,6 +9,7 @@ import QuoteAcceptedEmail from "./templates/quote-accepted";
 import QuoteAdminNotificationEmail from "./templates/quote-admin-notification";
 import QuoteRejectedEmail from "./templates/quote-rejected";
 import QuoteRequestedEmail from "./templates/quote-requested";
+import QuoteMessageNotificationEmail from "./templates/quote-message-notification";
 import QuoteSentEmail from "./templates/quote-sent";
 
 type InjectedDependencies = {
@@ -98,30 +99,37 @@ export class EmailNotificationProviderService extends AbstractNotificationProvid
           break;
 
         case "quote-requested":
-          html = await render(QuoteRequestedEmail(notification.data));
+          html = await render(QuoteRequestedEmail(notification.data as any));
           subject = "Pedido de orçamento recebido";
           break;
 
         case "quote-sent":
-          html = await render(QuoteSentEmail(notification.data));
+          html = await render(QuoteSentEmail(notification.data as any));
           subject = "O seu orçamento está pronto para revisão";
           break;
 
         case "quote-accepted":
-          html = await render(QuoteAcceptedEmail(notification.data));
+          html = await render(QuoteAcceptedEmail(notification.data as any));
           subject = "Orçamento aceite — encomenda criada";
           break;
 
         case "quote-rejected":
-          html = await render(QuoteRejectedEmail(notification.data));
+          html = await render(QuoteRejectedEmail(notification.data as any));
           subject = "Atualização do seu pedido de orçamento";
           break;
 
         case "quote-admin-notification":
           html = await render(
-            QuoteAdminNotificationEmail(notification.data)
+            QuoteAdminNotificationEmail(notification.data as any)
           );
           subject = this.getAdminQuoteSubject(notification.data.event_type);
+          break;
+
+        case "quote-message-notification":
+          html = await render(
+            QuoteMessageNotificationEmail(notification.data as any)
+          );
+          subject = "Nova mensagem no orçamento — Rio Gaia";
           break;
 
         default:

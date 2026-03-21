@@ -12,7 +12,7 @@ import {
 import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
-import { z } from "zod";
+import { z } from "@medusajs/framework/zod";
 import { QueryQuote } from "../../../../types";
 import { Form } from "../../../components/common/form";
 import { useCreateQuoteMessage } from "../../../hooks/api/quotes";
@@ -96,11 +96,10 @@ export function QuoteMessages({
             })}
           >
             <div className="font-medium font-sans txt-compact-small text-ui-fg-subtle ">
-              {!!message.admin &&
-                `${message.admin.first_name} ${message.admin.last_name}`}
+              {!!message.admin_id && "Admin"}
 
-              {!!message.customer &&
-                `${message.customer.first_name} ${message.customer.last_name}`}
+              {!!message.customer_id &&
+                `${quote.customer?.first_name} ${quote.customer?.last_name}`}
             </div>
 
             {!!message.item_id && (

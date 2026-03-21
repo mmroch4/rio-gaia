@@ -1,9 +1,4 @@
-import {
-  AdminCustomer,
-  AdminOrder,
-  AdminUser,
-  StoreCart,
-} from "@medusajs/types";
+import { AdminCustomer, AdminOrder, StoreCart } from "@medusajs/types";
 import { ModuleQuote, ModuleQuoteMessage } from "./module";
 import { QueryEmployee } from "../company";
 
@@ -16,7 +11,4 @@ export type QueryQuote = ModuleQuote & {
   messages: QueryQuoteMessage[];
 };
 
-export type QueryQuoteMessage = ModuleQuoteMessage & {
-  customer: AdminCustomer;
-  admin: AdminUser;
-};
+export type QueryQuoteMessage = ModuleQuoteMessage;

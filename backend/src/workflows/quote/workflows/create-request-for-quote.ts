@@ -47,7 +47,7 @@ export const createRequestForQuoteWorkflow = createWorkflow(
 
     const customer = useRemoteQueryStep({
       entry_point: "customer",
-      fields: ["id", "customer"],
+      fields: ["id", "email", "first_name", "last_name"],
       variables: { id: input.customer_id },
       list: false,
       throw_if_key_not_found: true,
@@ -98,9 +98,25 @@ export const createRequestForQuoteWorkflow = createWorkflow(
       ],
     });
 
+    const quoteEventData = transform(
+      { quotes, customer },
+      ({ quotes, customer }) => ({
+        quote_id: quotes[0].id,
+        quote: {
+          id: quotes[0].id,
+          customer: {
+            email: customer.email,
+            first_name: customer.first_name,
+            last_name: customer.last_name,
+          },
+        },
+        customer_email: customer.email,
+      })
+    );
+
     emitEventStep({
       eventName: "quote.requested",
-      data: { quote_id: quotes[0].id },
+      data: quoteEventData,
     });
 
     return new WorkflowResponse({ quote: quotes[0] });

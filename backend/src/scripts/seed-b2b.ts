@@ -1495,8 +1495,11 @@ async function seedCompanyGroupLinks(
         });
         logger.info(`Linked "${def.company.name}" -> "${def.customerGroupName}"`);
       } catch (err: any) {
-        // May fail if link already exists — that's okay
-        if (err.message?.includes("already exists")) {
+        // May fail if link already exists — that's okay (v2.13.4 changed the error message)
+        if (
+          err.message?.includes("already exists") ||
+          err.message?.includes("Cannot create multiple links")
+        ) {
           logger.info(`Link "${def.company.name}" -> "${def.customerGroupName}" already exists.`);
         } else {
           throw err;
@@ -1521,7 +1524,7 @@ async function seedEmployees(
 ) {
   try {
     logger.info("Phase 9: Seeding employees...");
-    const companyModuleService: ICompanyModuleService = container.resolve(COMPANY_MODULE);
+    const query = container.resolve(ContainerRegistrationKeys.QUERY);
 
     for (const def of COMPANY_DATA) {
       const companyId = companyMap.get(def.company.name);
@@ -1530,9 +1533,11 @@ async function seedEmployees(
         continue;
       }
 
-      // Check existing employees for this company
-      const existingEmployees = await companyModuleService.listEmployees({
-        company_id: companyId,
+      // Check existing employees for this company (using query.graph to populate customer link)
+      const { data: existingEmployees } = await query.graph({
+        entity: "employee",
+        fields: ["id", "spending_limit", "is_admin", "customer.*"],
+        filters: { company_id: companyId },
       });
 
       for (const emp of def.employees) {
@@ -1542,12 +1547,10 @@ async function seedEmployees(
           continue;
         }
 
-        // Check if this employee already exists (by checking company employees)
+        // Check if this employee already exists by matching the linked customer email
         if (existingEmployees.length > 0) {
-          // We can't easily check by customer_id in the employee list since it's a link,
-          // so we skip if the company already has the expected number of employees
           const alreadyExists = existingEmployees.some(
-            (e: any) => e.customer?.email === emp.email || e.customer_id === customerId
+            (e: any) => e.customer?.email === emp.email
           );
           if (alreadyExists) {
             logger.info(`Employee "${emp.email}" already exists for "${def.company.name}".`);
@@ -1569,8 +1572,12 @@ async function seedEmployees(
           });
           logger.info(`Created employee: ${emp.email} (${emp.isAdmin ? "admin" : "employee"}, limit: ${emp.spendingLimit || "unlimited"})`);
         } catch (err: any) {
-          // May fail if employee link already exists
-          logger.warn(`Could not create employee "${emp.email}": ${err.message}`);
+          // May fail if employee link already exists (v2.13.4 changed the error message)
+          if (err.message?.includes("Cannot create multiple links")) {
+            logger.info(`Employee "${emp.email}" already linked for "${def.company.name}".`);
+          } else {
+            logger.warn(`Could not create employee "${emp.email}": ${err.message}`);
+          }
         }
       }
     }

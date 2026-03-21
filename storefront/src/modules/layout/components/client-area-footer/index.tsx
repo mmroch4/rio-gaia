@@ -19,43 +19,109 @@ export function ClientAreaFooter() {
                 </div>
               </div>
               <div>
-                <LocalizedClientLink href="/portal/loja">
-                  <div className="text-white" style={{ fontSize: '1.125rem', fontWeight: '600' }}>
+                <LocalizedClientLink href="/portal">
+                  <div
+                    className="text-white"
+                    style={{ fontSize: "1.125rem", fontWeight: "600" }}
+                  >
                     Rio Gaia
                   </div>
                 </LocalizedClientLink>
               </div>
             </div>
             <p className="text-sm text-gray-400">
-              Produção industrial de lembranças cerâmicas personalizadas para o setor do turismo em Portugal.
+              Produção industrial de lembranças cerâmicas personalizadas para o
+              setor do turismo em Portugal.
             </p>
           </div>
 
           {/* Account Links */}
           <div>
-            <h4 className="text-white mb-4" style={{ fontWeight: '600' }}>Conta</h4>
+            <h4 className="text-white mb-4" style={{ fontWeight: "600" }}>
+              Conta
+            </h4>
             <ul className="space-y-2 text-sm">
-              <li><LocalizedClientLink href="/portal/conta" className="hover:text-[#0047AB] transition-colors">Visão Geral</LocalizedClientLink></li>
-              <li><LocalizedClientLink href="/portal/conta/perfil" className="hover:text-[#0047AB] transition-colors">Perfil</LocalizedClientLink></li>
-              <li><LocalizedClientLink href="/portal/conta/empresa" className="hover:text-[#0047AB] transition-colors">Empresa</LocalizedClientLink></li>
-              <li><LocalizedClientLink href="/portal/conta/moradas" className="hover:text-[#0047AB] transition-colors">Moradas</LocalizedClientLink></li>
+              <li>
+                <LocalizedClientLink
+                  href="/portal/conta"
+                  className="hover:text-[#0047AB] transition-colors"
+                >
+                  Visão Geral
+                </LocalizedClientLink>
+              </li>
+              <li>
+                <LocalizedClientLink
+                  href="/portal/conta/perfil"
+                  className="hover:text-[#0047AB] transition-colors"
+                >
+                  Perfil
+                </LocalizedClientLink>
+              </li>
+              <li>
+                <LocalizedClientLink
+                  href="/portal/conta/empresa"
+                  className="hover:text-[#0047AB] transition-colors"
+                >
+                  Empresa
+                </LocalizedClientLink>
+              </li>
+              <li>
+                <LocalizedClientLink
+                  href="/portal/conta/moradas"
+                  className="hover:text-[#0047AB] transition-colors"
+                >
+                  Moradas
+                </LocalizedClientLink>
+              </li>
             </ul>
           </div>
 
           {/* Orders & Quotes */}
           <div>
-            <h4 className="text-white mb-4" style={{ fontWeight: '600' }}>Encomendas</h4>
+            <h4 className="text-white mb-4" style={{ fontWeight: "600" }}>
+              Encomendas
+            </h4>
             <ul className="space-y-2 text-sm">
-              <li><LocalizedClientLink href="/portal/conta/encomendas" className="hover:text-[#0047AB] transition-colors">Minhas Encomendas</LocalizedClientLink></li>
-              <li><LocalizedClientLink href="/portal/conta/orcamentos" className="hover:text-[#0047AB] transition-colors">Orçamentos</LocalizedClientLink></li>
-              <li><LocalizedClientLink href="/portal/catalogo" className="hover:text-[#0047AB] transition-colors">Catálogo</LocalizedClientLink></li>
-              <li><LocalizedClientLink href="/portal/carrinho" className="hover:text-[#0047AB] transition-colors">Carrinho</LocalizedClientLink></li>
+              <li>
+                <LocalizedClientLink
+                  href="/portal/conta/encomendas"
+                  className="hover:text-[#0047AB] transition-colors"
+                >
+                  Minhas Encomendas
+                </LocalizedClientLink>
+              </li>
+              <li>
+                <LocalizedClientLink
+                  href="/portal/conta/orcamentos"
+                  className="hover:text-[#0047AB] transition-colors"
+                >
+                  Orçamentos
+                </LocalizedClientLink>
+              </li>
+              <li>
+                <LocalizedClientLink
+                  href="/portal/catalogo"
+                  className="hover:text-[#0047AB] transition-colors"
+                >
+                  Catálogo
+                </LocalizedClientLink>
+              </li>
+              <li>
+                <LocalizedClientLink
+                  href="/portal/carrinho"
+                  className="hover:text-[#0047AB] transition-colors"
+                >
+                  Carrinho
+                </LocalizedClientLink>
+              </li>
             </ul>
           </div>
 
           {/* Contact */}
           <div>
-            <h4 className="text-white mb-4" style={{ fontWeight: '600' }}>Contacto</h4>
+            <h4 className="text-white mb-4" style={{ fontWeight: "600" }}>
+              Contacto
+            </h4>
             <ul className="space-y-3 text-sm">
               <li className="flex items-start gap-2">
                 <Phone className="w-4 h-4 mt-0.5 flex-shrink-0" />
@@ -81,13 +147,19 @@ export function ClientAreaFooter() {
                 © 2026 Rio Gaia. Todos os direitos reservados.
               </p>
               <div className="flex gap-4 text-sm">
-                <a href="#" className="text-gray-400 hover:text-[#0047AB] transition-colors">
+                <LocalizedClientLink
+                  href="/politica-privacidade"
+                  className="text-gray-400 hover:text-[#0047AB] transition-colors"
+                >
                   Política de Privacidade
-                </a>
+                </LocalizedClientLink>
                 <span className="text-gray-600">•</span>
-                <a href="#" className="text-gray-400 hover:text-[#0047AB] transition-colors">
+                <LocalizedClientLink
+                  href="/termos-e-condicoes"
+                  className="text-gray-400 hover:text-[#0047AB] transition-colors"
+                >
                   Termos e Condições
-                </a>
+                </LocalizedClientLink>
               </div>
             </div>
           </div>

@@ -1,5 +1,6 @@
 "use client"
 
+import { CONFIG } from "@/config"
 import { createQuoteMessage } from "@/lib/data/quotes"
 import { StoreCreateQuoteMessage, StoreQuoteResponse } from "@/types/quote"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -77,11 +78,10 @@ const QuoteMessages = ({
             })}
           >
             <div className="font-medium font-sans txt-compact-small text-ui-fg-subtle ">
-              {!!message.admin &&
-                `${message.admin.first_name} ${message.admin.last_name}`}
+              {!!message.admin_id && CONFIG.company.name}
 
-              {!!message.customer &&
-                `${message.customer.first_name} ${message.customer.last_name}`}
+              {!!message.customer_id &&
+                `${quote.customer?.first_name} ${quote.customer?.last_name}`}
             </div>
 
             {!!message.item_id && (
