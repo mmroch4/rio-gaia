@@ -285,11 +285,15 @@ Global middleware (src/api/middlewares.ts)
   ├── storeMiddlewares (store/middlewares.ts)
   │     ├── storeCartsMiddlewares
   │     ├── storeCompaniesMiddlewares
-  │     ├── storeQuotesMiddlewares
+  │     ├── storeContactMiddlewares        ← rate-limited (3 req/hour)
+  │     ├── storeQuotesMiddlewares         ← rate-limited (5 req/hour on POST)
   │     └── storeFreeShippingMiddlewares
   ├── vendorMiddlewares (vendor/middlewares.ts)
-  │     ├── reset-password route
+  │     ├── reset-password route           ← rate-limited (10 req/15min)
   │     └── update route
+  ├── Rate limiters on built-in auth routes
+  │     ├── POST /auth/customer/:provider   ← rate-limited (10 req/15min)
+  │     └── POST /auth/customer/:provider/register
   └── Custom: /store/customers/me → req.allowed = ["employee"]
 ```
 
@@ -473,6 +477,30 @@ Role-based access control middleware for store company routes. Used on employee 
 3. Otherwise, looks up `provider_identity` by `auth_identity_id` from auth context
 4. Checks `user_metadata.role` against the required role (e.g., `"company_admin"`)
 5. Returns 403 Forbidden if role doesn't match
+
+### Rate Limiting (`src/api/middlewares/rate-limiter.ts`)
+
+IP-based rate limiting via `express-rate-limit` with in-memory store. The `createRateLimiter()` factory produces Express middleware that returns `429 Too Many Requests` with a JSON body when limits are exceeded.
+
+**Pre-configured limiters:**
+
+| Export | Endpoints | Window | Max | Purpose |
+|--------|-----------|--------|-----|---------|
+| `authRateLimiter` | `POST /auth/customer/:provider`, `POST /auth/customer/:provider/register`, `POST /vendor/auth/*/reset-password` | 15 min | 10 | Prevents brute-force login, mass registration, password reset enumeration |
+| `quoteCreationRateLimiter` | `POST /store/quotes` | 1 hour | 5 | Prevents RFQ spam |
+| `contactFormRateLimiter` | `POST /store/contact` | 1 hour | 3 | Prevents contact form abuse |
+
+**Response on 429:**
+```json
+{
+  "type": "rate_limit",
+  "message": "Demasiados pedidos. Tente novamente mais tarde."
+}
+```
+
+All responses include `RateLimit-*` headers (IETF draft-7): `RateLimit-Limit`, `RateLimit-Remaining`, `RateLimit-Reset`. The 429 response also includes a `Retry-After` header.
+
+> **Multi-instance note:** The in-memory store is per-process. For multi-instance deployments behind a load balancer, upgrade to `rate-limit-redis` with the existing `REDIS_URL`.
 
 ---
 
@@ -944,6 +972,7 @@ Custom UI extensions for the Medusa admin panel at `/app`. Built with React, Med
 | [compose.yml](file:///home/miguel/Desktop/jobs/riogaia/backend/compose.yml) | Docker services (PostgreSQL, Redis, Meilisearch) |
 | [src/api/middlewares.ts](file:///home/miguel/Desktop/jobs/riogaia/backend/src/api/middlewares.ts) | Global middleware aggregation |
 | [src/api/middlewares/ensure-role.ts](file:///home/miguel/Desktop/jobs/riogaia/backend/src/api/middlewares/ensure-role.ts) | Role-based access control for store routes |
+| [src/api/middlewares/rate-limiter.ts](file:///home/miguel/Desktop/jobs/riogaia/backend/src/api/middlewares/rate-limiter.ts) | IP-based rate limiting for auth, quotes, and contact form |
 | [src/modules/company/models/company.ts](file:///home/miguel/Desktop/jobs/riogaia/backend/src/modules/company/models/company.ts) | Company entity definition |
 | [src/modules/company/models/employee.ts](file:///home/miguel/Desktop/jobs/riogaia/backend/src/modules/company/models/employee.ts) | Employee entity definition |
 | [src/modules/quote/models/quote.ts](file:///home/miguel/Desktop/jobs/riogaia/backend/src/modules/quote/models/quote.ts) | Quote entity definition |

@@ -4,6 +4,12 @@ import { submitContactForm } from "@/lib/data/contact"
 import { Send } from "lucide-react"
 import { useState } from "react"
 
+type SubmitStatus =
+  | { kind: "idle" }
+  | { kind: "success" }
+  | { kind: "error" }
+  | { kind: "rate_limited"; message: string }
+
 export function ContactForm() {
   const [formData, setFormData] = useState({
     name: "",
@@ -12,23 +18,25 @@ export function ContactForm() {
     message: "",
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle")
+  const [submitStatus, setSubmitStatus] = useState<SubmitStatus>({ kind: "idle" })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
-    setSubmitStatus("idle")
+    setSubmitStatus({ kind: "idle" })
 
-    try {
-      await submitContactForm(formData)
+    const result = await submitContactForm(formData)
 
-      setSubmitStatus("success")
+    if (result.success) {
+      setSubmitStatus({ kind: "success" })
       setFormData({ name: "", email: "", phone: "", message: "" })
-    } catch {
-      setSubmitStatus("error")
-    } finally {
-      setIsSubmitting(false)
+    } else if (result.rateLimited) {
+      setSubmitStatus({ kind: "rate_limited", message: result.message })
+    } else {
+      setSubmitStatus({ kind: "error" })
     }
+
+    setIsSubmitting(false)
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -128,12 +136,17 @@ export function ContactForm() {
       </button>
 
       {/* Status Messages */}
-      {submitStatus === "success" && (
+      {submitStatus.kind === "success" && (
         <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg">
           Mensagem enviada com sucesso! Entraremos em contacto em breve.
         </div>
       )}
-      {submitStatus === "error" && (
+      {submitStatus.kind === "rate_limited" && (
+        <div className="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 rounded-lg">
+          {submitStatus.message}
+        </div>
+      )}
+      {submitStatus.kind === "error" && (
         <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg">
           Erro ao enviar mensagem. Por favor, tente novamente.
         </div>

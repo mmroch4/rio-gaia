@@ -1,10 +1,10 @@
 # Rio Gaia B2B Ecommerce
 
-B2B ecommerce platform for a Portuguese ceramic company built on MedusaJS v2.8.4 (backend) and Next.js 15 (storefront). Features company management, employee hierarchies with spending limits, quote workflows, Meilisearch product search, and SMTP email notifications. Portuguese-language storefront with routes like `/conta`, `/portal`, `/produtos`.
+B2B ecommerce platform for a Portuguese ceramic company built on MedusaJS v2.13.4 (backend) and Next.js 15 (storefront). Features company management, employee hierarchies with spending limits, quote workflows, Meilisearch product search, and SMTP email notifications. Portuguese-language storefront with routes like `/conta`, `/portal`, `/produtos`.
 
 ## Tech Stack
 
-- **Backend**: MedusaJS v2.8.4, MikroORM, PostgreSQL, Redis, Zod validation
+- **Backend**: MedusaJS v2.13.4, MikroORM, PostgreSQL, Redis, Zod validation
 - **Storefront**: Next.js 15 (App Router), React 19, Tailwind CSS, Geist font
 - **Search**: Meilisearch v1.11 with real-time product sync
 - **Payments**: Stripe, PayPal
@@ -110,6 +110,7 @@ docker compose up -d  # PostgreSQL (5432), Redis (6379), Meilisearch (7700)
 - **Config**: Company details in `storefront/src/config/index.ts`
 - **Default region**: Portugal (`pt`)
 - **SEO**: Title template `"%s | Rio Gaia"` in root layout — pages export only page-specific titles. `robots.ts` blocks `/portal/`, `/conta/`, `/api/`. `sitemap.ts` lists static public `/pt/` pages. Portal layout sets `noindex, nofollow`.
+- **Rate Limiting**: IP-based throttling via `express-rate-limit` in `src/api/middlewares/rate-limiter.ts`. Auth endpoints: 10 req/15min. Quote creation: 5 req/hour. Contact form: 3 req/hour. Returns 429 with `RateLimit-*` headers (draft-7).
 
 ## Custom Modules
 

@@ -32,12 +32,16 @@ export const RequestQuoteConfirmation = ({
     setRequesting(true)
 
     try {
-      const { quote } = await createQuote()
+      const result = await createQuote()
 
-      router.push(`/${countryCode}/portal/conta/orcamentos/detalhes/${quote.id}`)
-    } catch (error) {
-      setRequesting(false)
-
+      if (result.success) {
+        router.push(`/${countryCode}/portal/conta/orcamentos/detalhes/${result.quote.id}`)
+      } else if (result.rateLimited) {
+        toast.error("Limite atingido", { description: result.message })
+      } else {
+        toast.error("Falha ao criar pedido de orçamento")
+      }
+    } catch {
       toast.error("Falha ao criar pedido de orçamento")
     }
 

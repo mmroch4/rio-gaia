@@ -8,6 +8,10 @@ import {
   getCartId,
 } from "@/lib/data/cookies"
 import {
+  getRateLimitMessage,
+  isRateLimitError,
+} from "@/lib/util/rate-limit-error"
+import {
   QuoteFilterParams,
   StoreCreateQuoteMessage,
   StoreQuotePreviewResponse,
@@ -17,26 +21,41 @@ import {
 import { track } from "@vercel/analytics/server"
 import { revalidateTag } from "next/cache"
 
-export const createQuote = async () => {
+export type CreateQuoteResult =
+  | { success: true; quote: StoreQuoteResponse["quote"] }
+  | { success: false; rateLimited: true; message: string }
+  | { success: false; rateLimited: false }
+
+export const createQuote = async (): Promise<CreateQuoteResult> => {
   const headers = {
     ...(await getAuthHeaders()),
   }
 
   const cartId = await getCartId()
 
-  return sdk.client
-    .fetch<StoreQuoteResponse>(`/store/quotes`, {
-      method: "POST",
-      body: { cart_id: cartId },
-      headers,
-    })
-    .then((quote) => {
-      track("quote_created", {
-        quote_id: quote.quote.id,
-      })
+  try {
+    const result = await sdk.client.fetch<StoreQuoteResponse>(
+      `/store/quotes`,
+      {
+        method: "POST",
+        body: { cart_id: cartId },
+        headers,
+      }
+    )
 
-      return quote
-    })
+    track("quote_created", { quote_id: result.quote.id })
+
+    return { success: true, quote: result.quote }
+  } catch (error) {
+    if (isRateLimitError(error)) {
+      return {
+        success: false,
+        rateLimited: true,
+        message: getRateLimitMessage(error),
+      }
+    }
+    throw error
+  }
 }
 
 export const fetchQuotes = async (query?: QuoteFilterParams) => {

@@ -1,4 +1,5 @@
 import { MiddlewareRoute, validateAndTransformBody } from "@medusajs/framework"
+import { authRateLimiter } from "../middlewares/rate-limiter"
 import { validateScopeProviderAssociation } from "./utils/validate-scope-provider-association"
 import { validateToken } from "./utils/validate-token"
 import { ResetPasswordRequest } from "./validators"
@@ -8,6 +9,7 @@ export const vendorMiddlewares: MiddlewareRoute[] = [
     method: ["POST"],
     matcher: "/vendor/auth/:actor_type/:auth_provider/reset-password",
     middlewares: [
+      authRateLimiter,
       validateScopeProviderAssociation(),
       validateAndTransformBody(ResetPasswordRequest),
     ],

@@ -125,3 +125,11 @@ All three entity types cascade deletions bidirectionally:
 | Delete **Customer** | → employee (soft) → auth identity (hard) |
 
 Auth identities are hard-deleted (not soft) to enable email reuse for re-registration. Customer email uniqueness uses `WHERE deleted_at IS NULL`, so soft-deleted customers don't block new signups.
+
+## Security
+
+- **Secrets**: `JWT_SECRET` and `COOKIE_SECRET` are required — fail-fast on missing env vars (no fallback defaults)
+- **HTTP Headers**: `X-Content-Type-Options`, `X-Frame-Options`, `HSTS`, `Referrer-Policy`, `Permissions-Policy` on all storefront routes
+- **Cookies**: `_medusa_cache_id` set with `httpOnly`, `sameSite: lax`, `secure` (production)
+- **Rate Limiting**: IP-based throttling via `express-rate-limit` on auth (10 req/15min), quote creation (5 req/hour), and contact form (3 req/hour). See `backend/src/api/middlewares/rate-limiter.ts`
+- **Docker**: Pinned image versions (`postgres:16-alpine`, `redis:7-alpine`), parameterized passwords

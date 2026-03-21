@@ -4,6 +4,7 @@ import {
   validateAndTransformQuery,
 } from "@medusajs/framework";
 import { MiddlewareRoute } from "@medusajs/medusa";
+import { quoteCreationRateLimiter } from "../../middlewares/rate-limiter";
 import {
   listQuotesTransformQueryConfig,
   retrieveQuoteTransformQueryConfig,
@@ -33,6 +34,7 @@ export const storeQuotesMiddlewares: MiddlewareRoute[] = [
     method: ["POST"],
     matcher: "/store/quotes",
     middlewares: [
+      quoteCreationRateLimiter,
       validateAndTransformBody(CreateQuote),
       validateAndTransformQuery(
         GetQuoteParams,

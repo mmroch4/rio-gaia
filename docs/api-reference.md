@@ -60,7 +60,7 @@ Base URL: `http://localhost:9000`
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/store/quotes` | List customer's quotes |
-| POST | `/store/quotes` | Create request for quote (RFQ) |
+| POST | `/store/quotes` | Create request for quote (RFQ). **Rate limit:** 5 req/hour/IP |
 | GET | `/store/quotes/:id` | Retrieve quote |
 | GET | `/store/quotes/:id/preview` | Preview quote |
 | POST | `/store/quotes/:id/accept` | Accept quote (creates order) |
@@ -86,13 +86,15 @@ Base URL: `http://localhost:9000`
 |--------|----------|-------------|
 | POST | `/store/contact` | Submit contact form. Body: `{ name: string, email: string, phone?: string, message: string }`. Sends notification to admin + confirmation to sender. Returns `{ success: true }` |
 
+> **Rate limit:** 3 requests per hour per IP. Returns 429 when exceeded.
+
 ## Vendor Endpoints
 
 ### Auth
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/vendor/auth/:actor_type/:auth_provider/reset-password` | Request password reset |
+| POST | `/vendor/auth/:actor_type/:auth_provider/reset-password` | Request password reset. **Rate limit:** 10 req/15min/IP |
 | POST | `/vendor/auth/:actor_type/:auth_provider/update` | Update auth provider info |
 
 **Actor types**: `customer`, `vendor`, `admin`
@@ -140,6 +142,35 @@ All responses follow MedusaJS conventions:
 ## Validation
 
 All request bodies are validated with Zod schemas. Invalid requests return 400 with validation errors. Validators are defined in `validators.ts` files alongside each route group.
+
+## Rate Limiting
+
+Public and sensitive endpoints are protected by IP-based rate limiting via `express-rate-limit`. Limits are applied per-IP using an in-memory store.
+
+| Endpoint | Limit | Window |
+|----------|-------|--------|
+| `POST /auth/customer/:provider` (login) | 10 requests | 15 minutes |
+| `POST /auth/customer/:provider/register` (signup) | 10 requests | 15 minutes |
+| `POST /vendor/auth/*/reset-password` | 10 requests | 15 minutes |
+| `POST /store/quotes` (create RFQ) | 5 requests | 1 hour |
+| `POST /store/contact` | 3 requests | 1 hour |
+
+All auth endpoints share the same limiter instance — requests across login, register, and password reset count toward the same 10 req/15min budget per IP.
+
+**Response headers** (on all rate-limited endpoints):
+- `RateLimit-Limit` — Maximum requests allowed in the window
+- `RateLimit-Remaining` — Requests remaining in the current window
+- `RateLimit-Reset` — Seconds until the window resets
+
+**429 response** (when limit exceeded):
+```json
+{
+  "type": "rate_limit",
+  "message": "Demasiados pedidos. Tente novamente mais tarde."
+}
+```
+
+The response includes a `Retry-After` header with seconds until the limit resets.
 
 ## Quote Events
 

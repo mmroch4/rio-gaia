@@ -2,6 +2,10 @@
 
 import { sdk } from "@/lib/config"
 import medusaError from "@/lib/util/medusa-error"
+import {
+  getRateLimitMessage,
+  isRateLimitError,
+} from "@/lib/util/rate-limit-error"
 import { B2BCustomer } from "@/types/global"
 import { HttpTypes } from "@medusajs/types"
 import { track } from "@vercel/analytics/server"
@@ -117,6 +121,7 @@ export async function signup(_currentState: unknown, formData: FormData) {
       spending_limit: 0,
     }, customAuthHeaders).catch(() => {})
   } catch (error: any) {
+    if (isRateLimitError(error)) return getRateLimitMessage(error)
     return error.toString()
   }
 
@@ -164,12 +169,14 @@ export async function login(_currentState: unknown, formData: FormData) {
 
       })
   } catch (error: any) {
+    if (isRateLimitError(error)) return getRateLimitMessage(error)
     return error.toString()
   }
 
   try {
     await transferCart()
   } catch (error: any) {
+    if (isRateLimitError(error)) return getRateLimitMessage(error)
     return error.toString()
   }
 

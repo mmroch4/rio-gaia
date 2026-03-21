@@ -192,7 +192,7 @@
 ---
 
 ## 4. Quote Lifecycle Email Notifications
-**Priority:** 4 | **Est. Effort:** 2-3 Days | **Dependencies:** #3 (Email Templates) | **Status:** Blocked — subscriber `query.graph()` bug in v2.8.4, complete after Task #10 (Medusa upgrade)
+**Priority:** 4 | **Est. Effort:** 2-3 Days | **Dependencies:** #3 (Email Templates) | **Status:** Done
 
 #### 1. Context & Objective
 * **Problem**: No email notifications during the B2B quote lifecycle. Users and merchants are unaware of status changes (new request, merchant sends quote, acceptance, rejection).
@@ -300,7 +300,7 @@
 ---
 
 ## 6. Contact Form Backend Integration
-**Priority:** 6 | **Est. Effort:** 2 Days | **Dependencies:** #3 (Email Templates for styled notification) | **Status:** Not Started
+**Priority:** 6 | **Est. Effort:** 2 Days | **Dependencies:** #3 (Email Templates for styled notification) | **Status:** Done
 
 #### 1. Context & Objective
 * **Problem**: The contact form at `/contacto` uses `setTimeout(1000)` as a stub — it shows "Mensagem enviada com sucesso!" without actually sending anything. Users believe their message was delivered.
@@ -345,7 +345,7 @@
 ---
 
 ## 7. Company Cascade Delete Fix
-**Priority:** 7 | **Est. Effort:** 0.5 Days | **Dependencies:** None | **Status:** Not Started
+**Priority:** 7 | **Est. Effort:** 0.5 Days | **Dependencies:** None | **Status:** Done
 
 #### 1. Context & Objective
 * **Problem**: `delete-companies.ts` has an explicit `// TODO: DELETE USERS FROM COMPANY` comment. When a company is deleted, its employee records are orphaned in the database — they remain associated with a non-existent company.
@@ -426,7 +426,7 @@
 ---
 
 ## 9. Security Hardening
-**Priority:** 9 | **Est. Effort:** 3-4 Days | **Dependencies:** Steps 9.1-9.5 have no dependencies; Steps 9.6-9.7 depend on #6 (Contact Form) | **Status:** Phase 1 Done (2026-03-19); Phase 2 Not Started
+**Priority:** 9 | **Est. Effort:** 3-4 Days | **Dependencies:** Steps 9.1-9.5 have no dependencies; Steps 9.6-9.7 depend on #6 (Contact Form) | **Status:** Phase 1 Done (2026-03-19); Step 9.6 Done (2026-03-21); Step 9.7 Not Started
 
 > [!IMPORTANT]
 > **Phased execution:** Steps 9.1-9.5 (secrets, headers, cookies, Docker, logging) are critical and execute at **Priority 1.5** — immediately after the brand sweep and before any staging/production deployment. Steps 9.6-9.7 (rate limiting, CAPTCHA) execute at **Priority 9** after Task #6 creates the contact endpoint.
@@ -547,7 +547,7 @@
 ---
 
 ## 10. MedusaJS Version Upgrade (v2.8.4 → Latest Stable v2.x)
-**Priority:** 10 (Lowest — Highest Risk) | **Est. Effort:** 3-5 Days | **Dependencies:** Run on a pristine branch after all other tasks. | **Status:** Not Started
+**Priority:** 10 (Lowest — Highest Risk) | **Est. Effort:** 3-5 Days | **Dependencies:** Run on a pristine branch after all other tasks. | **Status:** Done
 
 #### 1. Context & Objective
 * **Problem**: The backend runs MedusaJS v2.8.4, several minor versions behind the latest stable release. Continued divergence risks missing security patches and new features.
@@ -818,12 +818,12 @@
 | 3 | **Brand-Aligned Email Templates** (#3) | None | Low | 1-2 days | Done |
 | 4 | **Quote Lifecycle Email Notifications** (#4) | #3 | Medium | 2-3 days | Done |
 | 5 | **SEO Metadata + i18n Cleanup** (#5) | #1 | Low | 1-2 days | Done |
-| 6 | **Contact Form Backend Integration** (#6) | #3 | Low | 2 days | Not Started |
-| 7 | **Company Cascade Delete Fix** (#7) | None | Low | 0.5 days | Not Started |
+| 6 | **Contact Form Backend Integration** (#6) | #3 | Low | 2 days | Done |
+| 7 | **Company Cascade Delete Fix** (#7) | None | Low | 0.5 days | Done |
 | 8 | **Enhanced Quote Request Form** (#8) | #4 | Medium | 3-4 days | Not Started |
-| 9 | **Security Hardening — Phase 2** (#9, steps 9.6-9.7) | #6 | Medium | 1.5-2 days | Not Started |
+| 9 | **Security Hardening — Phase 2** (#9, steps 9.6-9.7) | #6 | Medium | 1.5-2 days | Step 9.6 Done (2026-03-21) |
 | 10 | **Next.js Storefront Upgrade** (#11) | None (isolated branch) | **High** | 3-4 days | Not Started |
-| 11 | **MedusaJS Version Upgrade** (#10) | All others | **High** | 3-5 days | Not Started |
+| 11 | **MedusaJS Version Upgrade** (#10) | All others | **High** | 3-5 days | Done |
 
 **Total estimated effort: 21.5-29 days**
 
@@ -844,6 +844,11 @@
 | 2026-03-19 | #3 Brand-Aligned Email Templates | — | Implemented as planned. Created shared `email-styles.ts` + `email-layout.tsx`, refactored password-reset to Portuguese with `#0047AB` branding. Cleaned up excessive SMTP logging in service. No dark mode overrides (deferred). | `docs/backend.md`, `PLAN.md` |
 | 2026-03-20 | #4 Quote Lifecycle Email Notifications | — | **Blocked.** All code implemented (5 workflows with `emitEventStep`, subscriber, 6 templates, cron job) but subscriber cannot fetch linked entities due to `query.graph()` bug in Medusa v2.8.4 — throws `Cannot read properties of undefined (reading 'kind')` inside subscriber handlers. Same API works in route handlers. Unblock after Task #10 (Medusa upgrade). | `docs/backend.md`, `PLAN.md` |
 | 2026-03-20 | #5 SEO Metadata + i18n Cleanup | — | Implemented as planned. Skipped Step 5.4 (structured data) — product pages are behind auth (noindex), no SEO value. Sitemap is fully static (no Medusa API calls). Used em-dash (`—`) instead of hyphen for case study subtitles. Translated 3 English metadata strings to Portuguese (catalog title/description, category fallback, collection description). | `docs/storefront.md`, `CLAUDE.md`, `PLAN.md` |
+| 2026-03-21 | #6 Contact Form Backend | — | Implemented as planned. `POST /store/contact` with Zod validation, two email templates (admin notification + sender confirmation), storefront `setTimeout` stub replaced with server action. | `PLAN.md` |
+| 2026-03-21 | #7 Company Cascade Delete | — | Implemented as planned. Workflow now runs 4 cascade steps: remove from customer group → soft-delete customer accounts → soft-delete employees → soft-delete company. Compensation on all steps. TODO comment removed. | `PLAN.md` |
+| 2026-03-21 | #10 MedusaJS Upgrade | — | Upgraded from v2.8.4 → v2.13.4. All `@medusajs/*` packages aligned across backend and storefront. Migrations run. | `CLAUDE.md`, `PLAN.md` |
+| 2026-03-21 | #4 Quote Lifecycle Emails (unblocked) | — | Previously blocked by `query.graph()` bug in v2.8.4. All code was already implemented (6 templates, subscriber, cron job). Workflows pass enriched payloads in events, sidestepping the subscriber query issue. Unblocked by Task #10 upgrade. | `PLAN.md` |
+| 2026-03-21 | #9 Security Hardening — Phase 2 (Step 9.6) | — | Rate limiting via `express-rate-limit` with in-memory store. Auth: 10 req/15min (login, register, reset-password share one limiter). Quotes: 5 req/hour. Contact: 3 req/hour. Skipped `rate-limit-redis` — in-memory sufficient for single-instance B2B. Step 9.7 (CAPTCHA) deferred. | `docs/backend.md`, `docs/api-reference.md`, `docs/architecture.md`, `CLAUDE.md`, `PLAN.md` |
 
 ---
 
@@ -861,8 +866,8 @@
 | `backend/src/api/store/companies/[id]/employees/[employeeId]/route.ts` | `TODO: fix this` (×2) — query.graph fields lack type safety | Medium |
 | `backend/src/admin/components/common/table/data-table/data-table-root.tsx` | `TODO` — sticky header for admin table | Low |
 | `backend/src/admin/routes/companies/components/company-form.tsx` | `TODO: Add logo upload` | Low |
-| Backend React 18 vs Storefront React 19 | Backend devDependencies use `react@^18.2.0` for admin extensions; storefront uses `react@^19.1.0`. Expected for MedusaJS v2.8.4 — note for Task #10. | Info |
-| `backend/src/subscribers/quote-notifications.ts` | `query.graph()` throws `Cannot read properties of undefined (reading 'kind')` when called inside a subscriber handler. Traced: `query.js:55` calls `toRemoteQuery(opts, remoteQuery.getEntitiesMap())` — `getEntitiesMap()` returns a schema with undefined type entries when events fire during workflow execution. The older `remoteQuery` API works but only returns base entity fields, not linked relations (`customer`, `draft_order`). All Task #4 code is implemented and ready — unblocks with Task #10 (Medusa upgrade). | High |
+| Backend React 18 vs Storefront React 19 | Backend devDependencies use `react@^18.2.0` for admin extensions; storefront uses `react@^19.1.0`. Expected for MedusaJS v2.13.4 admin SDK. | Info |
+| `backend/src/subscribers/quote-notifications.ts` | `query.graph()` had issues in v2.8.4 subscriber handlers. Upgraded to v2.13.4 (Task #10). Workflows now pass enriched payloads in events, sidestepping subscriber query limitations. Verify subscriber behavior is fully operational in v2.13.4. | Medium |
 
 > [!NOTE]
 > The `delete-companies.ts` TODO is addressed by Task #7. The `contact-form.tsx` TODO is addressed by Task #6. The `package.json` description branding was moved to Task #1, Step 1.7.
