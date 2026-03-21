@@ -200,7 +200,7 @@ Takes SMTP options: `smtp_host`, `smtp_port`, `smtp_user`, `smtp_pass`, `smtp_fr
 Handles notifications dispatched through Medusa's notification system:
 
 1. Validates `channel === "email"` (warns and returns `"unsupported-channel"` otherwise)
-2. Renders template by name (`"password-reset"`, `"quote-requested"`, `"quote-sent"`, `"quote-accepted"`, `"quote-rejected"`, `"quote-admin-notification"`, `"quote-message-notification"`) — unrecognized templates return `"unsupported-template"`
+2. Renders template by name (`"password-reset"`, `"quote-requested"`, `"quote-sent"`, `"quote-accepted"`, `"quote-rejected"`, `"quote-admin-notification"`, `"quote-message-notification"`, `"contact-form-notification"`, `"contact-form-confirmation"`) — unrecognized templates return `"unsupported-template"`
 3. Sends via Nodemailer transporter
 4. Logs message ID, supports Ethereal preview URLs in dev
 
@@ -237,6 +237,8 @@ React-email template (`templates/password-reset.tsx`) in Portuguese:
 | `quote-rejected` | Customer | `quote.merchant_rejected` | Quote declined notification |
 | `quote-admin-notification` | Admin | `quote.requested`, `quote.accepted`, `quote.customer_rejected` | Generic admin notification with dynamic content based on event type |
 | `quote-message-notification` | Customer or Admin | `quote.message_created` | Bidirectional message notification showing sender name, message text in styled quote block, and CTA to quote detail |
+| `contact-form-notification` | Admin | `POST /store/contact` | Internal notification with sender name, email, phone, and message text |
+| `contact-form-confirmation` | Sender | `POST /store/contact` | Confirmation email to the person who submitted the contact form |
 
 #### Quote Notification Subscriber (`src/subscribers/quote-notifications.ts`)
 
@@ -429,6 +431,15 @@ Store creates additionally accept `spending_limit_reset_frequency` (enum, option
    - `target_remaining` — amount left to qualify
    - `remaining_percentage` — progress percentage
    - Supports operators: `gt`, `gte`, `lt`, `lte`, `eq`
+
+#### Contact Form (`/store/contact`)
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| POST | `/store/contact` | **None (public)** | Sends contact form submission. Validates `{ name, email, phone?, message }` with Zod. Dispatches two emails: `contact-form-notification` to admin (`SMTP_FROM`) and `contact-form-confirmation` to the sender |
+
+> [!NOTE]
+> This is one of the few `/store/*` routes that does NOT require customer authentication — it's accessible to anyone visiting the public `/contacto` page.
 
 ### Vendor Routes (`/vendor/*`)
 

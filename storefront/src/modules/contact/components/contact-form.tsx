@@ -1,5 +1,6 @@
 "use client"
 
+import { submitContactForm } from "@/lib/data/contact"
 import { Send } from "lucide-react"
 import { useState } from "react"
 
@@ -19,12 +20,11 @@ export function ContactForm() {
     setSubmitStatus("idle")
 
     try {
-      // TODO: Implement actual form submission
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      await submitContactForm(formData)
 
       setSubmitStatus("success")
       setFormData({ name: "", email: "", phone: "", message: "" })
-    } catch (error) {
+    } catch {
       setSubmitStatus("error")
     } finally {
       setIsSubmitting(false)

@@ -4,6 +4,8 @@ import {
 } from "@medusajs/framework/utils";
 import { render } from "@react-email/components";
 import nodemailer from "nodemailer";
+import ContactFormConfirmationEmail from "./templates/contact-form-confirmation";
+import ContactFormNotificationEmail from "./templates/contact-form-notification";
 import PasswordResetEmail from "./templates/password-reset";
 import QuoteAcceptedEmail from "./templates/quote-accepted";
 import QuoteAdminNotificationEmail from "./templates/quote-admin-notification";
@@ -130,6 +132,20 @@ export class EmailNotificationProviderService extends AbstractNotificationProvid
             QuoteMessageNotificationEmail(notification.data as any)
           );
           subject = "Nova mensagem no orçamento — Rio Gaia";
+          break;
+
+        case "contact-form-notification":
+          html = await render(
+            ContactFormNotificationEmail(notification.data as any)
+          );
+          subject = "Nova mensagem de contacto — Rio Gaia";
+          break;
+
+        case "contact-form-confirmation":
+          html = await render(
+            ContactFormConfirmationEmail(notification.data as any)
+          );
+          subject = "Mensagem recebida — Rio Gaia";
           break;
 
         default:

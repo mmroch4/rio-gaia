@@ -1,3 +1,4 @@
+import { CONFIG } from "@/config"
 import { listRegions } from "@/lib/data/regions"
 import { ContactForm } from "@/modules/contact/components/contact-form"
 import { Footer } from "@/modules/home/components/Footer"
@@ -72,7 +73,7 @@ export default async function ContactPage() {
                 </div>
                 <div>
                   <h3 className="text-gray-900 font-semibold mb-1">Telefone</h3>
-                  <p className="text-gray-600">+351 XXX XXX XXX</p>
+                  <p className="text-gray-600">{CONFIG.company.phone}</p>
                   <p className="text-sm text-gray-500">Dias úteis, 9h-18h</p>
                 </div>
               </div>
@@ -86,7 +87,7 @@ export default async function ContactPage() {
                 </div>
                 <div>
                   <h3 className="text-gray-900 font-semibold mb-1">Email</h3>
-                  <p className="text-gray-600">info@riogaia.pt</p>
+                  <p className="text-gray-600">{CONFIG.company.email}</p>
                   <p className="text-sm text-gray-500">Resposta em até 24h</p>
                 </div>
               </div>
@@ -100,9 +101,7 @@ export default async function ContactPage() {
                 </div>
                 <div>
                   <h3 className="text-gray-900 font-semibold mb-1">Morada</h3>
-                  <p className="text-gray-600">Rua Example, 123</p>
-                  <p className="text-gray-600">4400-000 Vila Nova de Gaia</p>
-                  <p className="text-gray-600">Portugal</p>
+                  <p className="text-gray-600">{CONFIG.company.address}</p>
                 </div>
               </div>
             </div>

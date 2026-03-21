@@ -80,6 +80,12 @@ Base URL: `http://localhost:9000`
 |--------|----------|-------------|
 | GET | `/store/free-shipping/prices` | Get free shipping price rules |
 
+### Contact Form (public — no auth)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/store/contact` | Submit contact form. Body: `{ name: string, email: string, phone?: string, message: string }`. Sends notification to admin + confirmation to sender. Returns `{ success: true }` |
+
 ## Vendor Endpoints
 
 ### Auth
