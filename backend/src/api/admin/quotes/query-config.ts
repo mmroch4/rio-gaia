@@ -1,6 +1,7 @@
 export const quoteFields = [
   "id",
   "status",
+  "custom_details",
   "created_at",
   "updated_at",
   "*customer",
@@ -41,6 +42,8 @@ export const quoteFields = [
   "*draft_order.items.variant",
   "*draft_order.items.variant.product",
   "*draft_order.items.detail",
+  "draft_order.shipping_address.*",
+  "draft_order.billing_address.*",
   "*order_change.actions",
 ];
 

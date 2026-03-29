@@ -10,10 +10,13 @@ import React, { useEffect, useMemo, useState } from "react"
 const ShippingAddressForm = ({
   customer,
   cart,
+  readOnlyFields = [],
 }: {
   customer: B2BCustomer | null
   cart: B2BCart | null
+  readOnlyFields?: string[]
 }) => {
+  const isReadOnly = (field: string) => readOnlyFields.includes(field)
   const [formData, setFormData] = useState<Record<string, any>>({
     "shipping_address.first_name": "",
     "shipping_address.last_name": "",
@@ -110,6 +113,9 @@ const ShippingAddressForm = ({
           value={formData["shipping_address.first_name"]}
           onChange={handleChange}
           required
+          readOnly={isReadOnly("first_name")}
+          tabIndex={isReadOnly("first_name") ? -1 : undefined}
+          className={isReadOnly("first_name") ? "bg-ui-bg-disabled text-ui-fg-disabled cursor-not-allowed" : undefined}
           data-testid="shipping-first-name-input"
         />
         <Input
@@ -119,6 +125,9 @@ const ShippingAddressForm = ({
           value={formData["shipping_address.last_name"]}
           onChange={handleChange}
           required
+          readOnly={isReadOnly("last_name")}
+          tabIndex={isReadOnly("last_name") ? -1 : undefined}
+          className={isReadOnly("last_name") ? "bg-ui-bg-disabled text-ui-fg-disabled cursor-not-allowed" : undefined}
           data-testid="shipping-last-name-input"
         />
         <Input
@@ -136,6 +145,9 @@ const ShippingAddressForm = ({
           value={formData["shipping_address.company"]}
           onChange={handleChange}
           autoComplete="organization"
+          readOnly={isReadOnly("company")}
+          tabIndex={isReadOnly("company") ? -1 : undefined}
+          className={isReadOnly("company") ? "bg-ui-bg-disabled text-ui-fg-disabled cursor-not-allowed" : undefined}
           data-testid="shipping-company-input"
           colSpan={2}
         />

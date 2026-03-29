@@ -205,6 +205,82 @@ const QuoteDetails: React.FC<QuoteDetailsProps> = ({
               </div>
             </div>
           </Container>
+
+          {order.shipping_address && (
+            <Container>
+              <Heading level="h3" className="mb-2">
+                Morada de Entrega
+              </Heading>
+
+              <div className="text-sm text-ui-fg-subtle">
+                <Text>
+                  {order.shipping_address.first_name}{" "}
+                  {order.shipping_address.last_name}
+                </Text>
+                {order.shipping_address.company && (
+                  <Text>{order.shipping_address.company}</Text>
+                )}
+                <Text>{order.shipping_address.address_1}</Text>
+                <Text>
+                  {order.shipping_address.postal_code}{" "}
+                  {order.shipping_address.city}
+                </Text>
+                {order.shipping_address.province && (
+                  <Text>{order.shipping_address.province}</Text>
+                )}
+                <Text>
+                  {order.shipping_address.country_code?.toUpperCase()}
+                </Text>
+                {order.shipping_address.phone && (
+                  <Text>{order.shipping_address.phone}</Text>
+                )}
+              </div>
+            </Container>
+          )}
+
+          {order.billing_address && (
+            <Container>
+              <Heading level="h3" className="mb-2">
+                Morada de Faturacao
+              </Heading>
+
+              <div className="text-sm text-ui-fg-subtle">
+                <Text>
+                  {order.billing_address.first_name}{" "}
+                  {order.billing_address.last_name}
+                </Text>
+                {order.billing_address.company && (
+                  <Text>{order.billing_address.company}</Text>
+                )}
+                <Text>{order.billing_address.address_1}</Text>
+                <Text>
+                  {order.billing_address.postal_code}{" "}
+                  {order.billing_address.city}
+                </Text>
+                {order.billing_address.province && (
+                  <Text>{order.billing_address.province}</Text>
+                )}
+                <Text>
+                  {order.billing_address.country_code?.toUpperCase()}
+                </Text>
+                {order.billing_address.phone && (
+                  <Text>{order.billing_address.phone}</Text>
+                )}
+              </div>
+            </Container>
+          )}
+
+          {quote.custom_details && (
+            <Container>
+              <Heading level="h3" className="mb-2">
+                Notas do Cliente
+              </Heading>
+
+              <Text className="text-sm text-ui-fg-subtle whitespace-pre-wrap">
+                {quote.custom_details}
+              </Text>
+            </Container>
+          )}
         </div>
       </div>
     </div>

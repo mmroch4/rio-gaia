@@ -8,6 +8,7 @@ import {
 } from "@/lib/data/cookies"
 import {
   StoreCompaniesResponse,
+  StoreCompanyAddressResponse,
   StoreCompanyResponse,
   StoreCreateCompany,
   StoreCreateEmployee,
@@ -32,7 +33,7 @@ export const retrieveCompany = async (companyId: string) => {
     {
       query: {
         fields:
-          "+spending_limit_reset_frequency,*employees.customer",
+          "+spending_limit_reset_frequency,*employees.customer,*addresses",
       },
       method: "GET",
       headers,
@@ -147,6 +148,123 @@ export const deleteEmployee = async (companyId: string, employeeId: string) => {
 
   await sdk.client.fetch(
     `/store/companies/${companyId}/employees/${employeeId}`,
+    {
+      method: "DELETE",
+      headers,
+    }
+  )
+
+  const cacheTag = await getCacheTag("companies")
+  revalidateTag(cacheTag)
+}
+
+/* CompanyAddress Actions */
+
+export const createCompanyAddress = async (
+  _currentState: { success: boolean; error: string | null },
+  formData: FormData
+): Promise<{ success: boolean; error: string | null }> => {
+  const companyId = formData.get("company_id") as string
+
+  const headers = {
+    ...(await getAuthHeaders()),
+  }
+
+  try {
+    await sdk.client.fetch<StoreCompanyAddressResponse>(
+      `/store/companies/${companyId}/addresses`,
+      {
+        method: "POST",
+        body: {
+          label: formData.get("label") as string,
+          first_name: (formData.get("first_name") as string) || null,
+          last_name: (formData.get("last_name") as string) || null,
+          address_1: formData.get("address_1") as string,
+          address_2: (formData.get("address_2") as string) || null,
+          postal_code: formData.get("postal_code") as string,
+          city: formData.get("city") as string,
+          province: formData.get("province") as string,
+          country_code: formData.get("country_code") as string,
+          phone: (formData.get("phone") as string) || null,
+        },
+        headers,
+      }
+    )
+
+    const cacheTag = await getCacheTag("companies")
+    revalidateTag(cacheTag)
+
+    return { success: true, error: null }
+  } catch (error: any) {
+    return { success: false, error: error.message || "Erro ao criar morada" }
+  }
+}
+
+export const updateCompanyAddress = async (
+  currentState: {
+    success: boolean
+    error: string | null
+    addressId: string
+    companyId: string
+  },
+  formData: FormData
+): Promise<{
+  success: boolean
+  error: string | null
+  addressId: string
+  companyId: string
+}> => {
+  const { addressId, companyId } = currentState
+
+  const headers = {
+    ...(await getAuthHeaders()),
+  }
+
+  try {
+    await sdk.client.fetch<StoreCompanyAddressResponse>(
+      `/store/companies/${companyId}/addresses/${addressId}`,
+      {
+        method: "POST",
+        body: {
+          label: formData.get("label") as string,
+          first_name: (formData.get("first_name") as string) || null,
+          last_name: (formData.get("last_name") as string) || null,
+          address_1: formData.get("address_1") as string,
+          address_2: (formData.get("address_2") as string) || null,
+          postal_code: formData.get("postal_code") as string,
+          city: formData.get("city") as string,
+          province: formData.get("province") as string,
+          country_code: formData.get("country_code") as string,
+          phone: (formData.get("phone") as string) || null,
+        },
+        headers,
+      }
+    )
+
+    const cacheTag = await getCacheTag("companies")
+    revalidateTag(cacheTag)
+
+    return { success: true, error: null, addressId, companyId }
+  } catch (error: any) {
+    return {
+      success: false,
+      error: error.message || "Erro ao atualizar morada",
+      addressId,
+      companyId,
+    }
+  }
+}
+
+export const deleteCompanyAddress = async (
+  companyId: string,
+  addressId: string
+) => {
+  const headers = {
+    ...(await getAuthHeaders()),
+  }
+
+  await sdk.client.fetch(
+    `/store/companies/${companyId}/addresses/${addressId}`,
     {
       method: "DELETE",
       headers,

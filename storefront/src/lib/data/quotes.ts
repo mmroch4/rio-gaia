@@ -26,7 +26,9 @@ export type CreateQuoteResult =
   | { success: false; rateLimited: true; message: string }
   | { success: false; rateLimited: false }
 
-export const createQuote = async (): Promise<CreateQuoteResult> => {
+export const createQuote = async (
+  customDetails?: string
+): Promise<CreateQuoteResult> => {
   const headers = {
     ...(await getAuthHeaders()),
   }
@@ -34,11 +36,18 @@ export const createQuote = async (): Promise<CreateQuoteResult> => {
   const cartId = await getCartId()
 
   try {
+    const body: { cart_id: string | null; custom_details?: string } = {
+      cart_id: cartId,
+    }
+    if (customDetails) {
+      body.custom_details = customDetails
+    }
+
     const result = await sdk.client.fetch<StoreQuoteResponse>(
       `/store/quotes`,
       {
         method: "POST",
-        body: { cart_id: cartId },
+        body,
         headers,
       }
     )

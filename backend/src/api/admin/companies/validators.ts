@@ -94,3 +94,46 @@ export const AdminUpdateEmployee = z
     is_admin: z.boolean().optional(),
   })
   .strict();
+
+/* CompanyAddress Validators */
+
+export type AdminGetCompanyAddressParamsType = z.infer<
+  typeof AdminGetCompanyAddressParams
+>;
+export const AdminGetCompanyAddressParams = createSelectParams();
+
+export type AdminCreateCompanyAddressType = z.infer<
+  typeof AdminCreateCompanyAddress
+>;
+export const AdminCreateCompanyAddress = z
+  .object({
+    label: z.string(),
+    first_name: z.string().optional().nullable(),
+    last_name: z.string().optional().nullable(),
+    address_1: z.string(),
+    address_2: z.string().optional().nullable(),
+    postal_code: z.string(),
+    city: z.string(),
+    province: z.string(),
+    country_code: z.string(),
+    phone: z.string().optional().nullable(),
+  })
+  .strict();
+
+export type AdminUpdateCompanyAddressType = z.infer<
+  typeof AdminUpdateCompanyAddress
+>;
+export const AdminUpdateCompanyAddress = z
+  .object({
+    label: z.string().optional(),
+    first_name: z.string().optional().nullable(),
+    last_name: z.string().optional().nullable(),
+    address_1: z.string().optional(),
+    address_2: z.string().optional().nullable(),
+    postal_code: z.string().optional(),
+    city: z.string().optional(),
+    province: z.string().optional(),
+    country_code: z.string().optional(),
+    phone: z.string().optional().nullable(),
+  })
+  .strict();

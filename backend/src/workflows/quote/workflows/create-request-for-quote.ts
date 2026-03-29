@@ -24,7 +24,11 @@ import { createQuotesWorkflow } from "./create-quote";
 */
 export const createRequestForQuoteWorkflow = createWorkflow(
   "create-request-for-quote",
-  function (input: { cart_id: string; customer_id: string }) {
+  function (input: {
+    cart_id: string;
+    customer_id: string;
+    custom_details?: string;
+  }) {
     const cart = useRemoteQueryStep({
       entry_point: "cart",
       fields: [
@@ -87,15 +91,23 @@ export const createRequestForQuoteWorkflow = createWorkflow(
       input: orderEditInput,
     });
 
-    const quotes = createQuotesWorkflow.runAsStep({
-      input: [
+    const quoteInput = transform(
+      { draftOrder, cart, customer, changeOrder, input },
+      ({ draftOrder, cart, customer, changeOrder, input }) => [
         {
           draft_order_id: draftOrder.id,
           cart_id: cart.id,
           customer_id: customer.id,
           order_change_id: changeOrder.id,
+          ...(input.custom_details
+            ? { custom_details: input.custom_details }
+            : {}),
         },
-      ],
+      ]
+    );
+
+    const quotes = createQuotesWorkflow.runAsStep({
+      input: quoteInput,
     });
 
     const quoteEventData = transform(

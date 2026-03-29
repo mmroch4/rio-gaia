@@ -31,6 +31,7 @@ export type CreateQuoteType = z.infer<typeof CreateQuote>;
 export const CreateQuote = z
   .object({
     cart_id: z.string().min(1),
+    custom_details: z.string().max(2000).optional(),
   })
   .strict();
 

@@ -59,6 +59,8 @@ export default async function quoteNotificationHandler({
     logger.info(
       `TRYING TO SEND NOTIFICATIONS: ${eventName} - CUSTOMER: ${customerEmail} - ADMIN: ${adminEmail}`,
     );
+    
+    console.log("--------", quote)
 
     const notifications: Array<{
       to: string;

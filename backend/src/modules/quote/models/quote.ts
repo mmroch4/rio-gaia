@@ -16,5 +16,6 @@ export const Quote = model.define("quote", {
   draft_order_id: model.text(),
   order_change_id: model.text(),
   cart_id: model.text(),
+  custom_details: model.text().nullable(),
   messages: model.hasMany(() => Message),
 });

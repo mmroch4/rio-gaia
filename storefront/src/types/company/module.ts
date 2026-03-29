@@ -76,3 +76,23 @@ export interface ModuleUpdateEmployee extends Partial<ModuleEmployee> {
 export type ModuleDeleteEmployee = {
   id: string;
 };
+
+/* Entity: CompanyAddress */
+
+export interface ModuleCompanyAddress {
+  id: string;
+  label: string;
+  first_name: string | null;
+  last_name: string | null;
+  company_name: string;
+  address_1: string;
+  address_2: string | null;
+  postal_code: string;
+  city: string;
+  province: string;
+  country_code: string;
+  phone: string | null;
+  company_id: string;
+  created_at: Date;
+  updated_at: Date;
+}

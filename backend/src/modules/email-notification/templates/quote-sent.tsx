@@ -36,7 +36,7 @@ function formatPrice(amount: number, currency: string): string {
   return new Intl.NumberFormat("pt-PT", {
     style: "currency",
     currency: currency || "EUR",
-  }).format(amount / 100)
+  }).format(amount)
 }
 
 export const QuoteSentEmail = ({

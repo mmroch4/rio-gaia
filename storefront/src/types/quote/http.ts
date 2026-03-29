@@ -42,6 +42,7 @@ export type StoreQuotePreviewResponse = {
 
 export type StoreCreateQuote = {
   cart_id: string;
+  custom_details?: string;
 };
 
 export type StoreCreateQuoteMessage = {

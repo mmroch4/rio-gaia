@@ -1,15 +1,23 @@
 import { FindParams, PaginatedResponse } from "@medusajs/types";
 import { ModuleCompanySpendingLimitResetFrequency } from "./module";
-import { QueryCompany, QueryEmployee } from "./query";
-import { ModuleCompanyFilters, ModuleEmployeeFilters } from "./service";
+import { QueryCompany, QueryCompanyAddress, QueryEmployee } from "./query";
+import {
+  ModuleCompanyAddressFilters,
+  ModuleCompanyFilters,
+  ModuleEmployeeFilters,
+} from "./service";
 
 /* Filters */
 
-export interface CompanyFilterParams extends FindParams, ModuleCompanyFilters { }
+export interface CompanyFilterParams extends FindParams, ModuleCompanyFilters {}
 
 export interface EmployeeFilterParams
   extends FindParams,
-  ModuleEmployeeFilters { }
+    ModuleEmployeeFilters {}
+
+export interface CompanyAddressFilterParams
+  extends FindParams,
+    ModuleCompanyAddressFilters {}
 
 /* Admin */
 
@@ -127,5 +135,54 @@ export type StoreUpdateEmployee = {
   id: string;
   spending_limit: number;
   is_admin: boolean;
+  company_id: string;
+};
+
+/* CompanyAddress */
+
+export type AdminCompanyAddressResponse = {
+  company_address: QueryCompanyAddress;
+};
+
+export type AdminCompanyAddressesResponse = PaginatedResponse<{
+  company_addresses: QueryCompanyAddress[];
+}>;
+
+export type StoreCompanyAddressResponse = {
+  company_address: QueryCompanyAddress;
+};
+
+export type StoreCompanyAddressesResponse = PaginatedResponse<{
+  company_addresses: QueryCompanyAddress[];
+}>;
+
+export type StoreCreateCompanyAddress = {
+  label: string;
+  first_name?: string | null;
+  last_name?: string | null;
+  company_name: string;
+  address_1: string;
+  address_2?: string | null;
+  postal_code: string;
+  city: string;
+  province: string;
+  country_code: string;
+  phone?: string | null;
+  company_id: string;
+};
+
+export type StoreUpdateCompanyAddress = {
+  id: string;
+  label?: string;
+  first_name?: string | null;
+  last_name?: string | null;
+  company_name?: string;
+  address_1?: string;
+  address_2?: string | null;
+  postal_code?: string;
+  city?: string;
+  province?: string;
+  country_code?: string;
+  phone?: string | null;
   company_id: string;
 };

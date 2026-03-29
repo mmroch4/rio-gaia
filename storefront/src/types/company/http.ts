@@ -1,6 +1,6 @@
 import { FindParams, PaginatedResponse } from "@medusajs/types";
 import { ModuleCompanySpendingLimitResetFrequency } from "./module";
-import { QueryCompany, QueryEmployee } from "./query";
+import { QueryCompany, QueryCompanyAddress, QueryEmployee } from "./query";
 import { ModuleCompanyFilters, ModuleEmployeeFilters } from "./service";
 
 /* Filters */
@@ -122,5 +122,44 @@ export type StoreUpdateEmployee = {
   id: string;
   spending_limit: number;
   is_admin: boolean;
+  company_id: string;
+};
+
+/* CompanyAddress */
+
+export type StoreCompanyAddressResponse = {
+  company_address: QueryCompanyAddress;
+};
+
+export type StoreCompanyAddressesResponse = PaginatedResponse<{
+  company_addresses: QueryCompanyAddress[];
+}>;
+
+export type StoreCreateCompanyAddress = {
+  label: string;
+  first_name?: string | null;
+  last_name?: string | null;
+  address_1: string;
+  address_2?: string | null;
+  postal_code: string;
+  city: string;
+  province: string;
+  country_code: string;
+  phone?: string | null;
+  company_id: string;
+};
+
+export type StoreUpdateCompanyAddress = {
+  id: string;
+  label?: string;
+  first_name?: string | null;
+  last_name?: string | null;
+  address_1?: string;
+  address_2?: string | null;
+  postal_code?: string;
+  city?: string;
+  province?: string;
+  country_code?: string;
+  phone?: string | null;
   company_id: string;
 };

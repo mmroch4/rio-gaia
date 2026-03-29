@@ -7,6 +7,7 @@ export type ModuleQuote = {
   order_change_id: string;
   cart_id: string;
   customer_id: string;
+  custom_details?: string | null;
   created_at: string;
   updated_at: string;
 };

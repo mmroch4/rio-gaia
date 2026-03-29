@@ -246,6 +246,94 @@ const QuoteDetails = () => {
               </Link>
             </div>
           </Container>
+
+          {quote.draft_order?.shipping_address && (
+            <Container className="divide-y p-0">
+              <div className="flex items-center justify-between px-6 py-4">
+                <Heading level="h2">Shipping Address</Heading>
+              </div>
+
+              <div className="text-ui-fg-subtle px-6 py-4 text-sm space-y-0.5">
+                <Text size="small" leading="compact">
+                  {quote.draft_order.shipping_address.first_name}{" "}
+                  {quote.draft_order.shipping_address.last_name}
+                </Text>
+                {quote.draft_order.shipping_address.company && (
+                  <Text size="small" leading="compact">
+                    {quote.draft_order.shipping_address.company}
+                  </Text>
+                )}
+                <Text size="small" leading="compact">
+                  {quote.draft_order.shipping_address.address_1}
+                </Text>
+                <Text size="small" leading="compact">
+                  {quote.draft_order.shipping_address.postal_code}{" "}
+                  {quote.draft_order.shipping_address.city}
+                </Text>
+                <Text size="small" leading="compact">
+                  {quote.draft_order.shipping_address.country_code?.toUpperCase()}
+                </Text>
+                {quote.draft_order.shipping_address.phone && (
+                  <Text size="small" leading="compact">
+                    {quote.draft_order.shipping_address.phone}
+                  </Text>
+                )}
+              </div>
+            </Container>
+          )}
+
+          {quote.draft_order?.billing_address && (
+            <Container className="divide-y p-0">
+              <div className="flex items-center justify-between px-6 py-4">
+                <Heading level="h2">Billing Address</Heading>
+              </div>
+
+              <div className="text-ui-fg-subtle px-6 py-4 text-sm space-y-0.5">
+                <Text size="small" leading="compact">
+                  {quote.draft_order.billing_address.first_name}{" "}
+                  {quote.draft_order.billing_address.last_name}
+                </Text>
+                {quote.draft_order.billing_address.company && (
+                  <Text size="small" leading="compact">
+                    {quote.draft_order.billing_address.company}
+                  </Text>
+                )}
+                <Text size="small" leading="compact">
+                  {quote.draft_order.billing_address.address_1}
+                </Text>
+                <Text size="small" leading="compact">
+                  {quote.draft_order.billing_address.postal_code}{" "}
+                  {quote.draft_order.billing_address.city}
+                </Text>
+                <Text size="small" leading="compact">
+                  {quote.draft_order.billing_address.country_code?.toUpperCase()}
+                </Text>
+                {quote.draft_order.billing_address.phone && (
+                  <Text size="small" leading="compact">
+                    {quote.draft_order.billing_address.phone}
+                  </Text>
+                )}
+              </div>
+            </Container>
+          )}
+
+          {quote.custom_details && (
+            <Container className="divide-y p-0">
+              <div className="flex items-center justify-between px-6 py-4">
+                <Heading level="h2">Customer Notes</Heading>
+              </div>
+
+              <div className="px-6 py-4">
+                <Text
+                  size="small"
+                  leading="compact"
+                  className="text-ui-fg-subtle whitespace-pre-wrap"
+                >
+                  {quote.custom_details}
+                </Text>
+              </div>
+            </Container>
+          )}
         </div>
       </div>
 

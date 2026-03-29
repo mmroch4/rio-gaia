@@ -14,6 +14,7 @@ export const storeCompanyFields = [
   "country",
   "currency_code",
   "*employees",
+  "*addresses",
 ];
 
 export const storeCompanyQueryConfig = {
@@ -45,6 +46,34 @@ export const storeEmployeeQueryConfig = {
   },
   retrieve: {
     defaults: storeEmployeeFields,
+    isList: false,
+  },
+};
+
+/* Store CompanyAddress Query Config */
+export const storeCompanyAddressFields = [
+  "id",
+  "label",
+  "first_name",
+  "last_name",
+  "company_name",
+  "address_1",
+  "address_2",
+  "postal_code",
+  "city",
+  "province",
+  "country_code",
+  "phone",
+  "company_id",
+];
+
+export const storeCompanyAddressQueryConfig = {
+  list: {
+    defaults: storeCompanyAddressFields,
+    isList: true,
+  },
+  retrieve: {
+    defaults: storeCompanyAddressFields,
     isList: false,
   },
 };

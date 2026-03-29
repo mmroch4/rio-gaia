@@ -14,6 +14,7 @@ export const adminCompanyFields = [
   "verified",
   "currency_code",
   "*employees",
+  "*addresses",
 ];
 
 export const adminCompanyQueryConfig = {
@@ -45,6 +46,34 @@ export const adminEmployeeQueryConfig = {
   },
   retrieve: {
     defaults: adminEmployeeFields,
+    isList: false,
+  },
+};
+
+/* CompanyAddress Query Config */
+export const adminCompanyAddressFields = [
+  "id",
+  "label",
+  "first_name",
+  "last_name",
+  "company_name",
+  "address_1",
+  "address_2",
+  "postal_code",
+  "city",
+  "province",
+  "country_code",
+  "phone",
+  "company_id",
+];
+
+export const adminCompanyAddressQueryConfig = {
+  list: {
+    defaults: adminCompanyAddressFields,
+    isList: true,
+  },
+  retrieve: {
+    defaults: adminCompanyAddressFields,
     isList: false,
   },
 };

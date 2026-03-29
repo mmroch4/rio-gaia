@@ -9,10 +9,14 @@ import {
   Toaster,
 } from "@medusajs/ui";
 import { useParams } from "react-router-dom";
-import { QueryEmployee } from "../../../../types";
+import { ModuleCompanyAddress, QueryEmployee } from "../../../../types";
 import { useAdminCustomerGroups, useCompany } from "../../../hooks/api";
 import { formatAmount } from "../../../utils";
 import { CompanyActionsMenu } from "../components";
+import {
+  AddressActionsMenu,
+  AddressCreateDrawer,
+} from "../components/addresses";
 import {
   EmployeeCreateDrawer,
   EmployeesActionsMenu,
@@ -22,7 +26,7 @@ const CompanyDetails = () => {
   const { companyId } = useParams();
   const { data, isPending } = useCompany(companyId!, {
     fields:
-      "*employees,*employees.customer,*employees.company,*customer_group",
+      "*employees,*employees.customer,*employees.company,*customer_group,*addresses",
   });
 
   const { data: customerGroups } = useAdminCustomerGroups();
@@ -206,6 +210,71 @@ const CompanyDetails = () => {
                     </Text>
                     <Text className="txt-small text-ui-fg-muted">
                       This company doesn't have any employees.
+                    </Text>
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </Container>
+      <Container className="flex flex-col p-0 overflow-hidden">
+        {!isPending && (
+          <>
+            <div className="flex items-center gap-2 px-6 py-4 justify-between border-b border-gray-200">
+              <div className="flex items-center gap-2">
+                <Heading className="font-sans font-medium h1-core">
+                  Shipping Addresses
+                </Heading>
+              </div>
+              <AddressCreateDrawer company={company} />
+            </div>
+            {company?.addresses && company?.addresses.length > 0 ? (
+              <Table>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.HeaderCell>Label</Table.HeaderCell>
+                    <Table.HeaderCell>Address</Table.HeaderCell>
+                    <Table.HeaderCell>City</Table.HeaderCell>
+                    <Table.HeaderCell>Country</Table.HeaderCell>
+                    <Table.HeaderCell>Actions</Table.HeaderCell>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                  {company?.addresses.map(
+                    (address: ModuleCompanyAddress) => (
+                      <Table.Row key={address.id}>
+                        <Table.Cell className="font-medium">
+                          {address.label}
+                        </Table.Cell>
+                        <Table.Cell>{address.address_1}</Table.Cell>
+                        <Table.Cell>
+                          {address.postal_code}, {address.city}
+                        </Table.Cell>
+                        <Table.Cell>
+                          {address.country_code?.toUpperCase()}
+                        </Table.Cell>
+                        <Table.Cell onClick={(e) => e.stopPropagation()}>
+                          <AddressActionsMenu
+                            companyId={company.id}
+                            address={address}
+                          />
+                        </Table.Cell>
+                      </Table.Row>
+                    )
+                  )}
+                </Table.Body>
+              </Table>
+            ) : (
+              <div className="flex h-[200px] w-full flex-col items-center justify-center gap-y-4">
+                <div className="flex flex-col items-center gap-y-3">
+                  <ExclamationCircle />
+                  <div className="flex flex-col items-center gap-y-1">
+                    <Text className="font-medium font-sans txt-compact-small">
+                      No records
+                    </Text>
+                    <Text className="txt-small text-ui-fg-muted">
+                      This company doesn't have any shipping addresses.
                     </Text>
                   </div>
                 </div>
