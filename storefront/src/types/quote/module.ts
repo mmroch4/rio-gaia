@@ -41,4 +41,5 @@ export type ModuleQuoteMessage = {
   admin_id: string;
   customer_id: string;
   item_id: string;
+  created_at: string;
 };

@@ -9,7 +9,7 @@ import { B2BCustomer } from "@/types/global"
 import { StoreQuoteResponse } from "@/types/quote"
 import { ArrowUturnLeft, CheckCircleSolid } from "@medusajs/icons"
 import { AdminOrderLineItem, AdminOrderPreview } from "@medusajs/types"
-import { Container, Heading, Text, toast } from "@medusajs/ui"
+import { clx, Container, Heading, Text, toast } from "@medusajs/ui"
 import { useRouter } from "next/navigation"
 import React, { useMemo, useState } from "react"
 import QuoteMessages from "../quote-messages"
@@ -48,7 +48,7 @@ const QuoteDetails: React.FC<QuoteDetailsProps> = ({
           data-testid="back-to-overview-button"
         >
           <Button variant="secondary">
-            <ArrowUturnLeft /> Back
+            <ArrowUturnLeft /> Voltar
           </Button>
         </LocalizedClientLink>
       </div>
@@ -60,7 +60,7 @@ const QuoteDetails: React.FC<QuoteDetailsProps> = ({
               <div className="flex items-center justify-between px-6 py-4">
                 <Text className="txt-compact-small">
                   <CheckCircleSolid className="inline-block mr-2 text-green-500 text-lg" />
-                  Quote accepted by customer. Order is ready for processing.
+                  Orçamento aceite. A encomenda está pronta para processamento.
                 </Text>
 
                 <Button
@@ -71,7 +71,7 @@ const QuoteDetails: React.FC<QuoteDetailsProps> = ({
                     )
                   }
                 >
-                  View Order
+                  Ver Encomenda
                 </Button>
               </div>
             </Container>
@@ -89,25 +89,79 @@ const QuoteDetails: React.FC<QuoteDetailsProps> = ({
           ))}
 
           <Container className="p-0">
-            <div className="py-4">
-              <div className="flex items-center justify-between mb-2 px-6">
-                <span className="txt-small text-ui-fg-subtle font-semibold">
-                  Current Total
-                </span>
+            <div className="py-4 px-6">
+              <span className="txt-small text-ui-fg-base font-semibold mb-2 block">
+                Resumo
+              </span>
 
-                <span className="txt-small text-ui-fg-subtle">
-                  {formatAmount(order.total, order.currency_code)}
-                </span>
-              </div>
+              <div className="flex flex-col gap-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="txt-small text-ui-fg-subtle">Subtotal</span>
+                  <span className="txt-small text-ui-fg-subtle">
+                    {formatAmount(order.subtotal, order.currency_code)}
+                  </span>
+                </div>
 
-              <div className="flex items-center justify-between px-6">
-                <span className="txt-small text-ui-fg-subtle font-semibold">
-                  New Total
-                </span>
+                {order.discount_total > 0 && (
+                  <div className="flex items-center justify-between">
+                    <span className="txt-small text-ui-fg-subtle">
+                      Desconto
+                    </span>
+                    <span className="txt-small text-ui-fg-subtle">
+                      - {formatAmount(order.discount_total, order.currency_code)}
+                    </span>
+                  </div>
+                )}
 
-                <span className="txt-small text-ui-fg-subtle">
-                  {formatAmount(preview.total, order.currency_code)}
-                </span>
+                <div className="flex items-center justify-between">
+                  <span className="txt-small text-ui-fg-subtle">Portes</span>
+                  <span className="txt-small text-ui-fg-subtle">
+                    {formatAmount(order.shipping_total, order.currency_code)}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="txt-small text-ui-fg-subtle">Impostos</span>
+                  <span className="txt-small text-ui-fg-subtle">
+                    {formatAmount(order.tax_total, order.currency_code)}
+                  </span>
+                </div>
+
+                <div className="h-px w-full border-b border-gray-200 border-dashed my-2" />
+
+                <div className="flex items-center justify-between">
+                  <span className="txt-small text-ui-fg-subtle font-semibold">
+                    Total Original
+                  </span>
+                  <span className="txt-small text-ui-fg-subtle">
+                    {formatAmount(order.total, order.currency_code)}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="txt-small text-ui-fg-subtle font-semibold">
+                    Novo Total
+                  </span>
+                  <div className="flex items-center gap-x-2">
+                    <span className="txt-small text-ui-fg-subtle">
+                      {formatAmount(preview.total, order.currency_code)}
+                    </span>
+                    {preview.total !== order.total && (
+                      <span
+                        className={clx("txt-small font-medium", {
+                          "text-green-600": preview.total < order.total,
+                          "text-red-600": preview.total > order.total,
+                        })}
+                      >
+                        {preview.total < order.total ? "-" : "+"}
+                        {formatAmount(
+                          Math.abs(preview.total - order.total),
+                          order.currency_code
+                        )}
+                      </span>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </Container>
@@ -115,8 +169,10 @@ const QuoteDetails: React.FC<QuoteDetailsProps> = ({
           {quote.status === "pending_customer" && (
             <div className="flex gap-x-3 justify-end my-4">
               <PromptModal
-                title="Reject Quote?"
-                description="Are you sure you want to reject quote? This action is irreversible."
+                title="Rejeitar Orçamento?"
+                description="Tem a certeza de que deseja rejeitar o orçamento? Esta ação é irreversível."
+                cancelLabel="Cancelar"
+                confirmLabel="Confirmar"
                 handleAction={() => {
                   setIsRejecting(true)
 
@@ -127,13 +183,15 @@ const QuoteDetails: React.FC<QuoteDetailsProps> = ({
                 isLoading={isRejecting}
               >
                 <Button size="small" variant="secondary">
-                  Reject Quote
+                  Rejeitar Orçamento
                 </Button>
               </PromptModal>
 
               <PromptModal
-                title="Accept Quote?"
-                description="Are you sure you want to accept quote? This action is irreversible."
+                title="Aceitar Orçamento?"
+                description="Tem a certeza de que deseja aceitar o orçamento? Esta ação é irreversível."
+                cancelLabel="Cancelar"
+                confirmLabel="Confirmar"
                 handleAction={() => {
                   setIsAccepting(true)
 
@@ -144,7 +202,7 @@ const QuoteDetails: React.FC<QuoteDetailsProps> = ({
                 isLoading={isAccepting}
               >
                 <Button size="small" variant="primary">
-                  Accept Quote
+                  Aceitar Orçamento
                 </Button>
               </PromptModal>
             </div>
@@ -156,7 +214,9 @@ const QuoteDetails: React.FC<QuoteDetailsProps> = ({
         <div className="col-span-2 flex flex-col gap-y-2">
           <Container className="flex gap-x-3 justify-between">
             <div className="text-sm">
-              <span className="font-semibold text-ui-fg-subtle">Quote ID:</span>{" "}
+              <span className="font-semibold text-ui-fg-subtle">
+                N.º Orçamento:
+              </span>{" "}
               #<span>{quote.draft_order.display_id}</span>
             </div>
 
@@ -164,8 +224,23 @@ const QuoteDetails: React.FC<QuoteDetailsProps> = ({
           </Container>
 
           <Container>
+            <div className="text-sm text-ui-fg-subtle">
+              <div className="flex justify-between">
+                <Text>Data de Criação</Text>
+                <Text>
+                  {new Date(quote.created_at).toLocaleDateString("pt-PT", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </Text>
+              </div>
+            </div>
+          </Container>
+
+          <Container>
             <Heading level="h3" className="mb-2">
-              Customer
+              Cliente
             </Heading>
 
             <div className="text-sm text-ui-fg-subtle">
@@ -175,12 +250,12 @@ const QuoteDetails: React.FC<QuoteDetailsProps> = ({
               </div>
 
               <div className="flex justify-between">
-                <Text>Phone</Text>
+                <Text>Telefone</Text>
                 <Text>{quote.customer?.phone || "-"}</Text>
               </div>
 
               <div className="flex justify-between">
-                <Text>Spend Limit</Text>
+                <Text>Limite de Gastos</Text>
                 <Text>
                   {(quote.customer?.employee?.spending_limit &&
                     formatAmount(
@@ -195,12 +270,12 @@ const QuoteDetails: React.FC<QuoteDetailsProps> = ({
 
           <Container>
             <Heading level="h3" className="mb-2">
-              Company
+              Empresa
             </Heading>
 
             <div className="text-sm text-ui-fg-subtle">
               <div className="flex justify-between">
-                <Text>Name</Text>
+                <Text>Nome</Text>
                 <Text>{quote.customer?.employee?.company?.name || "-"}</Text>
               </div>
             </div>
@@ -241,7 +316,7 @@ const QuoteDetails: React.FC<QuoteDetailsProps> = ({
           {order.billing_address && (
             <Container>
               <Heading level="h3" className="mb-2">
-                Morada de Faturacao
+                Morada de Faturação
               </Heading>
 
               <div className="text-sm text-ui-fg-subtle">

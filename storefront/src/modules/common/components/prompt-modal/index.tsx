@@ -9,12 +9,16 @@ export const PromptModal = ({
   handleAction,
   children,
   isLoading,
+  cancelLabel,
+  confirmLabel,
 }: {
   title: string
   description: string
   handleAction: () => void
   children: React.ReactNode
   isLoading: boolean
+  cancelLabel?: string
+  confirmLabel?: string
 }) => {
   const [open, setOpen] = useState(false)
 
@@ -36,7 +40,7 @@ export const PromptModal = ({
           <div className="flex gap-x-2 items-end justify-end self-end">
             <Dialog.Close asChild>
               <Button variant="secondary" size="small">
-                Cancel
+                {cancelLabel ?? "Cancel"}
               </Button>
             </Dialog.Close>
             <Button
@@ -48,7 +52,7 @@ export const PromptModal = ({
                 setOpen(false)
               }}
             >
-              Continue
+              {confirmLabel ?? "Continue"}
             </Button>
           </div>
 

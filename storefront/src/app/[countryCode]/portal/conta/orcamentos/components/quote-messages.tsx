@@ -66,10 +66,15 @@ const QuoteMessages = ({
   return (
     <Container className="divide-y divide-dashed p-0 ">
       <div className="flex items-center justify-between px-6 py-4">
-        <Heading level="h3">Messages</Heading>
+        <Heading level="h3">Mensagens</Heading>
       </div>
 
       <div>
+        {(!quote.messages || quote.messages.length === 0) && (
+          <div className="px-6 py-8 text-center text-ui-fg-muted txt-compact-small">
+            Sem mensagens
+          </div>
+        )}
         {quote.messages?.map((message) => (
           <div
             key={message.id}
@@ -82,6 +87,17 @@ const QuoteMessages = ({
 
               {!!message.customer_id &&
                 `${quote.customer?.first_name} ${quote.customer?.last_name}`}
+              {message.created_at && (
+                <span className="text-ui-fg-muted txt-compact-small ml-2">
+                  {new Date(message.created_at).toLocaleDateString("pt-PT", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </span>
+              )}
             </div>
 
             {!!message.item_id && (
@@ -109,14 +125,14 @@ const QuoteMessages = ({
             <div className="flex-1">
               <div className="flex items-center gap-x-1">
                 <label className="font-sans txt-compact-small font-medium">
-                  Pick Quote Item
+                  Selecionar Produto
                 </label>
               </div>
               <span
                 className="txt-small text-ui-fg-subtle"
                 id=":r10:-form-item-description"
               >
-                Select a quote item to write a message around
+                Selecione um produto do orçamento para a sua mensagem
               </span>
             </div>
             <div className="flex-1">
@@ -127,7 +143,7 @@ const QuoteMessages = ({
                   <Select {...field} onValueChange={onChange} value={value}>
                     <Select.Trigger className="bg-ui-bg-base" ref={ref}>
                       <Select.Value />
-                      {value ? <Select.Value /> : "Select Item"}
+                      {value ? <Select.Value /> : "Selecionar produto"}
                     </Select.Trigger>
 
                     <Select.Content>
@@ -153,7 +169,7 @@ const QuoteMessages = ({
             className="self-end"
             disabled={isCreatingMessage}
           >
-            Send
+            Enviar
           </Button>
         </form>
       </div>

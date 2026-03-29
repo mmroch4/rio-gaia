@@ -24,13 +24,13 @@ const QuotesOverview = ({
 
   return (
     <div className="w-full flex flex-col items-center gap-y-4">
-      <h2 className="text-large-semi">Nothing to see here</h2>
-      <p className="text-base-regular">You don&apos;t have any quotes yet</p>
+      <h2 className="text-large-semi">Ainda sem orçamentos</h2>
+      <p className="text-base-regular">Ainda não tem nenhum orçamento.</p>
 
       <div className="mt-4">
-        <LocalizedClientLink href="/" passHref>
+        <LocalizedClientLink href="/portal/catalogo" passHref>
           <Button data-testid="continue-shopping-button">
-            Continue shopping
+            Continuar a comprar
           </Button>
         </LocalizedClientLink>
       </div>
