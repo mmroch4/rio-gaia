@@ -1,4 +1,5 @@
 import { listCategories } from "@/lib/data/categories"
+import { listCollections } from "@/lib/data/collections"
 import { retrieveCustomer } from "@/lib/data/customer"
 import SkeletonProductGrid from "@/modules/skeletons/templates/skeleton-product-grid"
 import RefinementList from "@/modules/store/components/refinement-list"
@@ -33,8 +34,11 @@ export default async function StorePage(props: Params) {
   const sort = sortBy || "created_at"
   const pageNumber = page ? parseInt(page) : 1
 
-  const categories = await listCategories()
-  const customer = await retrieveCustomer()
+  const [categories, { collections }, customer] = await Promise.all([
+    listCategories(),
+    listCollections(),
+    retrieveCustomer(),
+  ])
 
   return (
     <div className="bg-neutral-100">
@@ -45,7 +49,7 @@ export default async function StorePage(props: Params) {
         <StoreBreadcrumb />
 
         <div className="flex flex-col small:flex-row small:items-start gap-3">
-          <RefinementList sortBy={sort} categories={categories} />
+          <RefinementList sortBy={sort} categories={categories} collections={collections} />
 
           <div className="w-full">
             <Suspense fallback={<SkeletonProductGrid />}>

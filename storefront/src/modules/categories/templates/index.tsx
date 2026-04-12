@@ -14,12 +14,14 @@ import { Suspense } from "react"
 export default function CategoryTemplate({
   categories,
   currentCategory,
+  collections,
   sortBy,
   page,
   countryCode,
 }: {
   categories: HttpTypes.StoreProductCategory[]
   currentCategory: HttpTypes.StoreProductCategory
+  collections?: HttpTypes.StoreCollection[]
   sortBy?: SortOptions
   page?: string
   countryCode: string
@@ -44,6 +46,7 @@ export default function CategoryTemplate({
             sortBy={sort}
             categories={categories}
             currentCategory={currentCategory}
+            collections={collections}
             listName={currentCategory.name}
             data-testid="sort-by-container"
           />

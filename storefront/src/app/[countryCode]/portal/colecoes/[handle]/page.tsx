@@ -1,3 +1,4 @@
+import { listCategories } from "@/lib/data/categories"
 import { getCollectionByHandle, listCollections } from "@/lib/data/collections"
 import { listRegions } from "@/lib/data/regions"
 import CollectionTemplate from "@/modules/collections/templates"
@@ -71,7 +72,11 @@ export default async function CollectionPage(props: Props) {
   const params = await props.params
   const { sortBy, page } = searchParams
 
-  const collection = await getCollectionByHandle(params.handle)
+  const [collection, { collections }, categories] = await Promise.all([
+    getCollectionByHandle(params.handle),
+    listCollections(),
+    listCategories(),
+  ])
 
   if (!collection) {
     notFound()
@@ -80,6 +85,8 @@ export default async function CollectionPage(props: Props) {
   return (
     <CollectionTemplate
       collection={collection}
+      collections={collections}
+      categories={categories}
       page={page}
       sortBy={sortBy}
       countryCode={params.countryCode}

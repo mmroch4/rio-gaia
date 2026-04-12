@@ -1,4 +1,5 @@
 import { getCategoryByHandle, listCategories } from "@/lib/data/categories"
+import { listCollections } from "@/lib/data/collections"
 import { listRegions } from "@/lib/data/regions"
 import CategoryTemplate from "@/modules/categories/templates"
 import { SortOptions } from "@/modules/store/components/refinement-list/sort-products"
@@ -65,7 +66,10 @@ export default async function CategoryPage(props: Props) {
   const params = await props.params
   const { sortBy, page } = searchParams
 
-  const categories = await listCategories()
+  const [categories, { collections }] = await Promise.all([
+    listCategories(),
+    listCollections(),
+  ])
 
   const currentCategory = categories.find(
     (category) => category.handle === params.category.join("/")
@@ -79,6 +83,7 @@ export default async function CategoryPage(props: Props) {
     <CategoryTemplate
       categories={categories}
       currentCategory={currentCategory}
+      collections={collections}
       sortBy={sortBy}
       page={page}
       countryCode={params.countryCode}

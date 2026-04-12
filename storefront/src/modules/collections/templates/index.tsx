@@ -9,11 +9,15 @@ import { Suspense } from "react"
 export default function CollectionTemplate({
   sortBy,
   collection,
+  collections,
+  categories,
   page,
   countryCode,
 }: {
   sortBy?: SortOptions
   collection: HttpTypes.StoreCollection
+  collections?: HttpTypes.StoreCollection[]
+  categories?: HttpTypes.StoreProductCategory[]
   page?: string
   countryCode: string
 }) {
@@ -25,7 +29,7 @@ export default function CollectionTemplate({
       <div className="flex flex-col py-6 content-container gap-4">
         <CollectionBreadcrumb collection={collection} />
         <div className="flex flex-col small:flex-row small:items-start gap-3">
-          <RefinementList sortBy={sort} listName={collection.title} />
+          <RefinementList sortBy={sort} listName={collection.title} categories={categories} collections={collections} />
           <div className="w-full">
             <Suspense fallback={<SkeletonProductGrid />}>
               <PaginatedProducts

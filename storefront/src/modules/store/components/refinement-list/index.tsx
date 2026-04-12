@@ -7,6 +7,7 @@ import SortProducts, { SortOptions } from "./sort-products"
 import { Container } from "@medusajs/ui"
 import { HttpTypes } from "@medusajs/types"
 import CategoryList from "./category-list"
+import CollectionList from "./collection-list"
 
 type RefinementListProps = {
   sortBy: SortOptions
@@ -14,6 +15,7 @@ type RefinementListProps = {
   "data-testid"?: string
   categories?: HttpTypes.StoreProductCategory[]
   currentCategory?: HttpTypes.StoreProductCategory
+  collections?: HttpTypes.StoreCollection[]
 }
 
 const RefinementList = ({
@@ -22,6 +24,7 @@ const RefinementList = ({
   "data-testid": dataTestId,
   categories,
   currentCategory,
+  collections,
 }: RefinementListProps) => {
   const router = useRouter()
   const pathname = usePathname()
@@ -57,6 +60,7 @@ const RefinementList = ({
           currentCategory={currentCategory}
         />
       )}
+      {collections && <CollectionList collections={collections} />}
     </div>
   )
 }
