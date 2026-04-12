@@ -136,7 +136,7 @@ const CategoryList = ({
             href="/portal/catalogo"
             className="text-xs text-neutral-500 hover:text-neutral-700"
           >
-            Clear
+            Limpar
           </LocalizedClientLink>
         )}
       </div>
