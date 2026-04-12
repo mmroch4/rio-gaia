@@ -19,6 +19,10 @@ export type AdminQuotesResponse = PaginatedResponse<{
   quotes: QueryQuote[];
 }>;
 
+export type AdminUpdateQuote = {
+  shipping_cost?: number | null;
+};
+
 export type AdminCreateQuoteMessage = {
   text: string;
   item_id?: string;

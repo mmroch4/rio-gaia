@@ -3,6 +3,7 @@ import { ClientHeaders, FetchError } from "@medusajs/js-sdk";
 import {
   AdminCreateQuoteMessage,
   AdminQuoteResponse,
+  AdminUpdateQuote,
   QuoteFilterParams,
   StoreQuoteResponse,
   StoreQuotesResponse,
@@ -192,6 +193,33 @@ export const useConfirmQuote = (
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
         queryKey: orderPreviewQueryKey.details(),
+      });
+
+      options?.onSuccess?.(data, variables, context);
+    },
+    ...options,
+  });
+};
+
+export const useUpdateQuote = (
+  id: string,
+  options?: UseMutationOptions<AdminQuoteResponse, FetchError, AdminUpdateQuote>
+) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (body: AdminUpdateQuote) =>
+      sdk.client.fetch<AdminQuoteResponse>(`/admin/quotes/${id}`, {
+        body,
+        method: "POST",
+      }),
+    onSuccess: (data: AdminQuoteResponse, variables: any, context: any) => {
+      queryClient.invalidateQueries({
+        queryKey: quoteQueryKey.detail(id),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: quoteQueryKey.lists(),
       });
 
       options?.onSuccess?.(data, variables, context);

@@ -16,6 +16,7 @@ export const merchantSendQuoteWorkflow = createWorkflow(
       entry_point: "quote",
       fields: [
         "id",
+        "shipping_cost",
         "customer.email",
         "customer.first_name",
         "customer.last_name",
@@ -47,6 +48,7 @@ export const merchantSendQuoteWorkflow = createWorkflow(
       quote_id: quote.id,
       quote: {
         id: quote.id,
+        shipping_cost: quote.shipping_cost,
         customer: quote.customer,
         draft_order: quote.draft_order,
       },

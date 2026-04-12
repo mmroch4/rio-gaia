@@ -3,6 +3,7 @@ import {
   Button,
   Container,
   Heading,
+  Input,
   Text,
   toast,
   Toaster,
@@ -17,6 +18,7 @@ import {
   useQuote,
   useRejectQuote,
   useSendQuote,
+  useUpdateQuote,
 } from "../../../hooks/api/quotes";
 import { formatAmount } from "../../../utils";
 import {
@@ -51,6 +53,10 @@ const QuoteDetails = () => {
 
   const { mutateAsync: rejectQuote, isPending: isRejectingQuote } =
     useRejectQuote(quoteId!);
+
+  const { mutateAsync: updateQuote } = useUpdateQuote(quoteId!);
+  const [isEditingShipping, setIsEditingShipping] = useState(false);
+  const [shippingInput, setShippingInput] = useState("");
 
   useEffect(() => {
     if (["pending_merchant", "customer_rejected"].includes(quote?.status!)) {
@@ -147,7 +153,7 @@ const QuoteDetails = () => {
           <Container className="divide-y divide-dashed p-0">
             <QuoteDetailsHeader quote={quote} />
             <QuoteItems order={quote.draft_order} preview={preview!} />
-            <CostBreakdown order={quote.draft_order} />
+            <CostBreakdown order={quote.draft_order} shippingCost={quote.shipping_cost} />
             <QuoteTotal order={quote.draft_order} preview={preview!} />
 
             {(showRejectQuote || showSendQuote) && (
@@ -244,6 +250,84 @@ const QuoteDetails = () => {
               >
                 {quote?.customer?.employee?.company?.name}
               </Link>
+            </div>
+          </Container>
+
+          <Container className="divide-y p-0">
+            <div className="flex items-center justify-between px-6 py-4">
+              <Heading level="h2">Shipping Cost</Heading>
+
+              {!isEditingShipping &&
+                quote.status === "pending_merchant" && (
+                  <Button
+                    size="small"
+                    variant="secondary"
+                    onClick={() => {
+                      setShippingInput(
+                        quote.shipping_cost != null
+                          ? String(quote.shipping_cost)
+                          : ""
+                      );
+                      setIsEditingShipping(true);
+                    }}
+                  >
+                    Edit
+                  </Button>
+                )}
+            </div>
+
+            <div className="text-ui-fg-subtle px-6 py-4">
+              {isEditingShipping ? (
+                <div className="flex items-center gap-x-2">
+                  <Input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    placeholder="0.00"
+                    value={shippingInput}
+                    onChange={(e) => setShippingInput(e.target.value)}
+                    className="flex-1"
+                  />
+                  <Button
+                    size="small"
+                    variant="secondary"
+                    onClick={() => setIsEditingShipping(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    size="small"
+                    onClick={async () => {
+                      const value =
+                        shippingInput === ""
+                          ? null
+                          : parseFloat(shippingInput);
+
+                      await updateQuote(
+                        { shipping_cost: value },
+                        {
+                          onSuccess: () => {
+                            toast.success("Shipping cost updated");
+                            setIsEditingShipping(false);
+                          },
+                          onError: (e) => toast.error(e.message),
+                        }
+                      );
+                    }}
+                  >
+                    Save
+                  </Button>
+                </div>
+              ) : (
+                <Text size="small" leading="compact">
+                  {quote.shipping_cost != null
+                    ? formatAmount(
+                        quote.shipping_cost,
+                        quote.draft_order?.currency_code || "EUR"
+                      )
+                    : "Not set"}
+                </Text>
+              )}
             </div>
           </Container>
 

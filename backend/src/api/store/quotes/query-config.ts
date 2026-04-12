@@ -2,6 +2,7 @@ export const quoteFields = [
   "id",
   "status",
   "custom_details",
+  "shipping_cost",
   "*customer",
   "*customer.employee",
   "*customer.employee.company",

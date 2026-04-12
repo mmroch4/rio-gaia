@@ -27,6 +27,13 @@ export const AdminGetQuoteParams = createFindParams({
   )
   .strict();
 
+export type AdminUpdateQuoteType = z.infer<typeof AdminUpdateQuote>;
+export const AdminUpdateQuote = z
+  .object({
+    shipping_cost: z.number().nullable().optional(),
+  })
+  .strict();
+
 export type AdminSendQuoteType = z.infer<typeof AdminSendQuote>;
 export const AdminSendQuote = z.object({}).strict();
 

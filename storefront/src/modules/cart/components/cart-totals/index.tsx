@@ -51,7 +51,9 @@ const CartTotals: React.FC = () => {
         <div className="flex items-center justify-between">
           <Text>Portes</Text>
           <Text data-testid="cart-shipping" data-value={shipping_total || 0}>
-            {convertToLocale({ amount: shipping_total ?? 0, currency_code })}
+            {shipping_total
+              ? convertToLocale({ amount: shipping_total, currency_code })
+              : "A definir"}
           </Text>
         </div>
         <div className="flex justify-between">

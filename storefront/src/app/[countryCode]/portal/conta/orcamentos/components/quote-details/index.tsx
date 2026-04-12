@@ -98,7 +98,7 @@ const QuoteDetails: React.FC<QuoteDetailsProps> = ({
                 <div className="flex items-center justify-between">
                   <span className="txt-small text-ui-fg-subtle">Subtotal</span>
                   <span className="txt-small text-ui-fg-subtle">
-                    {formatAmount(order.subtotal, order.currency_code)}
+                    {formatAmount(order.item_subtotal, order.currency_code)}
                   </span>
                 </div>
 
@@ -116,7 +116,9 @@ const QuoteDetails: React.FC<QuoteDetailsProps> = ({
                 <div className="flex items-center justify-between">
                   <span className="txt-small text-ui-fg-subtle">Portes</span>
                   <span className="txt-small text-ui-fg-subtle">
-                    {formatAmount(order.shipping_total, order.currency_code)}
+                    {quote.shipping_cost != null
+                      ? formatAmount(quote.shipping_cost, order.currency_code)
+                      : "A definir"}
                   </span>
                 </div>
 
@@ -131,36 +133,11 @@ const QuoteDetails: React.FC<QuoteDetailsProps> = ({
 
                 <div className="flex items-center justify-between">
                   <span className="txt-small text-ui-fg-subtle font-semibold">
-                    Total Original
+                    Total
                   </span>
                   <span className="txt-small text-ui-fg-subtle">
                     {formatAmount(order.total, order.currency_code)}
                   </span>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <span className="txt-small text-ui-fg-subtle font-semibold">
-                    Novo Total
-                  </span>
-                  <div className="flex items-center gap-x-2">
-                    <span className="txt-small text-ui-fg-subtle">
-                      {formatAmount(preview.total, order.currency_code)}
-                    </span>
-                    {preview.total !== order.total && (
-                      <span
-                        className={clx("txt-small font-medium", {
-                          "text-green-600": preview.total < order.total,
-                          "text-red-600": preview.total > order.total,
-                        })}
-                      >
-                        {preview.total < order.total ? "-" : "+"}
-                        {formatAmount(
-                          Math.abs(preview.total - order.total),
-                          order.currency_code
-                        )}
-                      </span>
-                    )}
-                  </div>
                 </div>
               </div>
             </div>
@@ -228,7 +205,7 @@ const QuoteDetails: React.FC<QuoteDetailsProps> = ({
               <div className="flex justify-between">
                 <Text>Data de Criação</Text>
                 <Text>
-                  {new Date(quote.created_at).toLocaleDateString("pt-PT", {
+                  {new Date(quote.draft_order.created_at).toLocaleDateString("pt-PT", {
                     year: "numeric",
                     month: "long",
                     day: "numeric",

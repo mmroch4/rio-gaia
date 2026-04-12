@@ -77,6 +77,15 @@
           "nullable": true,
           "mappedType": "text"
         },
+        "shipping_cost": {
+          "name": "shipping_cost",
+          "type": "integer",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamptz",

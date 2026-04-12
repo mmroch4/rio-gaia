@@ -3,7 +3,13 @@ import { Text } from "@medusajs/ui";
 import { ReactNode } from "react";
 import { formatAmount } from "../../../../utils";
 
-export const CostBreakdown = ({ order }: { order: AdminOrder }) => {
+export const CostBreakdown = ({
+  order,
+  shippingCost,
+}: {
+  order: AdminOrder;
+  shippingCost?: number | null;
+}) => {
   return (
     <div className="text-ui-fg-subtle flex flex-col gap-y-2 px-6 py-4">
       <Cost
@@ -15,22 +21,15 @@ export const CostBreakdown = ({ order }: { order: AdminOrder }) => {
             : "-"
         }
       />
-      {(order.shipping_methods || [])
-        .sort((m1, m2) =>
-          (m1.created_at as string).localeCompare(m2.created_at as string)
-        )
-        .map((sm, i) => {
-          return (
-            <div>
-              <Cost
-                key={sm.id}
-                label={"Shipping"}
-                secondaryValue={sm.name}
-                value={formatAmount(sm.total, order.currency_code)}
-              />
-            </div>
-          );
-        })}
+      <Cost
+        label="Shipping"
+        secondaryValue=""
+        value={
+          shippingCost != null
+            ? formatAmount(shippingCost, order.currency_code)
+            : "Not set"
+        }
+      />
     </div>
   );
 };

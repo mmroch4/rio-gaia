@@ -22,7 +22,7 @@ const OrderDetailsTemplate: React.FC<OrderDetailsTemplateProps> = ({
     <div className="flex flex-col justify-center gap-y-2">
       <div className="flex gap-2 justify-between items-center mb-2">
         <LocalizedClientLink
-          href="/account/orders"
+          href="/portal/conta/encomendas"
           className="flex gap-2 items-center text-ui-fg-subtle hover:text-ui-fg-base"
           data-testid="back-to-overview-button"
         >

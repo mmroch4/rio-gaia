@@ -245,6 +245,40 @@ export default async function seedDemoData({ container }: ExecArgs) {
           },
         ],
       },
+      {
+        name: "Portes Personalizados",
+        price_type: "flat",
+        provider_id: "manual_manual",
+        service_zone_id: fulfillmentSet.service_zones[0].id,
+        shipping_profile_id: shippingProfile.id,
+        type: {
+          label: "Portes Personalizados",
+          description: "Custom shipping for quotes.",
+          code: "quote-shipping",
+        },
+        prices: [
+          {
+            currency_code: "eur",
+            amount: 0,
+          },
+          {
+            region_id: region.id,
+            amount: 0,
+          },
+        ],
+        rules: [
+          {
+            attribute: "enabled_in_store",
+            value: '"false"',
+            operator: "eq",
+          },
+          {
+            attribute: "is_return",
+            value: "false",
+            operator: "eq",
+          },
+        ],
+      },
     ],
   });
   logger.info("Finished seeding fulfillment data.");

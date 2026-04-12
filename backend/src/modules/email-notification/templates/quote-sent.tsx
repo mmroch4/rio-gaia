@@ -19,6 +19,7 @@ interface QuoteItem {
 interface QuoteSentEmailProps {
   quote: {
     id: string
+    shipping_cost?: number | null
     draft_order?: {
       display_id?: number
       currency_code?: string
@@ -126,20 +127,20 @@ export const QuoteSentEmail = ({
               </Column>
             </Row>
           )}
-          {order.shipping_total != null && order.shipping_total > 0 && (
-            <Row>
-              <Column>
-                <Text style={{ ...styles.text, margin: "0", fontSize: "14px" }}>
-                  Envio
-                </Text>
-              </Column>
-              <Column style={{ textAlign: "right" }}>
-                <Text style={{ ...styles.text, margin: "0", fontSize: "14px" }}>
-                  {formatPrice(order.shipping_total, currency)}
-                </Text>
-              </Column>
-            </Row>
-          )}
+          <Row>
+            <Column>
+              <Text style={{ ...styles.text, margin: "0", fontSize: "14px" }}>
+                Portes
+              </Text>
+            </Column>
+            <Column style={{ textAlign: "right" }}>
+              <Text style={{ ...styles.text, margin: "0", fontSize: "14px" }}>
+                {quote.shipping_cost != null
+                  ? formatPrice(quote.shipping_cost, currency)
+                  : "A definir"}
+              </Text>
+            </Column>
+          </Row>
           {order.tax_total != null && order.tax_total > 0 && (
             <Row>
               <Column>
@@ -175,7 +176,9 @@ export const QuoteSentEmail = ({
                     fontWeight: "bold",
                   }}
                 >
-                  {formatPrice(order.total, currency)}
+                  {quote.shipping_cost != null
+                    ? formatPrice(order.total + quote.shipping_cost, currency)
+                    : formatPrice(order.total, currency) + " + portes"}
                 </Text>
               </Column>
             </Row>

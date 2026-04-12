@@ -6,6 +6,7 @@ import {
 import { OrderStatus } from "@medusajs/framework/utils";
 import { createWorkflow, transform } from "@medusajs/workflows-sdk";
 import { updateOrderWorkflow } from "../../order/workflows/update-order";
+import { addQuoteShippingStep } from "../steps/add-quote-shipping";
 import { validateQuoteAcceptanceStep } from "../steps/validate-quote-acceptance";
 import { updateQuotesWorkflow } from "./update-quote";
 
@@ -24,6 +25,7 @@ export const customerAcceptQuoteWorkflow = createWorkflow(
         "id",
         "draft_order_id",
         "status",
+        "shipping_cost",
         "customer.email",
         "customer.first_name",
         "customer.last_name",
@@ -54,6 +56,13 @@ export const customerAcceptQuoteWorkflow = createWorkflow(
         status: OrderStatus.PENDING,
       },
     });
+
+    const shippingInput = transform({ quote }, ({ quote }) => ({
+      order_id: quote.draft_order_id,
+      shipping_cost: quote.shipping_cost ?? null,
+    }));
+
+    addQuoteShippingStep(shippingInput);
 
     const eventData = transform({ quote }, ({ quote }) => ({
       quote_id: quote.id,

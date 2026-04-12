@@ -8,6 +8,7 @@ export type ModuleQuote = {
   cart_id: string;
   customer_id: string;
   custom_details?: string | null;
+  shipping_cost?: number | null;
   created_at: string;
   updated_at: string;
 };

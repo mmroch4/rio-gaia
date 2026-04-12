@@ -5,6 +5,7 @@ interface QuoteEventPayload {
   quote_id: string;
   quote: {
     id: string;
+    shipping_cost?: number | null;
     customer?: {
       first_name?: string;
       last_name?: string;
@@ -57,10 +58,8 @@ export default async function quoteNotificationHandler({
     const adminEmail = process.env.SMTP_FROM;
 
     logger.info(
-      `TRYING TO SEND NOTIFICATIONS: ${eventName} - CUSTOMER: ${customerEmail} - ADMIN: ${adminEmail}`,
+      `Sending quote notification: ${eventName} - Customer: ${customerEmail}`,
     );
-    
-    console.log("--------", quote)
 
     const notifications: Array<{
       to: string;
