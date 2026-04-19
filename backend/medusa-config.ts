@@ -115,6 +115,14 @@ module.exports = defineConfig({
     },
   },
   modules,
+  plugins: [
+    {
+      resolve: "@agilo/medusa-analytics-plugin",
+      options: {
+        stock_threshold: 10,
+      },
+    },
+  ],
   admin: {
     disable: process.env.DISABLE_MEDUSA_ADMIN === "true",
     backendUrl: process.env.BACKEND_URL || "http://localhost:9000",
