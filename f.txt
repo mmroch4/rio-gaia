@@ -1,0 +1,24 @@
+• Findings
+
+  1. STRUCTURE.md:840 makes [countryCode] the locale key for next-intl, but in the actual app countryCode is the Medusa region/country
+     selector that drives routing, pricing, and cart region selection via middleware and region maps, not language (storefront/src/
+     middleware.ts:13, storefront/src/middleware.ts:63). That is the biggest structural flaw in the proposal. Multi-region and multi-
+     language are separate axes here.
+  2. The way the proposal is structured a single file would contains hundreds of line of code. A suggestion to make it more manageable is to break these massive files into smaller ones (Example: cart.actions.ts contains 3 main function -> turn this into 3 files under a nested cart/ folder and then create a single file for each function)
+  6. The testing/tooling section introduces a second testing philosophy without explaining coexistence costs. STRUCTURE.md:928 moves to
+     Vitest + Playwright, but the backend already has Jest-based test scripts and Medusa integration tests (backend/package.json:15).
+     That may be fine, but the document should say whether Jest remains for backend integration, whether Vitest is storefront-only, or
+     whether a full migration is intended.
+  7. The document is trying to be architecture spec, migration plan, and AI coding manual at the same time. The LLM rules section
+     (STRUCTURE.md:949) and the implementation checklist (STRUCTURE.md:999) make the file too long and too prescriptive to function as a
+     clean decision document. At 1,054 lines, it is harder to execute than it looks.
+
+  How To Improve It
+
+  1. Start the file with “current pain points”, “non-goals”, and “success criteria”. Right now it jumps too quickly from preference to
+     target architecture.
+  2. Decouple locale from region explicitly. If i18n stays in scope, design locale separately from Medusa’s countryCode.
+  4. Change the migration from repo-wide replacement to vertical slices. A credible first slice would be company spending-limit rules in
+     the backend and cart/search on the storefront, while old and new structures coexist.
+  6. Split this into three documents: target architecture, migration plan, and CLAUDE.md conventions. Do not lock LLM rules to an
+     architecture that has not been proven in the repo yet.

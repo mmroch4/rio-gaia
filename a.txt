@@ -1,0 +1,6 @@
+- aws s3 bucket configure
+- refactor all code
+- fix tsc errors
+- create a lof of tests
+- make footer stick to the bottom of the page and header stick to the top of the page
+- remove unoptimized from all <Image components
