@@ -27,7 +27,7 @@ Ao mesmo tempo, é essencial que a Rio Gaia **mantenha o controlo** sobre:
 - **os preços praticados** para cada tipo de cliente;
 - **a confirmação dos pagamentos** e o envio das encomendas.
 
-Esta proposta apresenta uma solução pensada para essa realidade, com **três opções de investimento** adaptadas à dimensão e ao ritmo da Rio Gaia.
+Esta proposta apresenta uma solução pensada para essa realidade, com **três opções de investimento** adaptadas à dimensão e ao ritmo da Rio Gaia, e ainda uma **alternativa em Shopify** (secção 11), para que a decisão seja tomada com toda a informação.
 
 ## 2. Objetivo
 
@@ -98,7 +98,9 @@ Estas regras foram definidas em conjunto com a Rio Gaia e servem de base à solu
 
 ---
 
-## 5. As três opções
+## 5. As opções
+
+Apresentamos **três opções de solução à medida**. Existe ainda uma **quarta via — construir o portal em Shopify**, que descrevemos com detalhe na **secção 11**, incluindo as suas vantagens, as suas limitações e o respetivo orçamento.
 
 ### Visão geral
 
@@ -269,18 +271,78 @@ Para cumprir os prazos, a Rio Gaia disponibiliza:
 
 ---
 
-## 11. Porque não uma plataforma pronta?
+## 11. Alternativa: fazer o portal em Shopify
 
-Plataformas como Shopify ou WooCommerce são ótimas para lojas de venda ao público, mas as necessidades B2B da Rio Gaia exigem funcionalidades que **não existem prontas** nos planos acessíveis dessas plataformas, ou que só existem em planos de **milhares de euros por mês**:
+Apresentamos esta alternativa de forma aberta, porque a Rio Gaia deve poder escolher com toda a informação. **Se a opção for o Shopify, somos nós a criar e configurar a plataforma** — o serviço está orçamentado mais abaixo.
 
-- Registo de empresas **com aprovação** antes de verem o catálogo.
-- **Pro forma** com envio controlado pela Rio Gaia.
-- **Catálogos por cliente** (e não apenas por país ou mercado).
-- **Funcionários com limites e aprovações** dentro de cada empresa cliente.
-- **Regras de portes à medida** (5% com mínimo de 9 € com IVA).
+### O que mudou em abril de 2026
 
-A solução proposta foi desenhada **à medida destas regras**, com um custo mensal ajustado a uma pequena empresa, e pode crescer com o negócio através dos módulos adicionais.
+Até ao início de 2026, as funcionalidades B2B do Shopify existiam apenas no plano Plus (a partir de **2.100 €/mês**). Em **2 de abril de 2026**, o Shopify passou a incluir as funcionalidades B2B de base em **todos os planos pagos**, sem custo adicional. Hoje, o Shopify é uma opção séria para muitos negócios B2B — e é justo dizê-lo.
 
+### O que o Shopify faz bem
+
+| | |
+|---|---|
+| **Sem preocupações técnicas** | Alojamento, segurança, cópias de segurança e atualizações são responsabilidade do Shopify. A Rio Gaia nunca tem de se preocupar com isso. |
+| **Contas de empresa** | Perfis de empresa com várias localizações e vários compradores, com permissões. |
+| **Registo com aprovação** | Formulário de candidatura de empresa; a empresa só pode encomendar depois de a Rio Gaia aprovar. |
+| **Portal fechado** | É possível restringir a loja a clientes B2B autenticados. |
+| **Encomenda rápida e repetição de encomendas** | Incluídas de origem (lista de encomenda rápida e reordenação). |
+| **Condições de pagamento** | Net 30/60/90 e lembretes de pagamento incluídos. |
+| **Transferência bancária** | Suportada, **sem taxa de transação**. |
+| **Faturação certificada** | O Moloni e o InvoiceXpress têm ligações ao Shopify prontas e gratuitas. |
+| **Crescer para a Europa** | Multi-mercado, multi-moeda e validação de IVA europeu incluídos. |
+| **Liberdade de mudar** | A Rio Gaia pode mudar de fornecedor a qualquer momento; há muitas empresas a trabalhar com Shopify. |
+
+### O que o Shopify não faz — precisamente nas regras da Rio Gaia
+
+| Regra acordada (secção 4) | Situação no Shopify |
+|---|---|
+| **Preços diferentes por grupo de clientes** | Nos planos Basic, Grow e Advanced, as tabelas de preços são atribuídas **por país/região**, não por cliente — e no máximo 3. Todas as empresas portuguesas veriam **o mesmo preço**. Atribuir uma tabela de preços a uma empresa concreta exige o plano **Plus (2.100 €/mês)**. |
+| **Catálogos exclusivos por grupo** | Mesma limitação: depende da mesma funcionalidade. |
+| **Limites de gasto por funcionário e aprovação pelo administrador da empresa** | **Não existe em plano nenhum**, nem no Plus. Só através de aplicações de terceiros, a partir de **~185 €/mês**, sendo que a aplicação mais completa foi lançada em fevereiro de 2026 e ainda não tem utilizadores com avaliações públicas. |
+| **Funcionários criados pelo administrador da empresa** | No Shopify, os utilizadores de cada empresa cliente são criados **pela Rio Gaia** no painel de gestão. O administrador da empresa **não pode criar nem convidar colegas sozinho** — só através de uma aplicação de terceiros. |
+| **Pedidos de orçamento com troca de mensagens** | Não existe. O Shopify tem rascunhos de encomenda, que servem casos simples, mas não um processo de orçamento com histórico de mensagens entre as partes. |
+| **Portes de 5% com mínimo de 9 €** | O Shopify só calcula portes por valor fixo, peso ou escalões. Uma percentagem exige o plano **Advanced (289 €/mês)** ou um suplemento, mais um serviço de cálculo externo feito à medida. Alternativa: substituir a regra por uma **tabela de escalões** (ex.: até 100 € → 9 €; 100–200 € → 12 €; ...), que se aproxima mas não é igual. |
+| **Pro forma com os dados bancários** | Possível, mas através de uma aplicação de impressão de documentos, com menos controlo sobre o aspeto e o momento do envio. |
+
+### A Opção Shopify
+
+Serviço de criação e configuração completa da loja B2B no Shopify, executado por nós:
+
+| | **Opção Shopify** |
+|---|---|
+| **Investimento inicial (criação e configuração)** | **1.900 €** |
+| **Mensalidade de acompanhamento** | **69 €/mês** (1 h/mês de suporte e alterações incluída) |
+| **Período mínimo de contrato** | 12 meses |
+| **Prazo estimado de lançamento** | 3 a 4 semanas |
+| **Custo do Shopify** | Pago **diretamente pela Rio Gaia** ao Shopify: plano Grow **56 €/mês** (faturação anual). Eventuais aplicações adicionais são pagas à parte. |
+
+**Inclui:** configuração das contas de empresa e do processo de aprovação; tabela(s) de preços; personalização do tema com a imagem da Rio Gaia; formulário de registo de empresas com NIF; restrição do acesso ao catálogo a empresas aprovadas; pagamento por transferência bancária e emissão da pro forma; configuração das regras de portes; ligação a software de faturação certificado (Moloni ou InvoiceXpress); carregamento inicial de até 150 produtos; 2 sessões de formação de 1 h e manual de utilização.
+
+**Não inclui** (limitações da plataforma descritas acima): preços e catálogos diferenciados por grupo de clientes; limites de gasto por funcionário com aprovação; criação de funcionários pelo próprio administrador da empresa; pedidos de orçamento com troca de mensagens; e a regra de portes de 5% na sua forma exata.
+
+### Comparação de custo em 3 anos
+
+*Valores sem IVA, incluindo o que é pago a nós e ao Shopify.*
+
+| Caminho | 3 anos | Cumpre as regras da secção 4? |
+|---|---|---|
+| **Opção Shopify** (plano Grow) | **~6.400 €** | Parcialmente — sem preços por grupo, sem limites de gasto, portes por escalões |
+| **Opção Shopify + aplicação de limites de gasto** | **~13.100 €** | Quase — continua sem preços por grupo |
+| **Opção Shopify no plano Plus** (única forma de ter preços por grupo) | **~80.000 €** | Sim, exceto limites de gasto |
+| **Opção Profissional à medida** (secção 5) | **9.864 €** | Sim, todas |
+
+### Como decidir
+
+A questão não é técnica, é de negócio:
+
+> **Os preços diferenciados por grupo de clientes e os limites de gasto por funcionário são requisitos ou preferências?**
+
+- Se forem **preferências** de que a Rio Gaia esteja disposta a abdicar, a **Opção Shopify é a melhor escolha**: mais barata, mais rápida e sem dependência técnica de ninguém. Dizemo-lo com toda a frontalidade.
+- Se forem **requisitos** — como resultou da recolha de requisitos —, a solução à medida é a única que os cumpre a um custo compatível com a dimensão da Rio Gaia.
+
+Seja qual for a escolha, somos nós a construir e a acompanhar.
 ---
 
 ## 12. Apoios à digitalização
@@ -293,7 +355,7 @@ A elegibilidade deste projeto e as condições concretas **devem ser confirmadas
 
 ## 13. Próximos passos
 
-1. **Reunião de apresentação** desta proposta, com demonstração do portal atual.
+1. **Reunião de apresentação** desta proposta, com demonstração do portal atual e esclarecimento da alternativa em Shopify.
 2. **Escolha da opção** e esclarecimento de dúvidas.
 3. **Adjudicação** com assinatura do contrato e pagamento da primeira tranche.
 4. **Reunião de arranque** e entrega dos conteúdos (secção 9).
@@ -304,7 +366,7 @@ A elegibilidade deste projeto e as condições concretas **devem ser confirmadas
 
 Para aceitar esta proposta, indique a opção escolhida e devolva este documento assinado.
 
-**Opção escolhida:** ☐ Essencial  ☐ Profissional  ☐ Parceria
+**Opção escolhida:** ☐ Essencial  ☐ Profissional  ☐ Parceria  ☐ Shopify
 
 | Pela Rio Gaia | Por [NOME DA EMPRESA] |
 |---|---|
